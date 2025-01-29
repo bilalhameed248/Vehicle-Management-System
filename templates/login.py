@@ -1,37 +1,137 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox, QHBoxLayout, QGridLayout
+from PyQt5.QtGui import QFont, QPalette, QColor, QPixmap
+from PyQt5.QtCore import Qt
 import sys
 import sqlite3
-from database import get_user_by_username  # Import database functions
+from database import VMS_DB
+from templates.welcome import WelcomePage  # Import Welcome Page class
 
 class LoginPage(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Login - Vehicle Maintenance System")
-        self.setGeometry(100, 100, 400, 300)  # Window size
+        self.setWindowTitle("Login - Vehicle Maintenance/Management System")
+        self.setStyleSheet("background-color: #1E1E1E;")
         self.initUI()
+        self.setWindowState(Qt.WindowMaximized)
+        self.show()
+        self.db_obj = VMS_DB()
 
     def initUI(self):
-        layout = QVBoxLayout()
+        # Background Image
+        self.bg_label = QLabel(self)
+        self.bg_label.setPixmap(QPixmap("assets/images/bg.png"))  # Set your background image
+        # self.bg_label.setGeometry(0, 0, 800, 600)
+        self.bg_label.setScaledContents(True)
+        self.bg_label.setGeometry(0, 0, self.width(), self.height())  # Covers the whole screen
 
-        # Username
-        self.username_label = QLabel("Username:")
+        # Main Layout
+        self.container = QWidget(self)
+        self.container.setFixedSize(600, 500)  # Wider Form
+        # self.container.setGeometry(200, 100, 400, 400)  # Form size & position
+        self.container.setStyleSheet("background: rgba(0, 0, 0, 0.7); border-radius: 20px;")
+
+        layout = QVBoxLayout(self.container)
+        layout.setContentsMargins(40,40,40,40)
+
+        # Title
+        self.title = QLabel("Vehicle Maintenance System")
+        self.title.setFont(QFont("Arial", 16, QFont.Bold))
+        self.title.setStyleSheet("color: #FFFFFF;")
+        self.title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.title)
+
+        # Username Field
         self.username_input = QLineEdit()
-        layout.addWidget(self.username_label)
+        self.username_input.setPlaceholderText("Enter Username")
+        self.username_input.setText("zahid44")  # Hardcoded username
+        self.username_input.setStyleSheet(self.inputStyle())
         layout.addWidget(self.username_input)
 
-        # Password
-        self.password_label = QLabel("Password:")
+        # Password Field
         self.password_input = QLineEdit()
-        self.password_input.setEchoMode(QLineEdit.Password)  # Hide password input
-        layout.addWidget(self.password_label)
+        self.password_input.setPlaceholderText("Enter Password")
+        self.password_input.setText("Z44ahid")  # Hardcoded password
+        self.password_input.setEchoMode(QLineEdit.Password)
+        self.password_input.setStyleSheet(self.inputStyle())
         layout.addWidget(self.password_input)
 
         # Login Button
         self.login_button = QPushButton("Login")
+        self.login_button.setStyleSheet(self.buttonStyle())
         self.login_button.clicked.connect(self.check_credentials)
         layout.addWidget(self.login_button)
 
-        self.setLayout(layout)
+        # Close Button
+        self.close_button = QPushButton("Close")
+        self.close_button.setStyleSheet(self.closeButtonStyle())
+        self.close_button.clicked.connect(self.closeApp)
+        layout.addWidget(self.close_button)
+
+        # Grid Layout for Centering
+        grid_layout = QGridLayout(self)
+        grid_layout.addWidget(self.bg_label, 0, 0)  # Background image
+        grid_layout.addWidget(self.container, 0, 0, Qt.AlignCenter)  # Center Login Form
+        #grid_layout.addWidget(self.container, 0, 0, Qt.AlignBottom | Qt.AlignRight)  # Login Form Bottom-Right
+        
+
+    def resizeEvent(self, event):
+        """Resize background image dynamically when the window resizes."""
+        self.bg_label.setGeometry(0, 0, self.width(), self.height())
+        event.accept()
+
+    def inputStyle(self):
+        return """
+            QLineEdit {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                padding: 10px;
+                border-radius: 10px;
+                color: white;
+                font-size: 14px;
+            }
+            QLineEdit::placeholder {
+                color: #CCCCCC;
+            }
+        """
+    
+    def buttonStyle(self):
+        return """
+            QPushButton {
+                background: #ff9800;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                font-size: 16px;
+                color: white;
+            }
+            QPushButton:hover {
+                background: #e68900;
+            }
+        """
+    
+    def closeButtonStyle(self):
+        return """
+            QPushButton {
+                background: #ff3b30;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                font-size: 16px;
+                color: white;
+            }
+            QPushButton:hover {
+                background: #d32f2f;
+            }
+        """
+    
+    def closeApp(self):
+        self.close()
+
+    def open_welcome_page(self):
+        """Close login page and show welcome page"""
+        self.close()  # Close the login window
+        self.welcome_window = WelcomePage(self.user_session)  # Pass session data
+        self.welcome_window.show()
 
     def check_credentials(self):
         username = self.username_input.text()
@@ -41,15 +141,19 @@ class LoginPage(QWidget):
             QMessageBox.warning(self, "Error", "Username and password are required!")
             return
 
-        user = get_user_by_username(username)
+        user = self.db_obj.get_user_by_username(username)
         
         if user:
             user_id, db_username, db_password, is_blocked = user
             if is_blocked:
                 QMessageBox.critical(self, "Blocked", "Your account is blocked. Contact admin.")
             elif password == db_password:  # You should hash passwords instead!
-                QMessageBox.information(self, "Login Successful", f"Welcome {db_username}!")
-                self.close()  # Close login window after successful login
+                # QMessageBox.information(self, "Login Successful", f"Welcome {db_username}!")
+                self.user_session = {
+                    'user_id': user_id,
+                    'username': db_username
+                }
+                self.open_welcome_page()  # Open Welcome Page
             else:
                 QMessageBox.warning(self, "Error", "Incorrect password!")
         else:
