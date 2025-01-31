@@ -19,3 +19,12 @@ class VMS_DB:
         user = cursor.fetchone()
         conn.close()
         return user  # Returns (id, username, password, is_blocked) or None
+    
+    def fetch_users(self):
+        """Fetch a user by username."""
+        conn = self.create_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, username, email, is_blocked FROM users")
+        users = cursor.fetchall()
+        conn.close()
+        return users  # Returns (id, username, password, is_blocked) or None

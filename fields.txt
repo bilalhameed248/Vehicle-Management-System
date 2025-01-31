@@ -1,0 +1,80 @@
+ID
+BA No
+Make & Type
+Engine No
+
+
+(Oil filter)
+Issue Date
+Due Date
+Current Mileage
+Due Mileage
+
+
+(Fuel filter)
+Issue Date
+Due Date
+Current Mileage
+Due Mileage
+
+
+(Air FIlter)
+Issue Date
+Due Date
+Current Mileage
+Due Mileage
+
+
+(Transmission FIlter)
+Issue Date
+Due Date
+Current Mileage
+Due Mileage
+
+
+(Differential Oil)
+Issue Date
+Due Date
+Current Mileage
+Due Mileage
+
+
+(Battery)
+Issue/last charging Date
+Due Date
+
+
+(Greasing)
+Trs and suspension
+Engine parts
+steering lever Pts
+Issue Date
+Due Date
+
+
+(Flusing)
+Fuel Tank Flush
+Radiator Flush
+Issue Date
+Due Date
+
+Gen Maint (Monthly):
+Wash
+Oil Level Check
+Lubrication of parts
+Air Cleaner Maint
+Fuel Filter Maint
+French chalk
+Tr Adjustment
+
+
+(overhaul)
+current Mileage
+due Mileage
+
+Remarks
+
+Actions
+
+
+
