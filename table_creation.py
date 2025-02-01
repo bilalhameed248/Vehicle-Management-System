@@ -34,5 +34,5 @@ def insert_user(name, email, username, password, is_blocked=0):
     conn.commit()
     conn.close()
 
-insert_user("Zahid", "zahid44@gmail.com", "zahid44", "Z44ahid")  # Alice is blocked (1)
+insert_user("Zia Shahid", "zia@outlook.com", "ziashahid", "Zia", 1)
 print("User inserted successfully!")
