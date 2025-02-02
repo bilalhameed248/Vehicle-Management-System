@@ -12,14 +12,27 @@ class WelcomePage(QWidget):
 
     def __init__(self, session):
         super().__init__()
-        self.setWindowTitle("Vehicle Management System")
+        self.setWindowTitle("Home - Vehicle Maintenance Module")
         self.setStyleSheet("background-color: #1E1E1E;")
+        self.setWindowIcon(QIcon("assets/images/tank.png"))
         self.initUI()
         self.setWindowState(Qt.WindowMaximized)
         self.show()
         self.user_session = session
         self.db_obj = VMS_DB()
         self.add_vehicle_obj = AddVehicle()
+
+    def update_menu_button_style(self, clicked_button):
+        # Reset the style of all buttons
+        buttons = [self.home, self.add_vehicle_button, self.view_all_button, self.create_report_button, self.users_management_button]
+        for button in buttons:
+            button.setStyleSheet("""
+                QPushButton {background-color: #34495E; color: white; border-radius: 5px; padding: 10px 20px; text-align: left; }
+                QPushButton:hover { background-color: #2980B9; }
+            """)
+        clicked_button.setStyleSheet("""
+            QPushButton { background-color: #2980B9; color: white; border-radius: 5px; padding: 10px 20px; text-align: left;}
+        """)
 
     def initUI(self):
         main_layout = QVBoxLayout()
@@ -44,18 +57,14 @@ class WelcomePage(QWidget):
         self.setLayout(main_layout)
 
         # Connect button click to function
-        self.add_vehicle_button.clicked.connect(self.show_add_vehicle_page)
-        self.home.clicked.connect(self.show_home_page)
-        self.users_management_button.clicked.connect(self.show_users_management_button_page)
+        self.add_vehicle_button.clicked.connect(lambda: self.show_add_vehicle_page(self.add_vehicle_button))
+        self.home.clicked.connect(lambda: self.show_home_page(self.home))
+        self.users_management_button.clicked.connect(lambda: self.show_users_management_button_page(self.users_management_button))
         self.logout_button.clicked.connect(self.logout_function)
     
     def create_navbar(self):
         navbar = QFrame(self)
-        navbar.setStyleSheet("""
-            background-color: #2C3E50;
-            color: white;
-            padding: 2px;
-        """)
+        navbar.setStyleSheet(""" background-color: #2C3E50; color: white; padding: 2px; """)
         navbar_layout = QHBoxLayout()
         
         # Title on the left
@@ -69,16 +78,8 @@ class WelcomePage(QWidget):
         
         for button in [self.profile_button, self.logout_button]:
             button.setStyleSheet("""
-                QPushButton {
-                    background-color: #2980B9;
-                    color: white;
-                    border-radius: 5px;
-                    padding: 8px 15px;
-                    font-size: 14px;
-                }
-                QPushButton:hover {
-                    background-color: #3498DB;
-                }
+                QPushButton { background-color: #2980B9; color: white; border-radius: 5px; padding: 8px 15px; font-size: 14px; }
+                QPushButton:hover { background-color: #3498DB; }
             """)
         
         self.profile_button.setIcon(QIcon("assets/icons/profile.png"))
@@ -150,20 +151,23 @@ class WelcomePage(QWidget):
         empty_page.setLayout(layout)
         return empty_page
 
-    def show_add_vehicle_page(self):
+    def show_add_vehicle_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
+        self.update_menu_button_style(clicked_button)
         self.add_vehicle_obj = AddVehicle(self)  # Create AddVehicle widget
         self.content_area.addWidget(self.add_vehicle_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.add_vehicle_obj)  # Switch view
 
-    def show_users_management_button_page(self):
+    def show_users_management_button_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
+        self.update_menu_button_style(clicked_button)
         self.users_obj = Users(self)  # Create AddVehicle widget
         self.content_area.addWidget(self.users_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.users_obj)  # Switch view
     
-    def show_home_page(self):
+    def show_home_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
+        self.update_menu_button_style(clicked_button)
         self.content_area.setCurrentIndex(0)
 
     def logout_function(self):

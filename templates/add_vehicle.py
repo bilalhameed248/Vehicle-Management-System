@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QDateEdit, QGridLayout, QVBoxLayout,
     QPushButton, QScrollArea, QFormLayout, QHBoxLayout, QGroupBox
 )
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QIcon, QFont
+from PyQt5.QtCore import Qt, QDate, QTimer, QSize
 
 class AddVehicle(QWidget):
     def __init__(self, parent=None):
@@ -21,7 +21,7 @@ class AddVehicle(QWidget):
             QPushButton:pressed { background-color: #004085; }
             QGroupBox {font-weight: bold; border: 2px solid #007BFF; padding: 10px; margin-top: 20px;margin-bottom: 20px; border-radius: 8px; }
             QGroupBox title { color: #007BFF; font-size: 16px; }
-            QScrollBar:vertical {border: none; background: #f0f0f0; width: 10px; margin: 0px 0px 0px 0px;}
+            QScrollBar:vertical {border: none; background: #f0f0f0; width: 20px; margin: 0px 0px 0px 0px;}
             QScrollBar::handle:vertical {background: blue; min-height: 20px; border-radius: 5px; }
             QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {background: none;}
             QScrollBar:horizontal {border: none; background: #f0f0f0; height: 10px; margin: 0px 0px 0px 0px; }
@@ -350,9 +350,18 @@ class AddVehicle(QWidget):
 
         # Buttons
         button_layout = QHBoxLayout()
-        save_button = QPushButton("Save")
+        save_button = QPushButton(" Save")
+        save_button.setIcon(QIcon("assets/icons/save.png"))
+        save_button.setIconSize(QSize(20, 20))
+
         clear_button = QPushButton("Clear")
-        cancel_button = QPushButton("Cancel")
+        clear_button.setIcon(QIcon("assets/icons/clear.png"))
+        clear_button.setIconSize(QSize(20, 20))
+
+        cancel_button = QPushButton(" Cancel")
+        cancel_button.setIcon(QIcon("assets/icons/cancel.png"))
+        cancel_button.setIconSize(QSize(20, 20))
+
         button_layout.addWidget(save_button)
         button_layout.addWidget(clear_button)
         button_layout.addWidget(cancel_button)

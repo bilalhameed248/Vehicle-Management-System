@@ -1,40 +1,37 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QMessageBox, QHBoxLayout, QGridLayout
-from PyQt5.QtGui import QFont, QPalette, QColor, QPixmap
+from PyQt5.QtGui import QFont, QPalette, QColor, QPixmap, QIcon
 from PyQt5.QtCore import Qt
 import sys
-import sqlite3
 from database import VMS_DB
 from templates.welcome import WelcomePage  # Import Welcome Page class
 
 class LoginPage(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Login - Vehicle Maintenance/Management System")
+        self.setWindowTitle("Login - Vehicle Maintenance Module")
         self.setStyleSheet("background-color: #1E1E1E;")
+        self.setWindowIcon(QIcon("assets/images/tank.png"))
         self.initUI()
         self.setWindowState(Qt.WindowMaximized)
         self.show()
         self.db_obj = VMS_DB()
 
     def initUI(self):
-        # Background Image
         self.bg_label = QLabel(self)
-        self.bg_label.setPixmap(QPixmap("assets/images/bg.png"))  # Set your background image
-        # self.bg_label.setGeometry(0, 0, 800, 600)
+        self.bg_label.setPixmap(QPixmap("assets/images/login_bg.jpg"))
         self.bg_label.setScaledContents(True)
-        self.bg_label.setGeometry(0, 0, self.width(), self.height())  # Covers the whole screen
+        self.bg_label.setGeometry(0, 0, self.width(), self.height())
 
         # Main Layout
         self.container = QWidget(self)
-        self.container.setFixedSize(600, 500)  # Wider Form
-        # self.container.setGeometry(200, 100, 400, 400)  # Form size & position
+        self.container.setFixedSize(600, 500)
         self.container.setStyleSheet("background: rgba(0, 0, 0, 0.7); border-radius: 20px;")
 
         layout = QVBoxLayout(self.container)
         layout.setContentsMargins(40,40,40,40)
-
+        
         # Title
-        self.title = QLabel("Vehicle Maintenance System")
+        self.title = QLabel("Vehicle Maintenance Module")
         self.title.setFont(QFont("Arial", 16, QFont.Bold))
         self.title.setStyleSheet("color: #FFFFFF;")
         self.title.setAlignment(Qt.AlignCenter)
@@ -45,6 +42,7 @@ class LoginPage(QWidget):
         self.username_input.setPlaceholderText("Enter Username")
         self.username_input.setText("zahid44")  # Hardcoded username
         self.username_input.setStyleSheet(self.inputStyle())
+        self.username_input.returnPressed.connect(self.check_credentials)  # Added line
         layout.addWidget(self.username_input)
 
         # Password Field
@@ -53,6 +51,7 @@ class LoginPage(QWidget):
         self.password_input.setText("Z44ahid")  # Hardcoded password
         self.password_input.setEchoMode(QLineEdit.Password)
         self.password_input.setStyleSheet(self.inputStyle())
+        self.password_input.returnPressed.connect(self.check_credentials)  # Added line
         layout.addWidget(self.password_input)
 
         # Login Button
@@ -81,47 +80,20 @@ class LoginPage(QWidget):
 
     def inputStyle(self):
         return """
-            QLineEdit {
-                background: rgba(255, 255, 255, 0.2);
-                border: none;
-                padding: 10px;
-                border-radius: 10px;
-                color: white;
-                font-size: 14px;
-            }
-            QLineEdit::placeholder {
-                color: #CCCCCC;
-            }
+            QLineEdit { background: rgba(255, 255, 255, 0.2); border: none; padding: 10px; border-radius: 10px; color: white; font-size: 14px; }
+            QLineEdit::placeholder {color: #CCCCCC;}
         """
     
     def buttonStyle(self):
         return """
-            QPushButton {
-                background: #ff9800;
-                border: none;
-                padding: 12px;
-                border-radius: 10px;
-                font-size: 16px;
-                color: white;
-            }
-            QPushButton:hover {
-                background: #e68900;
-            }
+            QPushButton { background: #ff9800; border: none; padding: 12px; border-radius: 10px; font-size: 16px; color: white;}
+            QPushButton:hover {background: #e68900;}
         """
     
     def closeButtonStyle(self):
         return """
-            QPushButton {
-                background: #ff3b30;
-                border: none;
-                padding: 12px;
-                border-radius: 10px;
-                font-size: 16px;
-                color: white;
-            }
-            QPushButton:hover {
-                background: #d32f2f;
-            }
+            QPushButton { background: #ff3b30; border: none; padding: 12px; border-radius: 10px; font-size: 16px; color: white;}
+            QPushButton:hover { background: #d32f2f; }
         """
     
     def closeApp(self):
@@ -129,20 +101,17 @@ class LoginPage(QWidget):
 
     def open_welcome_page(self):
         """Close login page and show welcome page"""
-        self.close()  # Close the login window
-        self.welcome_window = WelcomePage(self.user_session)  # Pass session data
+        self.close() 
+        self.welcome_window = WelcomePage(self.user_session)
         self.welcome_window.show()
 
     def check_credentials(self):
         username = self.username_input.text()
         password = self.password_input.text()
-
         if not username or not password:
             QMessageBox.warning(self, "Error", "Username and password are required!")
             return
-
         user = self.db_obj.get_user_by_username(username)
-        
         if user:
             user_id, db_username, db_password, is_blocked = user
             if is_blocked:
@@ -153,7 +122,7 @@ class LoginPage(QWidget):
                     'user_id': user_id,
                     'username': db_username
                 }
-                self.open_welcome_page()  # Open Welcome Page
+                self.open_welcome_page()
             else:
                 QMessageBox.warning(self, "Error", "Incorrect password!")
         else:
