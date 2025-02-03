@@ -20,7 +20,7 @@ class WelcomePage(QWidget):
         self.show()
         self.user_session = session
         self.db_obj = VMS_DB()
-        self.add_vehicle_obj = AddVehicle()
+        self.add_vehicle_obj = AddVehicle(self.user_session)
 
     def update_menu_button_style(self, clicked_button):
         # Reset the style of all buttons
@@ -154,14 +154,14 @@ class WelcomePage(QWidget):
     def show_add_vehicle_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
         self.update_menu_button_style(clicked_button)
-        self.add_vehicle_obj = AddVehicle(self)  # Create AddVehicle widget
+        self.add_vehicle_obj = AddVehicle(user_session=self.user_session, parent=self)
         self.content_area.addWidget(self.add_vehicle_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.add_vehicle_obj)  # Switch view
 
     def show_users_management_button_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
         self.update_menu_button_style(clicked_button)
-        self.users_obj = Users(self)  # Create AddVehicle widget
+        self.users_obj = Users(self)
         self.content_area.addWidget(self.users_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.users_obj)  # Switch view
     
