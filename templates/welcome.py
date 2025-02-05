@@ -6,6 +6,7 @@ import sqlite3
 from database import VMS_DB
 from templates.add_vehicle import AddVehicle
 from templates.users import Users
+from templates.view_all_vehicles import ViewALLVehicles
 # from templates.login import LoginPage 
 
 class WelcomePage(QWidget):
@@ -24,7 +25,7 @@ class WelcomePage(QWidget):
 
     def update_menu_button_style(self, clicked_button):
         # Reset the style of all buttons
-        buttons = [self.home, self.add_vehicle_button, self.view_all_button, self.create_report_button, self.users_management_button]
+        buttons = [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.create_report_button, self.users_management_button]
         for button in buttons:
             button.setStyleSheet("""
                 QPushButton {background-color: #34495E; color: white; border-radius: 5px; padding: 10px 20px; text-align: left; }
@@ -57,8 +58,9 @@ class WelcomePage(QWidget):
         self.setLayout(main_layout)
 
         # Connect button click to function
-        self.add_vehicle_button.clicked.connect(lambda: self.show_add_vehicle_page(self.add_vehicle_button))
         self.home.clicked.connect(lambda: self.show_home_page(self.home))
+        self.add_vehicle_button.clicked.connect(lambda: self.show_add_vehicle_page(self.add_vehicle_button))
+        self.view_all_vehicle_button.clicked.connect(lambda: self.show_all_vehicle_page(self.view_all_vehicle_button))
         self.users_management_button.clicked.connect(lambda: self.show_users_management_button_page(self.users_management_button))
         self.logout_button.clicked.connect(self.logout_function)
     
@@ -102,11 +104,11 @@ class WelcomePage(QWidget):
 
         self.home = self.create_menu_button("Home", "assets/icons/home.png")
         self.add_vehicle_button = self.create_menu_button("Add New Vehicle", "assets/icons/vehicle_add.png")
-        self.view_all_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
+        self.view_all_vehicle_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
         self.create_report_button = self.create_menu_button("Create Report", "assets/icons/report_create.png")
         self.users_management_button = self.create_menu_button("Users", "assets/icons/users.png")
 
-        for button in [self.home, self.add_vehicle_button, self.view_all_button, self.create_report_button, self.users_management_button]:
+        for button in [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.create_report_button, self.users_management_button]:
             menu_layout.addWidget(button)
 
         menu_frame = QFrame(self)
@@ -169,6 +171,13 @@ class WelcomePage(QWidget):
         """Switch to the 'Add New Vehicle' page."""
         self.update_menu_button_style(clicked_button)
         self.content_area.setCurrentIndex(0)
+
+    def show_all_vehicle_page(self, clicked_button):
+        """Switch to the 'Add New Vehicle' page."""
+        self.update_menu_button_style(clicked_button)
+        self.all_vehicle_obj = ViewALLVehicles(user_session=self.user_session, parent=self)
+        self.content_area.addWidget(self.all_vehicle_obj)  # Add to stacked widget
+        self.content_area.setCurrentWidget(self.all_vehicle_obj)  # Switch view
 
     def logout_function(self):
         """Log out the user and redirect to the login page."""
