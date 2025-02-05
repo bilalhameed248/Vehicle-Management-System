@@ -89,3 +89,13 @@ class VMS_DB:
         result = cursor.fetchone()
         self.db_disconnect(conn, cursor)
         return result  # This should return a tuple with user data
+
+
+if __name__ =="__main__":
+    db_obj = VMS_DB()
+    conn, cursor = db_obj.db_connect()
+    if conn:
+        print("🎉 Connection to MySQL is working!")
+        conn.close()
+    else:
+        print("⚠️ Failed to connect. Check the error above!")

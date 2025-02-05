@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QWidget, QTableView, QVBoxLayout, QHBoxLayout, QPushButton, QAbstractItemView,
                              QLineEdit, QLabel, QTableWidgetItem, QHeaderView,QTableWidget)
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont
+from PyQt5.QtCore import Qt, QTimer, QSize
 from database import VMS_DB
 
 class ViewALLVehicles(QWidget):
@@ -28,7 +28,7 @@ class ViewALLVehicles(QWidget):
             QTableWidget {border: 1px solid #ddd; background-color: white; border-radius: 6px; }
             QHeaderView::section { background-color: #007BFF; color: white; font-weight: bold; padding: 8px; }
             QTableWidgetItem { padding: 8px; }
-                           
+            QLineEdit#searchLineEdit { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;}
             QScrollBar:horizontal {border: none; background: #f0f0f0; height: 12px; margin: 0px 0px 0px 0px; border-radius: 4px;}
             QScrollBar::handle:horizontal {background: #007BFF; min-width: 20px; border-radius: 4px;}
             QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {background: none; border: none; width: 0px; }
@@ -39,8 +39,24 @@ class ViewALLVehicles(QWidget):
 
         # Create a layout
         layout = QVBoxLayout()
+
+        header_layout = QHBoxLayout()
         header_label = QLabel("All Vehicles")
-        layout.addWidget(header_label)
+        header_label.setStyleSheet("font-size: 14px; font-weight: bold; padding: 12px; border-radius: 4px;")
+        header_layout.addWidget(header_label)
+        
+        # Add a stretch to push the search box to the far right
+        header_layout.addStretch()
+
+        # Create the search box
+        self.search_line_edit = QLineEdit()
+        self.search_line_edit.setObjectName("searchLineEdit")
+        self.search_line_edit.setPlaceholderText("Search...")
+        self.search_line_edit.setFixedWidth(200)
+        self.search_line_edit.textChanged.connect(self.filter_table)
+        header_layout.addWidget(self.search_line_edit)
+        
+        layout.addLayout(header_layout)
 
         # Set column headers
         self.columns = [
@@ -74,7 +90,29 @@ class ViewALLVehicles(QWidget):
         
         # Fetch data from the database (or use dummy data)
         # data = self.db_obj.fetch_vehicle_data()  
-        data = []  # Replace this with actual data
+        data = [
+            {
+                'Category': 'Truck', 'BA No.': 'BA123', 'Make Type': 'Volvo', 'Engine No.': 'ENG456',
+                'Issue Date (Oil Filter)': '2023-01-10', 'Due Date (Oil Filter)': '2023-06-10',
+                'Current Mileage (Oil Filter)': '5000', 'Due Mileage (Oil Filter)': '15000',
+                'Issue Date (Fuel Filter)': '2023-02-15', 'Due Date (Fuel Filter)': '2023-07-15',
+                'Current Mileage (Fuel Filter)': '6000', 'Due Mileage (Fuel Filter)': '16000',
+                'Issue Date (Air Filter)': '2023-03-20', 'Due Date (Air Filter)': '2023-08-20',
+                'Current Mileage (Air Filter)': '7000', 'Due Mileage (Air Filter)': '17000',
+                'Issue Date (Transmission Filter)': '2023-04-25', 'Due Date (Transmission Filter)': '2023-09-25',
+                'Current Mileage (Transmission Filter)': '8000', 'Due Mileage (Transmission Filter)': '18000',
+                'Issue Date (Differential Oil)': '2023-05-30', 'Due Date (Differential Oil)': '2023-10-30',
+                'Current Mileage (Differential Oil)': '9000', 'Due Mileage (Differential Oil)': '19000',
+                'Flushing Issue Date': '2023-06-05', 'Flushing Due Date': '2023-11-05',
+                'Fuel Tank Flush': 'Yes', 'Radiator Flush': 'No', 'Greasing Issue Date': '2023-07-10',
+                'Greasing Due Date': '2023-12-10', 'TRS and Suspension': 'Good', 'Engine Part': 'Replaced',
+                'Steering Lever Pts': 'Aligned', 'Wash': 'Done', 'Oil Level Check': 'OK',
+                'Lubrication of Parts': 'Completed', 'Air Cleaner': 'Replaced', 'Fuel Filter': 'Cleaned',
+                'French Chalk': 'N/A', 'TR Adjustment': 'Adjusted', 'Created By': 'Admin', 'Created At': '2023-01-01'
+            },
+            # You can add more sample data rows here
+        ]
+        self.data = data
         self.table_widget.setRowCount(len(data))
 
         for row_index, row_data in enumerate(data):
@@ -93,28 +131,50 @@ class ViewALLVehicles(QWidget):
             
             # Create buttons for Edit, Delete, View, and Report
             btn_edit = QPushButton("Edit")
+            btn_edit.setIcon(QIcon("assets/icons/edit_2.png"))
+            btn_edit.setIconSize(QSize(20, 20))
+
             btn_delete = QPushButton("Delete")
-            btn_view = QPushButton("View")
+            btn_delete.setIcon(QIcon("assets/icons/delete.png"))
+            btn_delete.setIconSize(QSize(20, 20))
+
             btn_report = QPushButton("Report")
+            btn_report.setIcon(QIcon("assets/icons/pdf_view.png"))
+            btn_report.setIconSize(QSize(20, 20))
             
             # Connect button signals (passing the current row index)
             btn_edit.clicked.connect(lambda checked, r=row_index: self.edit_row(r))
             btn_delete.clicked.connect(lambda checked, r=row_index: self.delete_row(r))
-            btn_view.clicked.connect(lambda checked, r=row_index: self.view_row(r))
             btn_report.clicked.connect(lambda checked, r=row_index: self.report_row(r))
             
             # Add the buttons to the layout
             action_layout.addWidget(btn_edit)
             action_layout.addWidget(btn_delete)
-            action_layout.addWidget(btn_view)
             action_layout.addWidget(btn_report)
             action_layout.addStretch()
             
             # Set the widget in the action column
             self.table_widget.setCellWidget(row_index, len(self.columns), action_widget)
 
+        # Set a fixed width for the Action column to ensure buttons are visible
+        action_col_index = self.table_widget.columnCount() - 1
+        self.table_widget.setColumnWidth(action_col_index, 280)
+
         layout.addWidget(self.table_widget)
         self.setLayout(layout)
+
+    def filter_table(self):
+        """Filter table rows based on the search box input."""
+        filter_text = self.search_line_edit.text().lower()
+        for row in range(self.table_widget.rowCount()):
+            row_visible = False
+            # Check each column (except the Actions column) for a match
+            for col in range(len(self.columns)):
+                item = self.table_widget.item(row, col)
+                if item and filter_text in item.text().lower():
+                    row_visible = True
+                    break
+            self.table_widget.setRowHidden(row, not row_visible)
 
     def edit_row(self, row):
         # Implement your edit functionality here
