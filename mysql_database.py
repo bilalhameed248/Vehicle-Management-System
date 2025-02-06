@@ -10,16 +10,14 @@ class VMS_DB:
     def db_connect(self):
         try:
             conn = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="44_ak_hb"
+                host="192.168.100.28",
+                user="44_AK_HB_DB_User",
+                password="Here2enter!123",
+                database="44_AK_HB_DB"
             )
             cursor = conn.cursor()
             if conn.is_connected():
                 print("Connected to MySQL database")
-            else:
-                print("Conn Unsuccessfull")
             return conn, cursor
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -30,13 +28,6 @@ class VMS_DB:
             cursor.close()
             conn.close()
             print("Connection closed.")
-
-
-    def create_connection(self):
-        """Create a database connection."""
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        return conn, cursor
 
     def get_user_by_username(self, username):
         """Fetch a user by username."""
