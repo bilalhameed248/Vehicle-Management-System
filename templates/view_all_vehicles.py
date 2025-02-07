@@ -97,24 +97,26 @@ class ViewALLVehicles(QWidget):
         
         # Fetch data from the database (or use dummy data)
         # data = self.db_obj.fetch_vehicle_data()
-        
-        data = [
-            {
-                'Category': 'Truck', 'BA No.': 'BA123', 'Make Type': 'Volvo', 'Engine No.': 'ENG456',
-                'Issue Date (Oil Filter)': '2023-01-10', 'Due Date (Oil Filter)': '2023-06-10', 'Current Mileage (Oil Filter)': '5000', 'Due Mileage (Oil Filter)': '15000',
-                'Issue Date (Fuel Filter)': '2023-02-15', 'Due Date (Fuel Filter)': '2023-07-15', 'Current Mileage (Fuel Filter)': '6000', 'Due Mileage (Fuel Filter)': '16000',
-                'Issue Date (Air Filter)': '2023-03-20', 'Due Date (Air Filter)': '2023-08-20', 'Current Mileage (Air Filter)': '7000', 'Due Mileage (Air Filter)': '17000',
-                'Issue Date (Transmission Filter)': '2023-04-25', 'Due Date (Transmission Filter)': '2023-09-25', 'Current Mileage (Transmission Filter)': '8000', 'Due Mileage (Transmission Filter)': '18000',
-                'Issue Date (Differential Oil)': '2023-05-30', 'Due Date (Differential Oil)': '2023-10-30', 'Current Mileage (Differential Oil)': '9000', 'Due Mileage (Differential Oil)': '19000',
-                'Battery Issue Date': '2023-06-05', 'Battery Due Date': '2023-11-05',
-                'Flushing Issue Date': '2023-06-05', 'Flushing Due Date': '2023-11-05', 'Fuel Tank Flush': 'Yes', 'Radiator Flush': 'No', 
-                'Greasing Issue Date': '2023-07-10', 'Greasing Due Date': '2023-12-10', 'TRS and Suspension': 'Good', 'Engine Part': 'Replaced', 'Steering Lever Pts': 'Aligned', 
-                'Wash': 'Done', 'Oil Level Check': 'OK', 'Lubrication of Parts': 'Completed', 'Air Cleaner': 'Replaced', 'Fuel Filter': 'Cleaned', 'French Chalk': 'N/A', 'TR Adjustment': 'Adjusted', 
-                'Current Milage (Overhaul)': '5000', 'Due Milage  (Overhaul)': '7000', 'Remarks': 'Overall progress is good.',
-                'Created By': 'Admin', 'Created At': '2023-01-01'
-            },
-            # You can add more sample data rows here
-        ]
+        import json
+        with open('./random_data.json', 'r') as file:
+            data = json.load(file)
+        # data = [
+        #     {
+        #         'Category': 'Truck', 'BA No.': 'BA123', 'Make Type': 'Volvo', 'Engine No.': 'ENG456',
+        #         'Issue Date (Oil Filter)': '2023-01-10', 'Due Date (Oil Filter)': '2023-06-10', 'Current Mileage (Oil Filter)': '5000', 'Due Mileage (Oil Filter)': '15000',
+        #         'Issue Date (Fuel Filter)': '2023-02-15', 'Due Date (Fuel Filter)': '2023-07-15', 'Current Mileage (Fuel Filter)': '6000', 'Due Mileage (Fuel Filter)': '16000',
+        #         'Issue Date (Air Filter)': '2023-03-20', 'Due Date (Air Filter)': '2023-08-20', 'Current Mileage (Air Filter)': '7000', 'Due Mileage (Air Filter)': '17000',
+        #         'Issue Date (Transmission Filter)': '2023-04-25', 'Due Date (Transmission Filter)': '2023-09-25', 'Current Mileage (Transmission Filter)': '8000', 'Due Mileage (Transmission Filter)': '18000',
+        #         'Issue Date (Differential Oil)': '2023-05-30', 'Due Date (Differential Oil)': '2023-10-30', 'Current Mileage (Differential Oil)': '9000', 'Due Mileage (Differential Oil)': '19000',
+        #         'Battery Issue Date': '2023-06-05', 'Battery Due Date': '2023-11-05',
+        #         'Flushing Issue Date': '2023-06-05', 'Flushing Due Date': '2023-11-05', 'Fuel Tank Flush': 'Yes', 'Radiator Flush': 'No', 
+        #         'Greasing Issue Date': '2023-07-10', 'Greasing Due Date': '2023-12-10', 'TRS and Suspension': 'Good', 'Engine Part': 'Replaced', 'Steering Lever Pts': 'Aligned', 
+        #         'Wash': 'Done', 'Oil Level Check': 'OK', 'Lubrication of Parts': 'Completed', 'Air Cleaner': 'Replaced', 'Fuel Filter': 'Cleaned', 'French Chalk': 'N/A', 'TR Adjustment': 'Adjusted', 
+        #         'Current Milage (Overhaul)': '5000', 'Due Milage  (Overhaul)': '7000', 'Remarks': 'Overall progress is good.',
+        #         'Created By': 'Admin', 'Created At': '2023-01-01'
+        #     },
+        #     # You can add more sample data rows here
+        # ]
         self.data = data
         self.table_widget.setRowCount(len(data))
 

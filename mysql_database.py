@@ -1,16 +1,17 @@
 import sqlite3
 import mysql.connector
 
-DB_NAME = "vms44AKDB.db"
-
 class VMS_DB:
     def __init__(self) -> None:
         pass
+        #net stop mysql
+        #net start mysql
+
 
     def db_connect(self):
         try:
             conn = mysql.connector.connect(
-                host="192.168.100.28",
+                host="BIlal_PC",
                 user="44_AK_HB_DB_User",
                 password="Here2enter!123",
                 database="44_AK_HB_DB"
@@ -86,7 +87,9 @@ if __name__ =="__main__":
     db_obj = VMS_DB()
     conn, cursor = db_obj.db_connect()
     if conn:
+        users = db_obj.fetch_users()
         print("🎉 Connection to MySQL is working!")
+        print(users)
         conn.close()
     else:
         print("⚠️ Failed to connect. Check the error above!")

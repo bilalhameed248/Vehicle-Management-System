@@ -8,190 +8,91 @@ import datetime, os
 class VehicleReport:
     def __init__(self):
         pass
-    def generate_vehicle_pdf_report(self, row_data, filename):
-        """
-        Generates a one-page PDF report for a vehicle record.
-        
-        Parameters:
-        row_data (dict): A dictionary containing all the vehicle record fields.
-        filename (str): The output PDF file path.
-        """
-
-        # Create a document with 1-inch margins on all sides
-        doc = SimpleDocTemplate(
-            filename,
-            pagesize=letter,
-            leftMargin=inch,
-            rightMargin=inch,
-            topMargin=inch,
-            bottomMargin=inch
-        )
-
-        styles = getSampleStyleSheet()
-        # Custom styles for the report
-        title_style = ParagraphStyle(
-            name='Title',
-            parent=styles['Heading1'],
-            alignment=1,
-            fontSize=20,
-            spaceAfter=20,
-            textColor=colors.HexColor('#007BFF')
-        )
-        org_style = ParagraphStyle(
-            name='Org',
-            parent=styles['Heading2'],
-            fontSize=16,
-            textColor=colors.HexColor('#333333'),
-            spaceAfter=10
-        )
-        date_style = ParagraphStyle(
-            name='Date',
-            parent=styles['Normal'],
-            fontSize=10,
-            alignment=2,  # right aligned
-            textColor=colors.gray
-        )
-
-        elements = []
-
-        # --- Header: Organization Logo, Info, and Report Date ---
-        logo_path = 'assets/images/tank.png'
-        try:
-            logo = Image(logo_path, width=1*inch, height=1*inch)
-        except Exception:
-            # Fallback if logo is not found
-            logo = Paragraph("Logo", styles['Normal'])
-        
-        # Organization information (improved English)
-        org_info = Paragraph("44 AK HAT Battalion, Pakistan Army<br/><b>Vehicle Maintenance Report</b>", org_style)
-        # Report date (displayed on the right)
-        report_date = datetime.datetime.now().strftime("%B %d, %Y")
-        date_para = Paragraph(f"Report Date: {report_date}", date_style)
-        
-        # Arrange header items in a table (logo on left, org info center, date on right)
-        header_data = [[logo, org_info, date_para]]
-        header_table = Table(header_data, colWidths=[1.2*inch, 4*inch, 1.8*inch])
-        header_table.setStyle(TableStyle([
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
-            ('ALIGN', (2,0), (2,0), 'RIGHT'),
-            ('LINEBELOW', (0,0), (-1,0), 1, colors.gray)
-        ]))
-        elements.append(header_table)
-        elements.append(Spacer(1, 0.2*inch))
-
-        # --- Title ---
-        title = Paragraph("Vehicle Maintenance Detailed Report", title_style)
-        elements.append(title)
-        elements.append(Spacer(1, 0.2*inch))
-
-        # --- Vehicle Data Section ---
-        # Create a two-column table (Field, Value) for the row data
-        table_data = []
-        for key, value in row_data.items():
-            table_data.append([Paragraph(f"<b>{key}</b>", styles['Normal']),
-                            Paragraph(str(value), styles['Normal'])])
-        
-        data_table = Table(table_data, colWidths=[2.5*inch, 4.5*inch])
-        data_table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 1, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-            ('FONTNAME', (0,0), (-1,-1), 'Helvetica')
-        ]))
-        elements.append(data_table)
-
-        # --- Page Number Footer ---
-        def add_page_number(canvas, doc):
-            page_num = canvas.getPageNumber()
-            canvas.setFont("Helvetica", 9)
-            # Draw page number at the bottom right
-            canvas.drawRightString(letter[0] - inch, 0.75 * inch, f"Page {page_num}")
-
-        # Build the PDF
-        doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)
-
-
+    
     def generate_vehicle_pdf_report_updated(self, row_data):
         """
-        Generates a one-page PDF report for a vehicle record with multiple sections,
-        saves it in the user's Downloads directory, and shows a flash message.
-
+        Generates a one-page, sectioned PDF report for a vehicle record with 0.5-inch margins,
+        full-width left-aligned tables, and minimal spacing between sections.
+        The PDF is saved to the user's Downloads directory.
+        
         Parameters:
         row_data (dict): Dictionary containing vehicle data.
         """
-
         # Determine Downloads folder and generate a unique filename
         downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = os.path.join(downloads_path, f"vehicle_report_{timestamp}.pdf")
 
-        # Create document with 1-inch margins on all sides
+        # Create document with 0.5-inch margins on all sides
+        margin = 0.5 * inch
         doc = SimpleDocTemplate(
             filename,
             pagesize=letter,
-            leftMargin=inch,
-            rightMargin=inch,
-            topMargin=inch,
-            bottomMargin=inch
+            leftMargin=margin,
+            rightMargin=margin,
+            topMargin=margin,
+            bottomMargin=margin
         )
 
+        # Calculate the available width for content
+        content_width = letter[0] - 2 * margin
+
         styles = getSampleStyleSheet()
-        # Define custom styles
+        # Adjust header style (keep centered header items)
         header_style = ParagraphStyle(
             name='HeaderStyle',
             parent=styles['Heading1'],
-            alignment=1,
+            alignment=1,  # center for header title if needed
             fontSize=20,
             textColor=colors.HexColor('#007BFF'),
-            spaceAfter=12
+            spaceAfter=6
         )
+        # Section (table) headings: left aligned
         subheader_style = ParagraphStyle(
             name='SubHeader',
             parent=styles['Heading2'],
             fontSize=14,
             textColor=colors.HexColor('#333333'),
-            spaceAfter=6
+            alignment=0,  # left aligned
+            spaceAfter=3
         )
         normal_style = styles['Normal']
 
         elements = []
 
-        #***************************************************************************************************************************************
-
+        #*******************************************************************************************************************************
         # --- Header Section ---
-
-        # Organization logo (top left)
         logo_path = 'assets/images/tank.png'
         try:
             logo = Image(logo_path, width=1*inch, height=1*inch)
         except Exception:
             logo = Paragraph("Logo", normal_style)
         
-        # Organization information (center)
         org_info = Paragraph(
             "44 AK HAT Battalion, Pakistan Army<br/><b>Vehicle Maintenance Report</b>",
             normal_style
         )
-        # Report date (top right)
+
         report_date = datetime.datetime.now().strftime("%B %d, %Y")
+        
         date_para = Paragraph(
             f"Report Date: {report_date}",
             ParagraphStyle('date', parent=normal_style, alignment=2, fontSize=10, textColor=colors.gray)
         )
-        # Arrange header items in a table
-        header_table_data = [[logo, org_info, date_para]]
-        header_table = Table(header_table_data, colWidths=[1.2*inch, 4*inch, 1.8*inch])
+        
+        # Header table: Use fixed colWidths that add up to the available content_width
+        header_table = Table([[logo, org_info, date_para]], 
+                            colWidths=[1.2*inch, content_width - (1.2*inch + 1.8*inch), 1.8*inch])
         header_table.setStyle(TableStyle([
             ('VALIGN', (0,0), (-1,-1), 'TOP'),
             ('ALIGN', (2,0), (2,0), 'RIGHT'),
             ('LINEBELOW', (0,0), (-1,0), 1, colors.gray),
-            ('BOTTOMPADDING', (0,0), (-1,0), 12),
+            ('BOTTOMPADDING', (0,0), (-1,0), 6),
         ]))
         elements.append(header_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))  # minimal space
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Basic Details (4-column table) ---
         elements.append(Paragraph("Basic Details", subheader_style))
@@ -204,17 +105,18 @@ class VehicleReport:
                 row_data.get('Engine No.', '')
             ]
         ]
-        basic_table = Table(basic_details_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        basic_table = Table(basic_details_data, colWidths=[content_width/num_cols]*num_cols)
         basic_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(basic_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Oil Filter (4-column table) ---
         elements.append(Paragraph("Oil Filter", subheader_style))
@@ -227,17 +129,18 @@ class VehicleReport:
                 row_data.get('Due Mileage (Oil Filter)', '')
             ]
         ]
-        oil_table = Table(oil_filter_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        oil_table = Table(oil_filter_data, colWidths=[content_width/num_cols]*num_cols)
         oil_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(oil_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Fuel Filter (4-column table) ---
         elements.append(Paragraph("Fuel Filter", subheader_style))
@@ -250,17 +153,18 @@ class VehicleReport:
                 row_data.get('Due Mileage (Fuel Filter)', '')
             ]
         ]
-        fuel_table = Table(fuel_filter_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        fuel_table = Table(fuel_filter_data, colWidths=[content_width/num_cols]*num_cols)
         fuel_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(fuel_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Air Filter (4-column table) ---
         elements.append(Paragraph("Air Filter", subheader_style))
@@ -273,17 +177,18 @@ class VehicleReport:
                 row_data.get('Due Mileage (Air Filter)', '')
             ]
         ]
-        air_table = Table(air_filter_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        air_table = Table(air_filter_data, colWidths=[content_width/num_cols]*num_cols)
         air_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(air_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Transmission Filter (4-column table) ---
         elements.append(Paragraph("Transmission Filter", subheader_style))
@@ -296,17 +201,18 @@ class VehicleReport:
                 row_data.get('Due Mileage (Transmission Filter)', '')
             ]
         ]
-        trans_table = Table(trans_filter_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        trans_table = Table(trans_filter_data, colWidths=[content_width/num_cols]*num_cols)
         trans_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(trans_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Differential Oil (4-column table) ---
         elements.append(Paragraph("Differential Oil", subheader_style))
@@ -319,17 +225,18 @@ class VehicleReport:
                 row_data.get('Due Mileage (Differential Oil)', '')
             ]
         ]
-        diff_table = Table(diff_oil_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        diff_table = Table(diff_oil_data, colWidths=[content_width/num_cols]*num_cols)
         diff_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(diff_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Battery Details (2-column table) ---
         elements.append(Paragraph("Battery Details", subheader_style))
@@ -340,17 +247,18 @@ class VehicleReport:
                 row_data.get('Battery Due Date', '')
             ]
         ]
-        battery_table = Table(battery_data, colWidths=[2*inch]*2)
+        num_cols = 2
+        battery_table = Table(battery_data, colWidths=[content_width/num_cols]*num_cols)
         battery_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(battery_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Flushing Details (4-column table) ---
         elements.append(Paragraph("Flushing Details", subheader_style))
@@ -363,17 +271,18 @@ class VehicleReport:
                 row_data.get('Radiator Flush', '')
             ]
         ]
-        flushing_table = Table(flushing_data, colWidths=[1.5*inch]*4)
+        num_cols = 4
+        flushing_table = Table(flushing_data, colWidths=[content_width/num_cols]*num_cols)
         flushing_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(flushing_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Greasing Details (5-column table) ---
         elements.append(Paragraph("Greasing Details", subheader_style))
@@ -387,17 +296,18 @@ class VehicleReport:
                 row_data.get('Steering Lever Pts', '')
             ]
         ]
-        greasing_table = Table(greasing_data, colWidths=[1.2*inch]*5)
+        num_cols = 5
+        greasing_table = Table(greasing_data, colWidths=[content_width/num_cols]*num_cols)
         greasing_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(greasing_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: General Maintenance (7-column table) ---
         elements.append(Paragraph("General Maintenance", subheader_style))
@@ -413,17 +323,18 @@ class VehicleReport:
                 row_data.get('TR Adjustment', '')
             ]
         ]
-        maintenance_table = Table(maintenance_data, colWidths=[1.0*inch]*7)
+        num_cols = 7
+        maintenance_table = Table(maintenance_data, colWidths=[content_width/num_cols]*num_cols)
         maintenance_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(maintenance_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Overhaul Details (3-column table) ---
         elements.append(Paragraph("Overhaul Details", subheader_style))
@@ -435,17 +346,18 @@ class VehicleReport:
                 row_data.get('Remarks', '')
             ]
         ]
-        overhaul_table = Table(overhaul_data, colWidths=[2*inch, 2*inch, 3*inch])
+        num_cols = 3
+        overhaul_table = Table(overhaul_data, colWidths=[content_width/num_cols]*num_cols)
         overhaul_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(overhaul_table)
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Section: Final Details (Created By and Created At) ---
         final_details_data = [
@@ -455,22 +367,23 @@ class VehicleReport:
                 row_data.get('Created At', '')
             ]
         ]
-        final_table = Table(final_details_data, colWidths=[3*inch, 3*inch])
+        num_cols = 2
+        final_table = Table(final_details_data, colWidths=[content_width/num_cols]*num_cols)
         final_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(final_table)
 
-        #***************************************************************************************************************************************
+        #*******************************************************************************************************************************
 
         # --- Page Number Footer ---
         def add_page_number(canvas, doc):
             canvas.setFont("Helvetica", 9)
             page_num = canvas.getPageNumber()
-            canvas.drawRightString(letter[0]-inch, 0.75*inch, f"Page {page_num}")
+            canvas.drawRightString(content_width + margin - 10, 10, f"Page {page_num}")
 
         # Build the PDF document
         doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)

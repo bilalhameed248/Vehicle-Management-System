@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QIcon, QFont
 from PyQt5.QtCore import Qt, QDate, QTimer, QSize
+from database import VMS_DB  
+from templates.view_all_vehicles import ViewALLVehicles
 
 class AddVehicle(QWidget):
     def __init__(self, user_session=None, parent=None):
@@ -14,6 +16,7 @@ class AddVehicle(QWidget):
         print("self.user_id:",self.user_id)
         print("self.username:",self.username)
         self.initUI()
+        self.db_obj = VMS_DB() 
 
     def initUI(self):
         self.setWindowTitle("Vehicle Maintenance Form")
@@ -497,21 +500,20 @@ class AddVehicle(QWidget):
         add_Vehicle_data['updated_by'] = ''
         add_Vehicle_data['updated_at'] = ''
         add_Vehicle_data['deleted_at'] = ''
-        add_Vehicle_data['deleted'] = 0
+        add_Vehicle_data['is_deleted'] = 0
 
         # Now you can use maintenance_data to save to the database
-        print("add_Vehicle_data:",add_Vehicle_data)
-        print("\n\n",add_Vehicle_data.keys())  # Example output before saving to DB
-        # name = self.name_input.text().strip()
-        # username = self.username_input.text().strip()
-        # email = self.email_input.text().strip()
-        # password = self.password_input.text().strip()
-        # if not name or not username or not email or not password:
-        #     QMessageBox.warning(self, "Input Error", "All fields are required!")
-        #     return
-        # try:
-        #     self.db_obj.insert_user(name, email, username, password)
-        #     QMessageBox.information(self, "Success", "User added successfully!")
-        #     self.accept()  # Close dialog
-        # except Exception as e:
-        #     QMessageBox.critical(self, "Database Error", f"Error adding user: {str(e)}")
+        # print("add_Vehicle_data:",add_Vehicle_data)
+        # print("\n\n",add_Vehicle_data.keys()) 
+        is_data_inserted = self.db_obj.insert_vehicle(add_Vehicle_data)
+        if not is_data_inserted:
+            QMessageBox.warning(self, "Failed", "Error while saving the data..! Please Try Again")
+            return
+        else:
+            QMessageBox.information(self, "Success", "User added successfully!")
+            self.accept()
+
+    # def open_view_all_vehicles_page(self):
+    #     """Close login page and show welcome page"""
+    #     self.welcome_window = ViewALLVehicles(user_session=self.user_session, parent=self)
+    
