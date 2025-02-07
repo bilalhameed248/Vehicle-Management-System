@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import (QWidget, QTableView, QVBoxLayout, QHBoxLayout, QPus
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont
 from PyQt5.QtCore import Qt, QTimer, QSize
 from database import VMS_DB
+from templates.vehicle_report import VehicleReport
+import datetime
 
 class ViewALLVehicles(QWidget):
     def __init__(self, user_session=None, parent=None):
@@ -13,6 +15,7 @@ class ViewALLVehicles(QWidget):
         print("self.user_id:", self.user_id)
         print("self.username:", self.username)
         
+        self.vr_obj = VehicleReport()
         self.db_obj = VMS_DB()  # Assuming this is where data comes from
         self.initUI()
 
@@ -60,16 +63,20 @@ class ViewALLVehicles(QWidget):
 
         # Set column headers
         self.columns = [
-            'Category', 'BA No.', 'Make Type', 'Engine No.', 'Issue Date (Oil Filter)', 'Due Date (Oil Filter)', 'Current Mileage (Oil Filter)', 
-            'Due Mileage (Oil Filter)', 'Issue Date (Fuel Filter)', 'Due Date (Fuel Filter)', 'Current Mileage (Fuel Filter)', 
-            'Due Mileage (Fuel Filter)', 'Issue Date (Air Filter)', 'Due Date (Air Filter)', 'Current Mileage (Air Filter)', 
-            'Due Mileage (Air Filter)', 'Issue Date (Transmission Filter)', 'Due Date (Transmission Filter)', 'Current Mileage (Transmission Filter)', 
-            'Due Mileage (Transmission Filter)', 'Issue Date (Differential Oil)', 'Due Date (Differential Oil)', 'Current Mileage (Differential Oil)', 
-            'Due Mileage (Differential Oil)', 'Flushing Issue Date', 'Flushing Due Date', 'Fuel Tank Flush', 'Radiator Flush', 'Greasing Issue Date', 
-            'Greasing Due Date', 'TRS and Suspension', 'Engine Part', 'Steering Lever Pts', 'Wash', 'Oil Level Check', 'Lubrication of Parts', 
-            'Air Cleaner', 'Fuel Filter', 'French Chalk', 'TR Adjustment', 'Created By', 'Created At'
+            'Category', 'BA No.', 'Make Type', 'Engine No.', 
+            'Issue Date (Oil Filter)', 'Due Date (Oil Filter)', 'Current Mileage (Oil Filter)', 'Due Mileage (Oil Filter)', 
+            'Issue Date (Fuel Filter)', 'Due Date (Fuel Filter)', 'Current Mileage (Fuel Filter)', 'Due Mileage (Fuel Filter)', 
+            'Issue Date (Air Filter)', 'Due Date (Air Filter)', 'Current Mileage (Air Filter)', 'Due Mileage (Air Filter)', 
+            'Issue Date (Transmission Filter)', 'Due Date (Transmission Filter)', 'Current Mileage (Transmission Filter)', 'Due Mileage (Transmission Filter)', 
+            'Issue Date (Differential Oil)', 'Due Date (Differential Oil)', 'Current Mileage (Differential Oil)', 'Due Mileage (Differential Oil)', 
+            'Battery Issue Date', 'Battery Due Date', 
+            'Flushing Issue Date', 'Flushing Due Date', 'Fuel Tank Flush', 'Radiator Flush', 
+            'Greasing Issue Date', 'Greasing Due Date', 
+            'TRS and Suspension', 'Engine Part', 'Steering Lever Pts', 'Wash', 'Oil Level Check', 'Lubrication of Parts', 
+            'Air Cleaner', 'Fuel Filter', 'French Chalk', 'TR Adjustment', 
+            'Current Milage (Overhaul)', 'Due Milage  (Overhaul)', 'Remarks',
+            'Created By', 'Created At'
         ]
-
         # Add an extra column for Actions
         headers = self.columns.copy()
         headers.append("Actions")
@@ -89,26 +96,22 @@ class ViewALLVehicles(QWidget):
         header.setDefaultAlignment(Qt.AlignCenter)
         
         # Fetch data from the database (or use dummy data)
-        # data = self.db_obj.fetch_vehicle_data()  
+        # data = self.db_obj.fetch_vehicle_data()
+        
         data = [
             {
                 'Category': 'Truck', 'BA No.': 'BA123', 'Make Type': 'Volvo', 'Engine No.': 'ENG456',
-                'Issue Date (Oil Filter)': '2023-01-10', 'Due Date (Oil Filter)': '2023-06-10',
-                'Current Mileage (Oil Filter)': '5000', 'Due Mileage (Oil Filter)': '15000',
-                'Issue Date (Fuel Filter)': '2023-02-15', 'Due Date (Fuel Filter)': '2023-07-15',
-                'Current Mileage (Fuel Filter)': '6000', 'Due Mileage (Fuel Filter)': '16000',
-                'Issue Date (Air Filter)': '2023-03-20', 'Due Date (Air Filter)': '2023-08-20',
-                'Current Mileage (Air Filter)': '7000', 'Due Mileage (Air Filter)': '17000',
-                'Issue Date (Transmission Filter)': '2023-04-25', 'Due Date (Transmission Filter)': '2023-09-25',
-                'Current Mileage (Transmission Filter)': '8000', 'Due Mileage (Transmission Filter)': '18000',
-                'Issue Date (Differential Oil)': '2023-05-30', 'Due Date (Differential Oil)': '2023-10-30',
-                'Current Mileage (Differential Oil)': '9000', 'Due Mileage (Differential Oil)': '19000',
-                'Flushing Issue Date': '2023-06-05', 'Flushing Due Date': '2023-11-05',
-                'Fuel Tank Flush': 'Yes', 'Radiator Flush': 'No', 'Greasing Issue Date': '2023-07-10',
-                'Greasing Due Date': '2023-12-10', 'TRS and Suspension': 'Good', 'Engine Part': 'Replaced',
-                'Steering Lever Pts': 'Aligned', 'Wash': 'Done', 'Oil Level Check': 'OK',
-                'Lubrication of Parts': 'Completed', 'Air Cleaner': 'Replaced', 'Fuel Filter': 'Cleaned',
-                'French Chalk': 'N/A', 'TR Adjustment': 'Adjusted', 'Created By': 'Admin', 'Created At': '2023-01-01'
+                'Issue Date (Oil Filter)': '2023-01-10', 'Due Date (Oil Filter)': '2023-06-10', 'Current Mileage (Oil Filter)': '5000', 'Due Mileage (Oil Filter)': '15000',
+                'Issue Date (Fuel Filter)': '2023-02-15', 'Due Date (Fuel Filter)': '2023-07-15', 'Current Mileage (Fuel Filter)': '6000', 'Due Mileage (Fuel Filter)': '16000',
+                'Issue Date (Air Filter)': '2023-03-20', 'Due Date (Air Filter)': '2023-08-20', 'Current Mileage (Air Filter)': '7000', 'Due Mileage (Air Filter)': '17000',
+                'Issue Date (Transmission Filter)': '2023-04-25', 'Due Date (Transmission Filter)': '2023-09-25', 'Current Mileage (Transmission Filter)': '8000', 'Due Mileage (Transmission Filter)': '18000',
+                'Issue Date (Differential Oil)': '2023-05-30', 'Due Date (Differential Oil)': '2023-10-30', 'Current Mileage (Differential Oil)': '9000', 'Due Mileage (Differential Oil)': '19000',
+                'Battery Issue Date': '2023-06-05', 'Battery Due Date': '2023-11-05',
+                'Flushing Issue Date': '2023-06-05', 'Flushing Due Date': '2023-11-05', 'Fuel Tank Flush': 'Yes', 'Radiator Flush': 'No', 
+                'Greasing Issue Date': '2023-07-10', 'Greasing Due Date': '2023-12-10', 'TRS and Suspension': 'Good', 'Engine Part': 'Replaced', 'Steering Lever Pts': 'Aligned', 
+                'Wash': 'Done', 'Oil Level Check': 'OK', 'Lubrication of Parts': 'Completed', 'Air Cleaner': 'Replaced', 'Fuel Filter': 'Cleaned', 'French Chalk': 'N/A', 'TR Adjustment': 'Adjusted', 
+                'Current Milage (Overhaul)': '5000', 'Due Milage  (Overhaul)': '7000', 'Remarks': 'Overall progress is good.',
+                'Created By': 'Admin', 'Created At': '2023-01-01'
             },
             # You can add more sample data rows here
         ]
@@ -184,10 +187,12 @@ class ViewALLVehicles(QWidget):
         # Implement your delete functionality here
         print(f"Deleting row: {row}")
 
-    def view_row(self, row):
-        # Implement your view functionality here
-        print(f"Viewing row: {row}")
-
     def report_row(self, row):
-        # Implement your report functionality here
-        print(f"Reporting row: {row}")
+        row_data = {}
+        for col_index, col_name in enumerate(self.columns):
+            item = self.table_widget.item(row, col_index)
+            row_data[col_name] = item.text() if item else ""
+        self.vr_obj.generate_vehicle_pdf_report_updated(row_data)
+        # filename = f"vehicle_report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        # # print(f"filename : {filename} \n {row_data}")
+        # self.vr_obj.generate_vehicle_pdf_report(row_data, filename)

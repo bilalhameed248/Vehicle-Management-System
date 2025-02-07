@@ -77,4 +77,18 @@ Remarks
 Actions
 
 
+['category', 'ba_no_input', 'make_type_input', 'engine_no_input', 
+         'issue_date_oil_filter', 'due_date_oil_filter', 'current_mileage_oil_filter', 'due_mileage_oil_filter', 
+         'issue_date_fuel_filter', 'due_date_fuel_filter', 'current_mileage_fuel_filter', 'due_mileage_fuel_filter', 
+         'issue_date_air_filter', 'due_date_air_filter', 'current_mileage_air_filter', 'due_mileage_air_filter', 
+         'issue_date_transmission_filter', 'due_date_transmission_filter', 'current_mileage_transmission_filter', 'due_mileage_transmission_filter', 
+         'issue_date_differential_oil', 'due_date_differential_oil', 'current_mileage_differential_oil', 'due_mileage_differential_oil', 
+         'battery_issue_date', 'battery_due_date', 
+         'flusing_issue_date', 'flusing_due_date', 'fuel_tank_flush', 'radiator_flush', 
+         'greasing_issue_date', 'greasing_due_date', 
+         'trs_and_suspension', 'engine_part', 'steering_lever_Pts', 'wash', 'oil_level_check', 'lubrication_of_parts', 
+         'air_cleaner', 'fuel_filter', 'french_chalk', 'tr_adjustment', 
+         'overhaul_current', 'overhaul_due_milage', 'overhaul_remarks_input', 
+         'created_by', 'updated_by', 'updated_at', 'deleted_at', 'deleted']
+
 

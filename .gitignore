@@ -80,3 +80,7 @@ static/files/*
 instance/*
 migrations/*
 wsgi.py
+**/__pycache__/
+templates/__pycache__/
+__pycache__/
+*.pyc

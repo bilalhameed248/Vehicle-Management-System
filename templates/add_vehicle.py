@@ -394,10 +394,10 @@ class AddVehicle(QWidget):
         overhaul_remarks_input = QTextEdit()
         form_layout.addWidget(overhaul_remarks_input, 21, 1, 1, 3)
 
-        self.overhaul_fields = {
-            "overhaul_current": overhaul_current_milage,
+        self.overhaul_fields['Overhaul'] = {
+            "overhaul_current_milage": overhaul_current_milage,
             "overhaul_due_milage": overhaul_due_milage,
-            "overhaul_remarks_input": overhaul_remarks_input
+            "overhaul_remarks_input": overhaul_remarks_input if overhaul_remarks_input else "Nothing Mentioned"
         }
 
         # Buttons
@@ -456,9 +456,12 @@ class AddVehicle(QWidget):
                 elif isinstance(widget, QLineEdit):
                     add_Vehicle_data[key] = widget.text().strip()
         
-        for key, widget in self.battery_fields.items():
-            if isinstance(widget, QDateEdit):
-                add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
+        for fields in self.battery_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QDateEdit):
+                    add_Vehicle_data[key] = widget.date().toString("dd-MM-yyyy")
+                elif isinstance(widget, QLineEdit):
+                    add_Vehicle_data[key] = widget.text().strip()
 
         for fields in self.flusing_fields.values():
             for key, widget in fields.items():
@@ -481,6 +484,15 @@ class AddVehicle(QWidget):
                 elif isinstance(widget, QLineEdit):
                     add_Vehicle_data[key] = widget.text().strip()
 
+        for fields in self.overhaul_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QDateEdit):
+                    add_Vehicle_data[key] = widget.date().toString("dd-MM-yyyy")
+                elif isinstance(widget, QLineEdit):
+                    add_Vehicle_data[key] = widget.text().strip()
+                elif isinstance(widget, QTextEdit):
+                    add_Vehicle_data[key] = widget.toPlainText().strip()
+
         add_Vehicle_data['created_by'] = self.user_id
         add_Vehicle_data['updated_by'] = ''
         add_Vehicle_data['updated_at'] = ''
@@ -488,7 +500,8 @@ class AddVehicle(QWidget):
         add_Vehicle_data['deleted'] = 0
 
         # Now you can use maintenance_data to save to the database
-        print(add_Vehicle_data.keys())  # Example output before saving to DB
+        print("add_Vehicle_data:",add_Vehicle_data)
+        print("\n\n",add_Vehicle_data.keys())  # Example output before saving to DB
         # name = self.name_input.text().strip()
         # username = self.username_input.text().strip()
         # email = self.email_input.text().strip()
