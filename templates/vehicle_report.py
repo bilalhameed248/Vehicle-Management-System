@@ -157,13 +157,17 @@ class VehicleReport:
 
         elements = []
 
+        #***************************************************************************************************************************************
+
         # --- Header Section ---
+
         # Organization logo (top left)
         logo_path = 'assets/images/tank.png'
         try:
             logo = Image(logo_path, width=1*inch, height=1*inch)
         except Exception:
             logo = Paragraph("Logo", normal_style)
+        
         # Organization information (center)
         org_info = Paragraph(
             "44 AK HAT Battalion, Pakistan Army<br/><b>Vehicle Maintenance Report</b>",
@@ -187,6 +191,8 @@ class VehicleReport:
         elements.append(header_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Basic Details (4-column table) ---
         elements.append(Paragraph("Basic Details", subheader_style))
         basic_details_data = [
@@ -207,6 +213,8 @@ class VehicleReport:
         ]))
         elements.append(basic_table)
         elements.append(Spacer(1, 0.2*inch))
+
+        #***************************************************************************************************************************************
 
         # --- Section: Oil Filter (4-column table) ---
         elements.append(Paragraph("Oil Filter", subheader_style))
@@ -229,6 +237,8 @@ class VehicleReport:
         elements.append(oil_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Fuel Filter (4-column table) ---
         elements.append(Paragraph("Fuel Filter", subheader_style))
         fuel_filter_data = [
@@ -249,6 +259,8 @@ class VehicleReport:
         ]))
         elements.append(fuel_table)
         elements.append(Spacer(1, 0.2*inch))
+
+        #***************************************************************************************************************************************
 
         # --- Section: Air Filter (4-column table) ---
         elements.append(Paragraph("Air Filter", subheader_style))
@@ -271,6 +283,8 @@ class VehicleReport:
         elements.append(air_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Transmission Filter (4-column table) ---
         elements.append(Paragraph("Transmission Filter", subheader_style))
         trans_filter_data = [
@@ -291,6 +305,8 @@ class VehicleReport:
         ]))
         elements.append(trans_table)
         elements.append(Spacer(1, 0.2*inch))
+
+        #***************************************************************************************************************************************
 
         # --- Section: Differential Oil (4-column table) ---
         elements.append(Paragraph("Differential Oil", subheader_style))
@@ -313,6 +329,8 @@ class VehicleReport:
         elements.append(diff_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Battery Details (2-column table) ---
         elements.append(Paragraph("Battery Details", subheader_style))
         battery_data = [
@@ -331,6 +349,8 @@ class VehicleReport:
         ]))
         elements.append(battery_table)
         elements.append(Spacer(1, 0.2*inch))
+
+        #***************************************************************************************************************************************
 
         # --- Section: Flushing Details (4-column table) ---
         elements.append(Paragraph("Flushing Details", subheader_style))
@@ -353,6 +373,8 @@ class VehicleReport:
         elements.append(flushing_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Greasing Details (5-column table) ---
         elements.append(Paragraph("Greasing Details", subheader_style))
         greasing_data = [
@@ -374,6 +396,8 @@ class VehicleReport:
         ]))
         elements.append(greasing_table)
         elements.append(Spacer(1, 0.2*inch))
+
+        #***************************************************************************************************************************************
 
         # --- Section: General Maintenance (7-column table) ---
         elements.append(Paragraph("General Maintenance", subheader_style))
@@ -399,6 +423,8 @@ class VehicleReport:
         elements.append(maintenance_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Overhaul Details (3-column table) ---
         elements.append(Paragraph("Overhaul Details", subheader_style))
         overhaul_data = [
@@ -419,6 +445,8 @@ class VehicleReport:
         elements.append(overhaul_table)
         elements.append(Spacer(1, 0.2*inch))
 
+        #***************************************************************************************************************************************
+
         # --- Section: Final Details (Created By and Created At) ---
         final_details_data = [
             ['Created By', 'Created At'],
@@ -435,6 +463,8 @@ class VehicleReport:
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
         elements.append(final_table)
+
+        #***************************************************************************************************************************************
 
         # --- Page Number Footer ---
         def add_page_number(canvas, doc):
