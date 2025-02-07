@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, traceback
 import mysql.connector
 import MySQLdb as mdb
 
@@ -105,6 +105,7 @@ class VMS_DB:
             self.db_disconnect(conn, cursor)
             return True
         except Exception as e:
+            traceback.print_exc()
             print(f"Exception: insert_vehicle {e}")
             return False
 

@@ -247,7 +247,7 @@ class AddVehicle(QWidget):
             due_date = QDateEdit()
             due_date.setCalendarPopup(True)
             due_date.setDate(QDate.currentDate())
-            issue_date.setDisplayFormat("dd-MM-yyyy")
+            due_date.setDisplayFormat("dd-MM-yyyy")
             due_layout.addWidget(due_date)
 
             row1_layout.addLayout(issue_layout)
