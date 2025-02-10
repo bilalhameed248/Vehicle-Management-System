@@ -8,6 +8,7 @@ from templates.add_vehicle import AddVehicle
 from templates.users import Users
 from templates.view_all_vehicles import ViewALLVehicles
 # from templates.login import LoginPage 
+from controllers.load_assets import *
 
 class WelcomePage(QWidget):
 
@@ -15,7 +16,7 @@ class WelcomePage(QWidget):
         super().__init__()
         self.setWindowTitle("Home - Vehicle Maintenance Module")
         self.setStyleSheet("background-color: #1E1E1E;")
-        self.setWindowIcon(QIcon("assets/images/tank.png"))
+        self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
         self.initUI()
         self.setWindowState(Qt.WindowMaximized)
         self.show()
@@ -25,7 +26,7 @@ class WelcomePage(QWidget):
 
     def update_menu_button_style(self, clicked_button):
         # Reset the style of all buttons
-        buttons = [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.create_report_button, self.users_management_button]
+        buttons = [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.users_management_button]
         for button in buttons:
             button.setStyleSheet("""
                 QPushButton {background-color: #34495E; color: white; border-radius: 5px; padding: 10px 20px; text-align: left; }
@@ -84,9 +85,9 @@ class WelcomePage(QWidget):
                 QPushButton:hover { background-color: #3498DB; }
             """)
         
-        self.profile_button.setIcon(QIcon("assets/icons/profile.png"))
+        self.profile_button.setIcon(QIcon(get_asset_path("assets/icons/profile.png")))
         self.profile_button.setIconSize(QSize(20, 20))
-        self.logout_button.setIcon(QIcon("assets/icons/logout.png"))
+        self.logout_button.setIcon(QIcon(get_asset_path("assets/icons/logout.png")))
         self.logout_button.setIconSize(QSize(20, 20))
         
         navbar_layout.addWidget(title_label)
@@ -105,10 +106,9 @@ class WelcomePage(QWidget):
         self.home = self.create_menu_button("Home", "assets/icons/home.png")
         self.add_vehicle_button = self.create_menu_button("Add New Vehicle", "assets/icons/vehicle_add.png")
         self.view_all_vehicle_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
-        self.create_report_button = self.create_menu_button("Create Report", "assets/icons/report_create.png")
         self.users_management_button = self.create_menu_button("Users", "assets/icons/users.png")
 
-        for button in [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.create_report_button, self.users_management_button]:
+        for button in [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.users_management_button]:
             menu_layout.addWidget(button)
 
         menu_frame = QFrame(self)
@@ -116,13 +116,11 @@ class WelcomePage(QWidget):
         menu_frame.setStyleSheet("background-color: #34495E; color: white; padding: 10px;")
         menu_frame.setFixedWidth(310)
 
-        # self.add_vehicle_button.clicked.connect(self.add_new_vehicle)
-
         return menu_frame
 
     def create_menu_button(self, text, icon_path):
         button = QPushButton(text)
-        button.setIcon(QIcon(icon_path))
+        button.setIcon(QIcon(get_asset_path(icon_path)))
         button.setIconSize(QSize(30, 30))
         button.setFont(QFont("Arial", 14, QFont.Bold))
         button.setStyleSheet(""" 
@@ -174,6 +172,10 @@ class WelcomePage(QWidget):
 
     def show_all_vehicle_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
+        if hasattr(self, "all_vehicle_obj"):
+            self.content_area.removeWidget(self.all_vehicle_obj)
+            self.all_vehicle_obj.deleteLater()
+            
         self.update_menu_button_style(clicked_button)
         self.all_vehicle_obj = ViewALLVehicles(user_session=self.user_session, parent=self)
         self.content_area.addWidget(self.all_vehicle_obj)  # Add to stacked widget
@@ -181,12 +183,9 @@ class WelcomePage(QWidget):
 
     def logout_function(self):
         """Log out the user and redirect to the login page."""
-        # Close the current window (logging out)
-        self.close()  # Closes the current window
-        
-        # Delay import to avoid circular import issues
-        from templates.login import LoginPage  # Importing inside the function
-        
-        # Open the LoginPage
-        self.login_page = LoginPage()  # Create the login page
-        self.login_page.show()  # Show the login page
+        self.user_session = None  
+        self.user_session.clear()
+        self.close()
+        from templates.login import LoginPage
+        self.login_page = LoginPage()
+        self.login_page.show()

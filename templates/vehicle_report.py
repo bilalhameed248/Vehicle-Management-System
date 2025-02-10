@@ -4,6 +4,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 import datetime, os
+from controllers.load_assets import *
 
 class VehicleReport:
     def __init__(self):
@@ -62,7 +63,7 @@ class VehicleReport:
 
         #*******************************************************************************************************************************
         # --- Header Section ---
-        logo_path = 'assets/images/tank.png'
+        logo_path = get_asset_path('assets/images/tank.png')
         try:
             logo = Image(logo_path, width=1*inch, height=1*inch)
         except Exception:
@@ -312,18 +313,37 @@ class VehicleReport:
         # --- Section: General Maintenance (7-column table) ---
         elements.append(Paragraph("General Maintenance", subheader_style))
         maintenance_data = [
-            ['Wash', 'Oil Level Check', 'Lubrication of Parts', 'Air Cleaner', 'Fuel Filter', 'French Chalk', 'TR Adjustment'],
+            ['Wash', 'Oil Level Check', 'Lubrication of Parts', 'Air Cleaner'],
             [
                 row_data.get('Wash', ''),
                 row_data.get('Oil Level Check', ''),
                 row_data.get('Lubrication of Parts', ''),
-                row_data.get('Air Cleaner', ''),
+                row_data.get('Air Cleaner', '')
+            ]
+        ]
+        num_cols = 4
+        maintenance_table = Table(maintenance_data, colWidths=[content_width/num_cols]*num_cols)
+        maintenance_table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        ]))
+        elements.append(maintenance_table)
+        # elements.append(Spacer(1, 0.1*inch))
+
+        #*****************************************
+
+        # elements.append(Paragraph("General Maintenance", subheader_style))
+        maintenance_data = [
+            ['Fuel Filter', 'French Chalk', 'TR Adjustment'],
+            [
                 row_data.get('Fuel Filter', ''),
                 row_data.get('French Chalk', ''),
                 row_data.get('TR Adjustment', '')
             ]
         ]
-        num_cols = 7
+        num_cols = 3
         maintenance_table = Table(maintenance_data, colWidths=[content_width/num_cols]*num_cols)
         maintenance_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
@@ -342,7 +362,7 @@ class VehicleReport:
             ['Current Milage (Overhaul)', 'Due Milage (Overhaul)', 'Remarks'],
             [
                 row_data.get('Current Milage (Overhaul)', ''),
-                row_data.get('Due Milage  (Overhaul)', ''),
+                row_data.get('Due Milage (Overhaul)', ''),
                 row_data.get('Remarks', '')
             ]
         ]
@@ -360,22 +380,22 @@ class VehicleReport:
         #*******************************************************************************************************************************
 
         # --- Section: Final Details (Created By and Created At) ---
-        final_details_data = [
-            ['Created By', 'Created At'],
-            [
-                row_data.get('Created By', ''),
-                row_data.get('Created At', '')
-            ]
-        ]
-        num_cols = 2
-        final_table = Table(final_details_data, colWidths=[content_width/num_cols]*num_cols)
-        final_table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 1, colors.black),
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
-        ]))
-        elements.append(final_table)
+        # final_details_data = [
+        #     ['Created By', 'Created At'],
+        #     [
+        #         row_data.get('Created By', ''),
+        #         row_data.get('Created At', '')
+        #     ]
+        # ]
+        # num_cols = 2
+        # final_table = Table(final_details_data, colWidths=[content_width/num_cols]*num_cols)
+        # final_table.setStyle(TableStyle([
+        #     ('BOX', (0,0), (-1,-1), 1, colors.black),
+        #     ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+        #     ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        #     ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        # ]))
+        # elements.append(final_table)
 
         #*******************************************************************************************************************************
 

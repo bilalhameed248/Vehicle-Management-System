@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from database import VMS_DB  # Assuming VMS_DB handles database interactions
+from controllers.load_assets import *
 
 class Profile(QWidget):
     def __init__(self, parent=None):

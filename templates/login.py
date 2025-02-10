@@ -3,14 +3,15 @@ from PyQt5.QtGui import QFont, QPalette, QColor, QPixmap, QIcon
 from PyQt5.QtCore import Qt
 import sys
 from database import VMS_DB
-from templates.welcome import WelcomePage  # Import Welcome Page class
+from templates.welcome import WelcomePage
+from controllers.load_assets import *
 
 class LoginPage(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Login - Vehicle Maintenance Module")
         self.setStyleSheet("background-color: #1E1E1E;")
-        self.setWindowIcon(QIcon("assets/images/tank.png"))
+        self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
         self.initUI()
         self.setWindowState(Qt.WindowMaximized)
         self.show()
@@ -18,7 +19,7 @@ class LoginPage(QWidget):
 
     def initUI(self):
         self.bg_label = QLabel(self)
-        self.bg_label.setPixmap(QPixmap("assets/images/login_bg.jpg"))
+        self.bg_label.setPixmap(QPixmap(get_asset_path("assets/images/login_bg.jpg")))
         self.bg_label.setScaledContents(True)
         self.bg_label.setGeometry(0, 0, self.width(), self.height())
 

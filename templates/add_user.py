@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QSortFilterProxyModel, QModelIndex
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont
 from PyQt5.QtCore import QTimer, QSize
-from database import VMS_DB  
+from database import VMS_DB
+from controllers.load_assets import *
 
 class AddUserDialog(QDialog):
     def __init__(self, parent=None):
@@ -14,7 +15,7 @@ class AddUserDialog(QDialog):
         self.setWindowTitle("Add New User")
         self.setFixedSize(500, 400)  # Adjusted size for better spacing
         self.setStyleSheet("background-color: #f4f4f4; border-radius: 10px;")
-        self.setWindowIcon(QIcon("assets/icons/add_user.png"))
+        self.setWindowIcon(QIcon(get_asset_path("assets/icons/add_user.png")))
         
         # Main Layout
         layout = QVBoxLayout()
@@ -50,10 +51,10 @@ class AddUserDialog(QDialog):
         # Button Layout
         button_layout = QHBoxLayout()
         self.save_button = QPushButton(" Save")
-        self.save_button.setIcon(QIcon("assets/icons/save.png"))
+        self.save_button.setIcon(QIcon(get_asset_path("assets/icons/save.png")))
         self.save_button.setIconSize(QSize(20, 20))
         self.cancel_button = QPushButton(" Cancel")
-        self.cancel_button.setIcon(QIcon("assets/icons/cancel.png"))
+        self.cancel_button.setIcon(QIcon(get_asset_path("assets/icons/cancel.png")))
         self.cancel_button.setIconSize(QSize(20, 20))
 
         self.style_button(self.save_button, "#28a745")

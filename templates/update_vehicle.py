@@ -4,20 +4,24 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QIcon, QFont
 from PyQt5.QtCore import Qt, QDate, QTimer, QSize
-from database import VMS_DB  
-from templates.view_all_vehicles import ViewALLVehicles
+from database import VMS_DB
+from datetime import datetime
 from controllers.load_assets import *
 
-class AddVehicle(QWidget):
-    def __init__(self, user_session=None, parent=None):
+class UpdateVehicle(QWidget):
+    def __init__(self, user_session=None, data = None, parent=None):
         super().__init__(parent)
         self.user_session = user_session if user_session else {}
         self.user_id = self.user_session.get('user_id')
         self.username = self.user_session.get('username')
         # print("self.user_id:",self.user_id)
         # print("self.username:",self.username)
-        self.initUI()
+        self.main_parent_welcome = parent
+        # print("UpdateVehicle self.main_parent_welcome: ",self.main_parent_welcome, "\n\n")
+        self.data = data
         self.db_obj = VMS_DB() 
+        self.initUI()
+        
 
     def initUI(self):
         self.setWindowTitle("Vehicle Maintenance Form")
@@ -60,9 +64,16 @@ class AddVehicle(QWidget):
             QComboBox QAbstractItemView {background-color: white;border: 1px solid #4a90e2;selection-background-color: #4a90e2; selection-color: white;}
             QComboBox::item {padding: 8px;}
             QComboBox::item:selected {background-color: #4a90e2;color: white;}""")
+        self.blocked_combo.setCurrentIndex(0 if self.data['Category'] =="A" else 1)
+        
         self.ba_no_input = QLineEdit()
+        self.ba_no_input.setText(self.data['BA No.'])
+
         self.make_type_input = QLineEdit()
+        self.make_type_input.setText(self.data['Make Type'])
+
         self.engine_no_input = QLineEdit()
+        self.engine_no_input.setText(self.data['Engine No.'])
         
         form_layout.addWidget(QLabel("Category:"), 0, 0)
         form_layout.addWidget(self.blocked_combo, 0, 1)
@@ -85,7 +96,6 @@ class AddVehicle(QWidget):
             issue_layout.addWidget(QLabel("Issue Date:"))
             issue_date = QDateEdit()
             issue_date.setCalendarPopup(True)
-            issue_date.setDate(QDate.currentDate())
             issue_date.setDisplayFormat("dd-MM-yyyy")
             issue_layout.addWidget(issue_date)
 
@@ -93,7 +103,6 @@ class AddVehicle(QWidget):
             due_layout.addWidget(QLabel("Due Date:"))
             due_date = QDateEdit()
             due_date.setCalendarPopup(True)
-            due_date.setDate(QDate.currentDate())
             due_date.setDisplayFormat("dd-MM-yyyy")
             due_layout.addWidget(due_date)
 
@@ -115,6 +124,47 @@ class AddVehicle(QWidget):
 
             row2_layout.addLayout(current_mileage_layout)
             row2_layout.addLayout(due_mileage_layout)
+
+            if title == "Oil Filter":
+                issue_date_db = self.data["Issue Date (Oil Filter)"]
+                due_date_db = self.data["Due Date (Oil Filter)"]
+                issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+                due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+                current_mileage.setText(self.data["Current Mileage (Oil Filter)"])
+                due_mileage.setText(self.data["Due Mileage (Oil Filter)"])
+                
+            
+            if title == "Fuel Filter":
+                issue_date_db = self.data["Issue Date (Fuel Filter)"]
+                due_date_db = self.data["Due Date (Fuel Filter)"]
+                issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+                due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+                current_mileage.setText(self.data["Current Mileage (Fuel Filter)"])
+                due_mileage.setText(self.data["Due Mileage (Fuel Filter)"])
+            
+            if title == "Air Filter":
+                issue_date_db = self.data["Issue Date (Air Filter)"]
+                due_date_db = self.data["Due Date (Air Filter)"]
+                issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+                due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+                current_mileage.setText(self.data["Current Mileage (Air Filter)"])
+                due_mileage.setText(self.data["Due Mileage (Air Filter)"])
+            
+            if title == "Transmission Filter":
+                issue_date_db = self.data["Issue Date (Transmission Filter)"]
+                due_date_db = self.data["Due Date (Transmission Filter)"]
+                issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+                due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+                current_mileage.setText(self.data["Current Mileage (Transmission Filter)"])
+                due_mileage.setText(self.data["Due Mileage (Transmission Filter)"])
+
+            if title == "Differential Oil":
+                issue_date_db = self.data["Issue Date (Differential Oil)"]
+                due_date_db = self.data["Due Date (Differential Oil)"]
+                issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+                due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+                current_mileage.setText(self.data["Current Mileage (Differential Oil)"])
+                due_mileage.setText(self.data["Due Mileage (Differential Oil)"])
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -144,7 +194,6 @@ class AddVehicle(QWidget):
             issue_layout.addWidget(QLabel("Issue Date:"))
             battery_issue_date = QDateEdit()
             battery_issue_date.setCalendarPopup(True)
-            battery_issue_date.setDate(QDate.currentDate())
             battery_issue_date.setDisplayFormat("dd-MM-yyyy")
             issue_layout.addWidget(battery_issue_date)
 
@@ -153,13 +202,17 @@ class AddVehicle(QWidget):
             due_layout.addWidget(QLabel("Due Date:"))
             battery_due_date = QDateEdit()
             battery_due_date.setCalendarPopup(True)
-            battery_due_date.setDate(QDate.currentDate())
             battery_due_date.setDisplayFormat("dd-MM-yyyy")
             due_layout.addWidget(battery_due_date)
 
             # Add both to the horizontal layout
             row_layout.addLayout(issue_layout)
             row_layout.addLayout(due_layout)
+
+            issue_date_db = self.data["Battery Issue Date"]
+            due_date_db = self.data["Battery Due Date"]
+            battery_issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+            battery_due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
 
             # Add the row to the group layout
             group_layout.addLayout(row_layout)
@@ -214,6 +267,13 @@ class AddVehicle(QWidget):
             row2_layout.addLayout(fuel_tank_flush_layout)
             row2_layout.addLayout(radiator_flush_layout)
 
+            issue_date_db = self.data["Flushing Issue Date"]
+            due_date_db = self.data["Flushing Due Date"]
+            issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+            due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+            fuel_tank_flush.setText(self.data["Fuel Tank Flush"])
+            radiator_flush.setText(self.data["Radiator Flush"])
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -239,7 +299,6 @@ class AddVehicle(QWidget):
             issue_layout.addWidget(QLabel("Issue Date:"))
             issue_date = QDateEdit()
             issue_date.setCalendarPopup(True)
-            issue_date.setDate(QDate.currentDate())
             issue_date.setDisplayFormat("dd-MM-yyyy")
             issue_layout.addWidget(issue_date)
 
@@ -247,7 +306,6 @@ class AddVehicle(QWidget):
             due_layout.addWidget(QLabel("Due Date:"))
             due_date = QDateEdit()
             due_date.setCalendarPopup(True)
-            due_date.setDate(QDate.currentDate())
             due_date.setDisplayFormat("dd-MM-yyyy")
             due_layout.addWidget(due_date)
 
@@ -277,6 +335,14 @@ class AddVehicle(QWidget):
 
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(steering_lever_Pts_layout)
+
+            issue_date_db = self.data["Greasing Issue Date"]
+            due_date_db = self.data["Greasing Due Date"]
+            issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
+            due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
+            trs_and_suspension.setText(self.data["TRS and Suspension"])
+            engine_part.setText(self.data["Engine Part"])
+            steering_lever_Pts.setText(self.data["Steering Lever Pts"])
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -354,6 +420,14 @@ class AddVehicle(QWidget):
 
             row4_layout.addLayout(tr_adjustment_layout)
 
+            wash.setText(self.data["Wash"])
+            oil_level_check.setText(self.data["Oil Level Check"])
+            lubrication_of_parts.setText(self.data["Lubrication of Parts"])
+            air_cleaner.setText(self.data["Air Cleaner"])
+            fuel_filter.setText(self.data["Fuel Filter"])
+            french_chalk.setText(self.data["French Chalk"])
+            tr_adjustment.setText(self.data["TR Adjustment"])
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -398,6 +472,10 @@ class AddVehicle(QWidget):
         overhaul_remarks_input = QTextEdit()
         form_layout.addWidget(overhaul_remarks_input, 21, 1, 1, 3)
 
+        overhaul_current_milage.setText(self.data["Current Milage (Overhaul)"])
+        overhaul_due_milage.setText(self.data["Due Milage (Overhaul)"])
+        overhaul_remarks_input.setText(self.data["Remarks"])
+
         self.overhaul_fields['Overhaul'] = {
             "overhaul_current_milage": overhaul_current_milage,
             "overhaul_due_milage": overhaul_due_milage,
@@ -406,21 +484,16 @@ class AddVehicle(QWidget):
 
         # Buttons
         button_layout = QHBoxLayout()
-        save_button = QPushButton(" Save")
+        save_button = QPushButton(" Update")
         save_button.setIcon(QIcon(get_asset_path("assets/icons/save.png")))
         save_button.setIconSize(QSize(20, 20))
-        save_button.clicked.connect(self.save_vehicle)
-
-        clear_button = QPushButton("Clear")
-        clear_button.setIcon(QIcon(get_asset_path("assets/icons/clear.png")))
-        clear_button.setIconSize(QSize(20, 20))
+        save_button.clicked.connect(self.update_vehicle)
 
         cancel_button = QPushButton(" Cancel")
         cancel_button.setIcon(QIcon(get_asset_path("assets/icons/cancel.png")))
         cancel_button.setIconSize(QSize(20, 20))
 
         button_layout.addWidget(save_button)
-        button_layout.addWidget(clear_button)
         button_layout.addWidget(cancel_button)
 
         # Scroll Area
@@ -435,13 +508,11 @@ class AddVehicle(QWidget):
         layout.addLayout(button_layout)
         self.setLayout(layout)
 
-    def save_vehicle(self):
+    def update_vehicle(self):
         """ Inserts user into the database """
         add_Vehicle_data = {}
 
-        print(self.blocked_combo.currentIndex())
-
-        category = "A" if self.blocked_combo.currentIndex() == 0 else "B"
+        category = "A" if self.blocked_combo.currentIndex() == 1 else "B"
         ba_no_input = self.ba_no_input.text().strip()
         make_type_input = self.make_type_input.text().strip()
         engine_no_input = self.engine_no_input.text().strip()
@@ -499,14 +570,27 @@ class AddVehicle(QWidget):
                 elif isinstance(widget, QTextEdit):
                     add_Vehicle_data[key] = widget.toPlainText().strip()
 
-        add_Vehicle_data['created_by'] = self.user_id
-        # print(add_Vehicle_data)
-
-        is_data_inserted = self.db_obj.insert_vehicle(add_Vehicle_data)
+        add_Vehicle_data['updated_by'] = self.user_id
+        add_Vehicle_data['updated_at'] = datetime.now()
+        
+        is_data_inserted = self.db_obj.update_vehicle(add_Vehicle_data, self.data['id'])
         if not is_data_inserted:
-            QMessageBox.warning(self, "Failed", "Error while saving the data..! Please Try Again")
+            QMessageBox.warning(self, "Failed", "Error while updating the data..! Please Try Again")
             return
         else:
-            QMessageBox.information(self, "Success", "Vehicle added successfully!")
-            return
-    
+            print("update vehicle func: self.main_parent_welcome:", self.main_parent_welcome, "\n\n")
+            QMessageBox.information(self, "Success", "Vehicle Updated successfully!")
+            
+            if hasattr(self.main_parent_welcome, "all_vehicle_obj"):
+                self.main_parent_welcome.all_vehicle_obj.populate_table()
+
+             # Switch back to ViewALLVehicles
+            self.main_parent_welcome.content_area.setCurrentWidget(self.main_parent_welcome.all_vehicle_obj)
+
+
+            # Delete current widget
+            self.main_parent_welcome.content_area.removeWidget(self)
+            self.deleteLater()
+
+            # Reset the reference so it does not hold a deleted object
+            self.main_parent_welcome.update_vehicle_obj = None

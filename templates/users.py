@@ -9,6 +9,7 @@ from database import VMS_DB
 from templates.add_user import AddUserDialog
 from templates.update_user import UpdateUserDialog
 from controllers.users import UserFilterProxy, ButtonDelegate
+from controllers.load_assets import *
 
 class Users(QWidget):
     def __init__(self, parent=None):
@@ -38,7 +39,7 @@ class Users(QWidget):
 
         # Add User Button (Left)
         self.add_user_button = QPushButton(" Add User")
-        self.add_user_button.setIcon(QIcon("assets/icons/add_user.png"))
+        self.add_user_button.setIcon(QIcon(get_asset_path("assets/icons/add_user.png")))
         self.add_user_button.setIconSize(QSize(20, 20))
         self.add_user_button.setFixedSize(130, 40)  # Set size
         self.add_user_button.setStyleSheet("background-color: #28a745; color: white; border-radius: 5px; font-weight: bold;")
@@ -136,7 +137,7 @@ class Users(QWidget):
         confirm = QMessageBox(self)
 
         confirm.setWindowTitle("Delete User")
-        confirm.setWindowIcon(QIcon("assets/icons/delete.png"))  # Replace with your actual icon path
+        confirm.setWindowIcon(QIcon(get_asset_path("assets/icons/delete.png")))  # Replace with your actual icon path
         confirm.setText(f"Are you sure you want to delete user {user_name}?")
         confirm.setIcon(QMessageBox.Question)
         confirm.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
