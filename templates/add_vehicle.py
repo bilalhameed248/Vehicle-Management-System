@@ -21,21 +21,40 @@ class AddVehicle(QWidget):
 
     def initUI(self):
         self.setWindowTitle("Vehicle Maintenance Form")
-        self.setStyleSheet("""
-            QWidget { background-color: #f4f4f4; font-size: 18px; }
-            QLabel { font-weight: bold; }
-            QLineEdit, QDateEdit, QTextEdit { padding: 5px; border: 1px solid #ccc; border-radius: 4px;}
-            QPushButton { background-color: #007BFF; color: white; padding: 8px; border-radius: 4px; font-weight: bold; }
-            QPushButton:hover { background-color: #0056b3; }
-            QPushButton:pressed { background-color: #004085; }
-            QGroupBox {font-weight: bold; border: 2px solid #007BFF; padding: 10px; margin-top: 20px;margin-bottom: 20px; border-radius: 8px; }
-            QGroupBox title { color: #007BFF; font-size: 16px; }
-            QScrollBar:vertical {border: none; background: #f0f0f0; width: 20px; margin: 0px 0px 0px 0px;}
-            QScrollBar::handle:vertical {background: blue; min-height: 20px; border-radius: 5px; }
-            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {background: none;}
-            QScrollBar:horizontal {border: none; background: #f0f0f0; height: 10px; margin: 0px 0px 0px 0px; }
-            QScrollBar::handle:horizontal { background: blue; min-width: 20px; border-radius: 5px; }
-            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {background: none;}
+        calendar_icon_path = get_asset_path("assets/icons/calendar.png")
+        combo_dd_icon_path = get_asset_path("assets/icons/combo_dd.png")
+
+        self.setStyleSheet(f"""
+            QWidget {{ background-color: #f4f4f4; font-size: 18px; }}
+            QLabel {{ font-weight: bold; }}
+            QLineEdit, QTextEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px;}}
+            QPushButton {{ background-color: #007BFF; color: white; padding: 8px; border-radius: 4px; font-weight: bold; }}
+            QPushButton:hover {{ background-color: #0056b3; }}
+            QPushButton:pressed {{ background-color: #004085; }}
+            QGroupBox {{font-weight: bold; border: 2px solid #007BFF; padding: 10px; margin-top: 20px;margin-bottom: 20px; border-radius: 8px; }}
+            QGroupBox title {{ color: #007BFF; font-size: 16px; }}
+            QScrollBar:vertical {{border: none; background: #f0f0f0; width: 20px; margin: 0px 0px 0px 0px;}}
+            QScrollBar::handle:vertical {{background: blue; min-height: 20px; border-radius: 5px; }}
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{background: none;}}
+            QScrollBar:horizontal {{border: none; background: #f0f0f0; height: 10px; margin: 0px 0px 0px 0px; }}
+            QScrollBar::handle:horizontal {{ background: blue; min-width: 20px; border-radius: 5px; }}
+            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{background: none;}}
+            
+            QDateEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
+            QDateEdit::drop-down {{ width: 20px; border: none; background: transparent; }}
+            QDateEdit::drop-down {{ width: 20px; border: none; background: transparent; image: url({calendar_icon_path});}}
+            QCalendarWidget QWidget {{ alternate-background-color: #f0f0f0; background-color: white; border-radius: 5px; }}
+            QCalendarWidget QToolButton {{ color: white; background-color: #0078D7; border: none; padding: 5px; border-radius: 3px; }}
+            QCalendarWidget QToolButton:hover {{ background-color: #005bb5; }}
+            QCalendarWidget QTableView {{ selection-background-color: #0078D7; color: black; }}
+            QCalendarWidget QHeaderView::section {{ background-color: #0078D7; color: white;}}
+
+            QComboBox {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
+            QComboBox::drop-down {{ width: 20px; border: none; background: transparent; }}
+            QComboBox::down-arrow {{ width: 20px; border: none; background: transparent; image: url({combo_dd_icon_path});}}
+            QComboBox QAbstractItemView {{background-color: white;border: 1px solid #4a90e2;selection-background-color: #4a90e2; selection-color: white;}}
+            QComboBox::item {{padding: 8px;}}
+            QComboBox::item:selected {{background-color: #4a90e2;color: white;}}
         """)
 
         self.maintenance_fields = {}
@@ -53,13 +72,6 @@ class AddVehicle(QWidget):
         self.blocked_combo = QComboBox()
         self.blocked_combo.addItem("A")
         self.blocked_combo.addItem("B")
-        self.blocked_combo.setStyleSheet("""
-            QComboBox {background-color: #f0f0f0;border: 2px solid #4a90e2; border-radius: 5px; padding: 5px; font-size: 14px; color: #333;}
-            QComboBox::drop-down {border-left: 2px solid #4a90e2; background-color: #e6e6e6;}
-            QComboBox::down-arrow {image: url('path_to_your_arrow_icon.png');  /* Optional: custom arrow icon */}
-            QComboBox QAbstractItemView {background-color: white;border: 1px solid #4a90e2;selection-background-color: #4a90e2; selection-color: white;}
-            QComboBox::item {padding: 8px;}
-            QComboBox::item:selected {background-color: #4a90e2;color: white;}""")
         self.ba_no_input = QLineEdit()
         self.make_type_input = QLineEdit()
         self.engine_no_input = QLineEdit()
@@ -438,8 +450,6 @@ class AddVehicle(QWidget):
     def save_vehicle(self):
         """ Inserts user into the database """
         add_Vehicle_data = {}
-
-        print(self.blocked_combo.currentIndex())
 
         category = "A" if self.blocked_combo.currentIndex() == 0 else "B"
         ba_no_input = self.ba_no_input.text().strip()
