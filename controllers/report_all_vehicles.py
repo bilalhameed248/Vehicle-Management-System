@@ -3,7 +3,7 @@ from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 import os, traceback
-from database import VMS_DB  # Ensure this is correctly implemented to fetch data
+from database import VMS_DB
 
 class Report:
     def __init__(self):
@@ -111,24 +111,40 @@ class Report:
                 cell.alignment = Alignment(horizontal="center", vertical="center")
                 cell.border = Border(bottom=Side(style='thin'))
 
+            all_columns = [col for columns in main_header.values() for col in columns]
+            issue_date_index = all_columns.index("issue_date_oil_filter") + 1
+
             # Adding data
             for vehicle in vehicles:
                 row_data = []
-                row_index = ws.max_row + 1 
                 for columns in main_header.values():
-                    for col in columns: 
-                        cell_value = vehicle.get(col, "")
-                        row_data.append(cell_value)
-
-                        if col == 'issue_date_oil_filter' and cell_value:
-                            try:
-                                issue_date = datetime.strptime(str(cell_value), "%Y-%m-%d").date()  # Ensure correct format
-                                cell = ws.cell(row=row_index, column=len(row_data))  # Get current cell reference
-                                self.date_rules(cell, issue_date, 6, 20)
-                            except ValueError:
-                                print(f"Invalid date format for {cell_value}")
-
+                    for col in columns:
+                        row_data.append(vehicle.get(col, ""))
                 ws.append(row_data)
+            
+            
+            # Now loop over all data rows (data starts at row 8 in this example because rows 1-7 are header)
+            for row in ws.iter_rows(min_row=8, max_row=ws.max_row):
+                for idx, cell in enumerate(row, start=1):
+                    col_key = all_columns[idx - 1]
+                    if col_key in ['issue_date_oil_filter', 'issue_date_fuel_filter', 'issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil', 'battery_issue_date', 'flusing_issue_date', 'greasing_issue_date'] and cell.value:
+                        try:
+                            date_obj = datetime.strptime(str(cell.value), "%Y-%m-%d").date()
+                            if col_key == 'issue_date_oil_filter':
+                                self.date_rules(cell, date_obj, 6, 20)
+                            elif col_key == 'issue_date_fuel_filter':
+                                self.date_rules(cell, date_obj, 12, 20)
+                            elif col_key in ['issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil']:
+                                self.date_rules(cell, date_obj, 18, 20)
+                            elif col_key == 'battery_issue_date':
+                                self.date_rules(cell, date_obj, 42, 20)
+                            elif col_key == 'flusing_issue_date':
+                                self.date_rules(cell, date_obj, 4, 20)
+                            elif col_key == 'greasing_issue_date':
+                                self.date_rules(cell, date_obj, 3, 20)
+                        except ValueError:
+                            print(f"Invalid date format for {cell.value} in column {col_key}")
+                            continue
 
             # Auto-Adjust Column Widths
             for col in ws.columns:
