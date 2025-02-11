@@ -183,8 +183,7 @@ class WelcomePage(QWidget):
 
     def logout_function(self):
         """Log out the user and redirect to the login page."""
-        self.user_session = None  
-        self.user_session.clear()
+        self.user_session = None
         self.close()
         from templates.login import LoginPage
         self.login_page = LoginPage()

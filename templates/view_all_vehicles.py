@@ -8,6 +8,7 @@ from templates.update_vehicle import UpdateVehicle
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
+from controllers.report_all_vehicles import Report
 
 class MultiLevelHeaderView(QHeaderView):
     def __init__(self, orientation, parent=None):
@@ -96,6 +97,7 @@ class ViewALLVehicles(QWidget):
         
         self.vr_obj = VehicleReport()
         self.db_obj = VMS_DB() 
+        self.rpt_obj = Report()
         self.columns = []
         self.initUI()
 
@@ -139,6 +141,19 @@ class ViewALLVehicles(QWidget):
         header_label = QLabel("All Vehicles")
         header_label.setStyleSheet("font-size: 14px; font-weight: bold; padding: 12px; border-radius: 4px;")
         header_layout.addWidget(header_label)
+
+        # Export Button
+        export_button = QPushButton("Export")
+        export_button.setFixedSize(100, 30)  # Set button size
+        export_button.setStyleSheet("""
+            QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
+            QPushButton:hover { background-color: #218838; }
+        """)
+        export_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
+        export_button.setIconSize(QSize(20, 20))
+        export_button.clicked.connect(self.report_all_vehicle)
+        header_layout.addWidget(export_button)
+
         header_layout.addStretch()
 
         # Search Box
@@ -163,11 +178,6 @@ class ViewALLVehicles(QWidget):
         header.setSectionResizeMode(QHeaderView.ResizeToContents)
         header.setStretchLastSection(True)
         header.setDefaultAlignment(Qt.AlignCenter)
-
-        # header = self.table_widget.horizontalHeader()
-        # header.setSectionResizeMode(QHeaderView.ResizeToContents)
-        # header.setStretchLastSection(True)
-        # header.setDefaultAlignment(Qt.AlignCenter)
 
         layout.addWidget(self.table_widget)
         self.setLayout(layout)
@@ -200,7 +210,7 @@ class ViewALLVehicles(QWidget):
             'Transmission Filter': ["Issue Date (Transmission Filter)", "Due Date (Transmission Filter)", "Current Mileage (Transmission Filter)", "Due Mileage (Transmission Filter)"],
             'Differential Oil': ["Issue Date (Differential Oil)", "Due Date (Differential Oil)", "Current Mileage (Differential Oil)", "Due Mileage (Differential Oil)"],
             'Battery Info': ["Battery Issue Date", "Battery Due Date"],
-            'Flusing Info': ["Flushing Issue Date", "Flushing Due Date", "Fuel Tank Flush", "Radiator Flush"],
+            'Flushing Info': ["Flushing Issue Date", "Flushing Due Date", "Fuel Tank Flush", "Radiator Flush"],
             'Greasing Info': ["Greasing Issue Date", "Greasing Due Date", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
             'General Maint': ["Wash", "Oil Level Check", "Lubrication of Parts", "Air Cleaner", "Fuel Filter", "French Chalk", "TR Adjustment"],
             'Overall': ["Current Milage (Overhaul)", "Due Milage (Overhaul)", "Remarks", "Created By", "Created At"]
@@ -320,7 +330,6 @@ class ViewALLVehicles(QWidget):
         self.table_widget.setColumnWidth(action_col_index, 280)
 
 
-
     def date_rules(self, cell_value, row_index, col_index, no_of_month, no_of_days):
         # print(f"IN Rule: {type(cell_value)}, {cell_value},  {date.today()}")
         difference = relativedelta(date.today(), cell_value)
@@ -386,3 +395,15 @@ class ViewALLVehicles(QWidget):
 
     def report_row(self, row):
         self.vr_obj.generate_vehicle_pdf_report_updated(row)
+
+    def report_all_vehicle(self):
+        is_generated = self.rpt_obj.generate_report()
+        if is_generated:
+            message = "Report saved successfully to Downloads"
+        else:
+            message = "Error while generating Report."
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText(message)
+        msg.setWindowTitle("Report Generated")
+        msg.exec_()

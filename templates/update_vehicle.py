@@ -25,8 +25,8 @@ class UpdateVehicle(QWidget):
 
     def initUI(self):
         self.setWindowTitle("Vehicle Maintenance Form")
-        calendar_icon_path = get_asset_path("assets/icons/calendar.png")
-        combo_dd_icon_path = get_asset_path("assets/icons/combo_dd.png")
+        calendar_icon_path = get_asset_path("assets/icons/calendar.png").replace("\\", "/")
+        combo_dd_icon_path = get_asset_path("assets/icons/combo_dd.png").replace("\\", "/")
 
         self.setStyleSheet(f"""
             QWidget {{ background-color: #f4f4f4; font-size: 18px; }}
@@ -45,7 +45,6 @@ class UpdateVehicle(QWidget):
             QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{background: none;}}
             
             QDateEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
-            QDateEdit::drop-down {{ width: 20px; border: none; background: transparent; }}
             QDateEdit::drop-down {{ width: 20px; border: none; background: transparent; image: url({calendar_icon_path});}}
             QCalendarWidget QWidget {{ alternate-background-color: #f0f0f0; background-color: white; border-radius: 5px; }}
             QCalendarWidget QToolButton {{ color: white; background-color: #0078D7; border: none; padding: 5px; border-radius: 3px; }}
@@ -54,7 +53,6 @@ class UpdateVehicle(QWidget):
             QCalendarWidget QHeaderView::section {{ background-color: #0078D7; color: white;}}
 
             QComboBox {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
-            QComboBox::drop-down {{ width: 20px; border: none; background: transparent; }}
             QComboBox::down-arrow {{ width: 20px; border: none; background: transparent; image: url({combo_dd_icon_path});}}
             QComboBox QAbstractItemView {{background-color: white;border: 1px solid #4a90e2;selection-background-color: #4a90e2; selection-color: white;}}
             QComboBox::item {{padding: 8px;}}

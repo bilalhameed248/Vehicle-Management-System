@@ -7,4 +7,7 @@ def get_asset_path(relative_path):
         base_path = sys._MEIPASS  # Temporary folder where PyInstaller extracts files
     else:
         base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
-    return os.path.join(base_path, relative_path)
+    # return os.path.join(base_path, relative_path)
+
+    full_path = os.path.join(base_path, relative_path)
+    return os.path.normpath(full_path)
