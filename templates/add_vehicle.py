@@ -404,7 +404,7 @@ class AddVehicle(QWidget):
         form_layout.addWidget(overhaul_due_milage, 20, 3)
 
         # Remarks Section
-        form_layout.addWidget(QLabel("Remarks:"), 21, 0)
+        form_layout.addWidget(QLabel("Remarks/Status:"), 21, 0)
         overhaul_remarks_input = QTextEdit()
         form_layout.addWidget(overhaul_remarks_input, 21, 1, 1, 3)
 

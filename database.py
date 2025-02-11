@@ -243,18 +243,18 @@ class VMS_DB:
         return user  # Returns (id, username, password, is_blocked) or None
     
     def fetch_users(self):
-        """Fetch a user by username."""
+        """Fetch all users"""
         conn, cursor = self.db_connect()
-        cursor.execute("SELECT id, name, username, email, is_blocked FROM users ORDER BY created_at ASC")
+        cursor.execute("SELECT id, name, username, is_blocked FROM users ORDER BY created_at ASC")
         users = cursor.fetchall()
         self.db_disconnect(conn, cursor)
         return users  # Returns (id, username, password, is_blocked) or None
     
-    def insert_user(self, name, email, username, password, is_blocked=0):
+    def insert_user(self, name, username, password, is_blocked=0):
         """ Inserts user into SQLite Database """
         conn, cursor = self.db_connect()
-        cursor.execute("INSERT INTO users (name, email, username, password, is_blocked) VALUES (?, ?, ?, ?, ?)", 
-                       (name, email, username, password, is_blocked))
+        cursor.execute("INSERT INTO users (name, username, password, is_blocked) VALUES (?, ?, ?, ?)", 
+                       (name, username, password, is_blocked))
         conn.commit()
         self.db_disconnect(conn, cursor)
         return True
@@ -267,24 +267,36 @@ class VMS_DB:
         self.db_disconnect(conn, cursor)
         return True
 
-    def update_user_in_db(self, name, email, username, password, is_blocked, id):
+    def update_user_in_db(self, name, username, password, is_blocked, id):
         """ Update user in the SQLite database """
         conn, cursor = self.db_connect()
         cursor.execute("""
             UPDATE users
-            SET name = ?, email = ?, username = ?, password = ?, is_blocked = ?
+            SET name = ?, username = ?, password = ?, is_blocked = ?
             WHERE id = ?
-        """, (name, email, username, password, is_blocked, id))
+        """, (name, username, password, is_blocked, id))
         conn.commit()
         self.db_disconnect(conn, cursor)
         return True
 
     def fetch_user_by_id(self, user_id):
         conn, cursor = self.db_connect()
-        cursor.execute("SELECT name, username, email, password, is_blocked FROM users WHERE id=?", (user_id,))
+        cursor.execute("SELECT name, username, password, is_blocked FROM users WHERE id=?", (user_id,))
         result = cursor.fetchone()
         self.db_disconnect(conn, cursor)
         return result
+    
+    # def get_vehicle_count(self):
+    #     """Fetch the count of non-deleted vehicles from the all_vehicles table."""
+    #     try:
+    #         conn, cursor = self.db_connect()
+    #         cursor.execute("SELECT COUNT(*) FROM all_vehicles WHERE is_deleted = 0;")
+    #         count = cursor.fetchone()[0]
+    #         conn.close()
+    #         return count
+    #     except Exception as e:
+    #         print("Database error:", e)
+    #         return None
     
     def get_all_vehicle(self):
         try:

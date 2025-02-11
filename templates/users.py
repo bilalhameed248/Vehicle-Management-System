@@ -58,8 +58,8 @@ class Users(QWidget):
         
         layout.addLayout(search_layout)
 
-        self.model = QStandardItemModel(0, 6)  # 5 Columns (Including Action Buttons)
-        self.model.setHorizontalHeaderLabels(["ID", "Name", "Username", "Email", "Blocked", "Actions"])
+        self.model = QStandardItemModel(0, 5)  # 5 Columns (Including Action Buttons)
+        self.model.setHorizontalHeaderLabels(["ID", "Name", "Username", "Blocked", "Actions"])
 
         # Proxy Model for filtering
         self.proxy_model = UserFilterProxy(self)
@@ -72,7 +72,7 @@ class Users(QWidget):
         self.user_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         # Set Delegate for Action Buttons
-        self.user_table.setItemDelegateForColumn(5, ButtonDelegate(self.user_table))
+        self.user_table.setItemDelegateForColumn(4, ButtonDelegate(self.user_table))
         layout.addWidget(self.user_table)
         self.load_users()
         self.user_table.hideColumn(0)
@@ -87,7 +87,7 @@ class Users(QWidget):
     def refresh_action_buttons(self):
         """ Reapply action buttons to all visible rows after filtering """
         for row in range(self.proxy_model.rowCount()):
-            proxy_index = self.proxy_model.index(row, 5)  # Column 5 (Actions)
+            proxy_index = self.proxy_model.index(row, 4)  # Column 5 (Actions)
             source_index = self.proxy_model.mapToSource(proxy_index)
             source_row = source_index.row()
             button_delegate = ButtonDelegate(self.user_table)
@@ -99,12 +99,11 @@ class Users(QWidget):
         self.model.setRowCount(0)  
 
         for row, user in enumerate(users):
-            id, name, username, email, is_blocked = user
+            id, name, username, is_blocked = user
             items = [
                 QStandardItem(str(id)),
                 QStandardItem(name),
                 QStandardItem(username),
-                QStandardItem(email),
                 QStandardItem("Yes" if is_blocked else "No"),
                 QStandardItem("")  # Empty item for action buttons
             ]
@@ -116,7 +115,7 @@ class Users(QWidget):
                     item.setForeground(Qt.red)  # White text for contrast
 
             # Get the correct model index
-            model_index = self.model.index(row, 5)
+            model_index = self.model.index(row, 4)
             proxy_index = self.proxy_model.mapFromSource(model_index)
             button_delegate = ButtonDelegate(self.user_table)
             button_widget = button_delegate.create_buttons(self.user_table, row)

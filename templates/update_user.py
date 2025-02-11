@@ -36,7 +36,6 @@ class UpdateUserDialog(QDialog):
         # Styled Input Fields
         self.name_input = self.create_input_field("Enter full name")
         self.username_input = self.create_input_field("Enter username")
-        self.email_input = self.create_input_field("Enter email")
         self.password_input = self.create_input_field("Enter password", password=True)
 
         # Blocked Status Select Box (Yes/No)
@@ -55,12 +54,10 @@ class UpdateUserDialog(QDialog):
         form_layout.addWidget(self.name_input, 0, 1)
         form_layout.addWidget(QLabel("Username:"), 1, 0)
         form_layout.addWidget(self.username_input, 1, 1)
-        form_layout.addWidget(QLabel("Email:"), 2, 0)
-        form_layout.addWidget(self.email_input, 2, 1)
-        form_layout.addWidget(QLabel("Password:"), 3, 0)
-        form_layout.addWidget(self.password_input, 3, 1)
-        form_layout.addWidget(QLabel("Blocked:"), 4, 0)
-        form_layout.addWidget(self.blocked_combo, 4, 1)
+        form_layout.addWidget(QLabel("Password:"), 2, 0)
+        form_layout.addWidget(self.password_input, 2, 1)
+        form_layout.addWidget(QLabel("Blocked:"), 3, 0)
+        form_layout.addWidget(self.blocked_combo, 3, 1)
 
         layout.addLayout(form_layout)
 
@@ -107,12 +104,11 @@ class UpdateUserDialog(QDialog):
         user_data = self.db_obj.fetch_user_by_id(self.user_id)
         
         if user_data:
-            name, username, email, password, is_blocked = user_data
+            name, username, password, is_blocked = user_data
 
             # Set fields with the fetched data
             self.name_input.setText(name)
             self.username_input.setText(username)
-            self.email_input.setText(email)
             self.password_input.setText(password)  # You might want to keep the password hidden
             self.blocked_combo.setCurrentIndex(0 if is_blocked else 1)  # Set Blocked status (Yes or No)
         else:
@@ -122,16 +118,15 @@ class UpdateUserDialog(QDialog):
         """ Inserts user into the database """
         name = self.name_input.text().strip()
         username = self.username_input.text().strip()
-        email = self.email_input.text().strip()
         password = self.password_input.text().strip()
         is_blocked = 0 if self.blocked_combo.currentIndex() == 1 else 1
 
-        if not name or not username or not email or not password:
+        if not name or not username or not password:
             QMessageBox.warning(self, "Input Error", "All fields are required!")
             return
 
         try:
-            self.db_obj.update_user_in_db(name, email, username, password, is_blocked, self.user_id)
+            self.db_obj.update_user_in_db(name, username, password, is_blocked, self.user_id)
             QMessageBox.information(self, "Success", "User updated successfully!")
             self.accept()  # Close dialog
         except Exception as e:

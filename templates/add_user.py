@@ -34,17 +34,14 @@ class AddUserDialog(QDialog):
         # Styled Input Fields
         self.name_input = self.create_input_field("Enter full name")
         self.username_input = self.create_input_field("Enter username")
-        self.email_input = self.create_input_field("Enter email")
         self.password_input = self.create_input_field("Enter password", password=True)
 
         form_layout.addWidget(QLabel("Name:"), 0, 0)
         form_layout.addWidget(self.name_input, 0, 1)
         form_layout.addWidget(QLabel("Username:"), 1, 0)
         form_layout.addWidget(self.username_input, 1, 1)
-        form_layout.addWidget(QLabel("Email:"), 2, 0)
-        form_layout.addWidget(self.email_input, 2, 1)
-        form_layout.addWidget(QLabel("Password:"), 3, 0)
-        form_layout.addWidget(self.password_input, 3, 1)
+        form_layout.addWidget(QLabel("Password:"), 2, 0)
+        form_layout.addWidget(self.password_input, 2, 1)
         
         layout.addLayout(form_layout)
 
@@ -84,13 +81,12 @@ class AddUserDialog(QDialog):
         """ Inserts user into the database """
         name = self.name_input.text().strip()
         username = self.username_input.text().strip()
-        email = self.email_input.text().strip()
         password = self.password_input.text().strip()
-        if not name or not username or not email or not password:
+        if not name or not username or not password:
             QMessageBox.warning(self, "Input Error", "All fields are required!")
             return
         try:
-            self.db_obj.insert_user(name, email, username, password)
+            self.db_obj.insert_user(name, username, password)
             QMessageBox.information(self, "Success", "User added successfully!")
             self.accept()  # Close dialog
         except Exception as e:

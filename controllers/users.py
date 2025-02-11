@@ -13,15 +13,13 @@ class UserFilterProxy(QSortFilterProxyModel):
         
         name_index = model.index(source_row, 1, source_parent)
         username_index = model.index(source_row, 2, source_parent)
-        email_index = model.index(source_row, 3, source_parent)
-        blocked_index = model.index(source_row, 4, source_parent)
+        blocked_index = model.index(source_row, 3, source_parent)
 
         name_text = model.data(name_index, Qt.DisplayRole)
         username_text = model.data(username_index, Qt.DisplayRole)
-        email_text = model.data(email_index, Qt.DisplayRole)
         blocked_text = model.data(blocked_index, Qt.DisplayRole)
         search_text = self.filterRegExp().pattern().lower()
-        return any(search_text in str(text).lower() for text in (name_text, username_text, email_text, blocked_text))
+        return any(search_text in str(text).lower() for text in (name_text, username_text, blocked_text))
     
 
 class ButtonDelegate(QStyledItemDelegate):

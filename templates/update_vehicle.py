@@ -478,13 +478,13 @@ class UpdateVehicle(QWidget):
         form_layout.addWidget(overhaul_due_milage, 20, 3)
 
         # Remarks Section
-        form_layout.addWidget(QLabel("Remarks:"), 21, 0)
+        form_layout.addWidget(QLabel("Remarks/Status:"), 21, 0)
         overhaul_remarks_input = QTextEdit()
         form_layout.addWidget(overhaul_remarks_input, 21, 1, 1, 3)
 
         overhaul_current_milage.setText(self.data["Current Milage (Overhaul)"])
         overhaul_due_milage.setText(self.data["Due Milage (Overhaul)"])
-        overhaul_remarks_input.setText(self.data["Remarks"])
+        overhaul_remarks_input.setText(self.data["Status"])
 
         self.overhaul_fields['Overhaul'] = {
             "overhaul_current_milage": overhaul_current_milage,

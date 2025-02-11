@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QTableView, QVBoxLayout, QHBoxLayout, QPushButton, QAbstractItemView,
                              QLineEdit, QLabel, QTableWidgetItem, QHeaderView,QTableWidget, QMessageBox)
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainter, QColor
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainter, QColor, QFontMetrics
 from PyQt5.QtCore import Qt, QTimer, QSize, QRect
 from database import VMS_DB
 from templates.vehicle_report import VehicleReport
@@ -30,7 +30,8 @@ class MultiLevelHeaderView(QHeaderView):
             "Flushing Info": QColor("#D35400"),  # Dark Orange
             "Greasing Info": QColor("#C0392B"),  # Dark Red
             "General Maint": QColor("#16A085"),  # Teal
-            "Overall": QColor("#7F8C8D")         # Gray
+            "Overhaul": QColor("#7F8C8D"),         # Gray
+            "Status & Creation Details": QColor("#008B8B") # Deep Cyan
         }
 
         self.groupTextColor = QColor("white")    # Group header text color.
@@ -39,6 +40,7 @@ class MultiLevelHeaderView(QHeaderView):
 
         # Font for main headers (larger & bold)
         self.mainHeaderFont = QFont("Segoe UI", 14, QFont.Bold)
+        self.subHeaderFont = QFont("Segoe UI", 10, QFont.Bold)
 
     def setGroupHeaders(self, group_headers):
         """Set group headers as list of tuples: (start_index, span, label)."""
@@ -71,7 +73,7 @@ class MultiLevelHeaderView(QHeaderView):
             painter.drawText(visible_group_rect, Qt.AlignCenter, label)
 
         # --- Draw Sub Headers in the Lower Half ---
-        painter.setFont(QFont("Segoe UI", 10))
+        painter.setFont(self.subHeaderFont)
         for i in range(self.count()):
             x = self.sectionViewportPosition(i)
             width = self.sectionSize(i)
@@ -197,7 +199,8 @@ class ViewALLVehicles(QWidget):
             "greasing_issue_date": "Greasing Issue Date", "greasing_due_date": "Greasing Due Date", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
             "wash": "Wash", "oil_level_check": "Oil Level Check", "lubrication_of_parts": "Lubrication of Parts",
             "air_cleaner": "Air Cleaner", "fuel_filter": "Fuel Filter", "french_chalk": "French Chalk", "tr_adjustment": "TR Adjustment",
-            "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", "overhaul_remarks_input": "Remarks",
+            "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
+            "overhaul_remarks_input": "Status",
             "created_by": "Created By", "created_at": "Created At"
         }
 
@@ -213,7 +216,8 @@ class ViewALLVehicles(QWidget):
             'Flushing Info': ["Flushing Issue Date", "Flushing Due Date", "Fuel Tank Flush", "Radiator Flush"],
             'Greasing Info': ["Greasing Issue Date", "Greasing Due Date", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
             'General Maint': ["Wash", "Oil Level Check", "Lubrication of Parts", "Air Cleaner", "Fuel Filter", "French Chalk", "TR Adjustment"],
-            'Overall': ["Current Milage (Overhaul)", "Due Milage (Overhaul)", "Remarks", "Created By", "Created At"]
+            'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
+            'Status & Creation Details': ["Status", "Created By", "Created At"]
         }
 
         # Build the flat list of columns based on the main_header order.
