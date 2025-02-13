@@ -10,6 +10,7 @@ from controllers.load_assets import *
 
 
 class UpdateUserDialog(QDialog):
+
     def __init__(self, user_id, parent=None):
         super().__init__(parent)
         self.db_obj = VMS_DB()  # Database connection
@@ -85,6 +86,7 @@ class UpdateUserDialog(QDialog):
         # Load user data from the database
         self.load_user_data()
 
+
     def create_input_field(self, placeholder, password=False):
         field = QLineEdit()
         field.setPlaceholderText(placeholder)
@@ -95,8 +97,10 @@ class UpdateUserDialog(QDialog):
             field.setEchoMode(QLineEdit.Password)
         return field
 
+
     def style_button(self, button, color):
         button.setStyleSheet(f"""background-color: {color}; color: white; border-radius: 5px; padding: 8px;font-weight: bold;""")
+
 
     def load_user_data(self):
         """ Loads the user data from the database and populates the fields """
@@ -113,6 +117,7 @@ class UpdateUserDialog(QDialog):
             self.blocked_combo.setCurrentIndex(0 if is_blocked else 1)  # Set Blocked status (Yes or No)
         else:
             QMessageBox.warning(self, "Error", "User not found!")
+
 
     def save_user(self):
         """ Inserts user into the database """

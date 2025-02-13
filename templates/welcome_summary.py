@@ -71,6 +71,7 @@ class WelcomeSummary(QWidget):
         # Load initial data
         self.load_data()
     
+    
     def load_data(self):
         """Loads fresh data from the database and updates the UI."""
         all_vehicle_data = self.db_obj.get_all_vehicle()

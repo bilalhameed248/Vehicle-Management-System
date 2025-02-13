@@ -78,11 +78,13 @@ class Users(QWidget):
         self.user_table.hideColumn(0)
         self.setLayout(layout)
 
+
     def filter_users(self):
         """ Search users dynamically and refresh buttons after filtering """
         search_text = self.search_input.text()
         self.proxy_model.setFilterFixedString(search_text)
         QTimer.singleShot(100, self.refresh_action_buttons)
+
 
     def refresh_action_buttons(self):
         """ Reapply action buttons to all visible rows after filtering """
@@ -93,6 +95,7 @@ class Users(QWidget):
             button_delegate = ButtonDelegate(self.user_table)
             button_widget = button_delegate.create_buttons(self.user_table, source_row)
             self.user_table.setIndexWidget(proxy_index, button_widget)
+
 
     def load_users(self):
         users = self.db_obj.fetch_users()
@@ -122,12 +125,14 @@ class Users(QWidget):
             self.user_table.setIndexWidget(proxy_index, button_widget)
         self.proxy_model.sort(0, Qt.AscendingOrder)
 
+
     def edit_user(self, row):
         """ Edit user logic """
         user_id = self.model.item(row, 0).text()
         dialog = UpdateUserDialog(user_id, self)
         if dialog.exec_():  # If user clicks Save
             self.load_users()  # Refresh user list after update
+
 
     def delete_user(self, row):
         """ Deletes user from the database """
@@ -146,6 +151,7 @@ class Users(QWidget):
         if result == QMessageBox.Yes:
             self.db_obj.delete_user(user_id)
             self.load_users()  # Refresh table
+
 
     def add_user(self):
         """ Opens a form or dialog to add a new user """

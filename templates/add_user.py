@@ -9,6 +9,7 @@ from database import VMS_DB
 from controllers.load_assets import *
 
 class AddUserDialog(QDialog):
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.db_obj = VMS_DB()
@@ -66,6 +67,7 @@ class AddUserDialog(QDialog):
 
         self.setLayout(layout)
 
+
     def create_input_field(self, placeholder, password=False):
         field = QLineEdit()
         field.setPlaceholderText(placeholder)
@@ -74,8 +76,10 @@ class AddUserDialog(QDialog):
             field.setEchoMode(QLineEdit.Password)
         return field
 
+
     def style_button(self, button, color):
         button.setStyleSheet(f"""background-color: {color}; color: white; border-radius: 5px; padding: 8px; font-weight: bold;""")
+
 
     def save_user(self):
         """ Inserts user into the database """

@@ -9,6 +9,7 @@ from templates.view_all_vehicles import ViewALLVehicles
 from controllers.load_assets import *
 
 class AddVehicle(QWidget):
+
     def __init__(self, user_session=None, parent=None):
         super().__init__(parent)
         self.user_session = user_session if user_session else {}
@@ -18,6 +19,7 @@ class AddVehicle(QWidget):
         # print("self.username:",self.username)
         self.initUI()
         self.db_obj = VMS_DB() 
+
 
     def initUI(self):
         self.setWindowTitle("Vehicle Maintenance Form")
@@ -444,6 +446,7 @@ class AddVehicle(QWidget):
         layout.addWidget(scroll_area)
         layout.addLayout(button_layout)
         self.setLayout(layout)
+
 
     def save_vehicle(self):
         """ Inserts user into the database """

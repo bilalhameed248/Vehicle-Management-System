@@ -9,6 +9,7 @@ from datetime import datetime
 from controllers.load_assets import *
 
 class UpdateVehicle(QWidget):
+
     def __init__(self, user_session=None, data = None, parent=None):
         super().__init__(parent)
         self.user_session = user_session if user_session else {}
@@ -17,7 +18,6 @@ class UpdateVehicle(QWidget):
         # print("self.user_id:",self.user_id)
         # print("self.username:",self.username)
         self.main_parent_welcome = parent
-        # print("UpdateVehicle self.main_parent_welcome: ",self.main_parent_welcome, "\n\n")
         self.data = data
         self.db_obj = VMS_DB() 
         self.initUI()
@@ -518,6 +518,7 @@ class UpdateVehicle(QWidget):
         layout.addLayout(button_layout)
         self.setLayout(layout)
 
+
     def update_vehicle(self):
         """ Inserts user into the database """
         add_Vehicle_data = {}
@@ -596,7 +597,6 @@ class UpdateVehicle(QWidget):
 
              # Switch back to ViewALLVehicles
             self.main_parent_welcome.content_area.setCurrentWidget(self.main_parent_welcome.all_vehicle_obj)
-
 
             # Delete current widget
             self.main_parent_welcome.content_area.removeWidget(self)

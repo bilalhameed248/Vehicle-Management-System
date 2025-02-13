@@ -7,6 +7,7 @@ from templates.welcome import WelcomePage
 from controllers.load_assets import *
 
 class LoginPage(QWidget):
+    
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Login - Vehicle Maintenance Module")
@@ -16,6 +17,7 @@ class LoginPage(QWidget):
         self.setWindowState(Qt.WindowMaximized)
         self.show()
         self.db_obj = VMS_DB()
+
 
     def initUI(self):
         self.bg_label = QLabel(self)
@@ -79,32 +81,38 @@ class LoginPage(QWidget):
         self.bg_label.setGeometry(0, 0, self.width(), self.height())
         event.accept()
 
+
     def inputStyle(self):
         return """
             QLineEdit { background: rgba(255, 255, 255, 0.2); border: none; padding: 10px; border-radius: 10px; color: white; font-size: 14px; }
             QLineEdit::placeholder {color: #CCCCCC;}
         """
     
+
     def buttonStyle(self):
         return """
             QPushButton { background: #ff9800; border: none; padding: 12px; border-radius: 10px; font-size: 16px; color: white;}
             QPushButton:hover {background: #e68900;}
         """
     
+
     def closeButtonStyle(self):
         return """
             QPushButton { background: #ff3b30; border: none; padding: 12px; border-radius: 10px; font-size: 16px; color: white;}
             QPushButton:hover { background: #d32f2f; }
         """
     
+
     def closeApp(self):
         self.close()
+
 
     def open_welcome_page(self):
         """Close login page and show welcome page"""
         self.close() 
         self.welcome_window = WelcomePage(self.user_session)
         self.welcome_window.show()
+
 
     def check_credentials(self):
         username = self.username_input.text()

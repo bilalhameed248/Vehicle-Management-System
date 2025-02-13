@@ -11,7 +11,6 @@ from templates.add_vehicle import AddVehicle
 from templates.welcome_summary import WelcomeSummary
 from templates.users import Users
 from templates.view_all_vehicles import ViewALLVehicles
-# from templates.login import LoginPage 
 from controllers.load_assets import *
 
 class WelcomePage(QWidget):
@@ -28,6 +27,7 @@ class WelcomePage(QWidget):
         self.welcome_summary_obj = WelcomeSummary()
         self.add_vehicle_obj = AddVehicle(self.user_session)
         self.initUI()
+
 
     def initUI(self):
         self.main_layout = QVBoxLayout()
@@ -64,7 +64,8 @@ class WelcomePage(QWidget):
         self.view_all_vehicle_button.clicked.connect(lambda: self.show_all_vehicle_page(self.view_all_vehicle_button))
         self.users_management_button.clicked.connect(lambda: self.show_users_management_button_page(self.users_management_button))
         self.logout_button.clicked.connect(self.logout_function)
-   
+
+
     def create_navbar(self):
         navbar = QFrame(self)
         navbar.setStyleSheet(""" background-color: #2C3E50; color: white; padding: 2px; """)
@@ -97,7 +98,8 @@ class WelcomePage(QWidget):
         
         navbar.setLayout(navbar_layout)
         return navbar
-    
+
+
     def create_menu(self):
         menu_layout = QVBoxLayout()
         menu_layout.setSpacing(20)
@@ -127,10 +129,9 @@ class WelcomePage(QWidget):
         menu_frame.setLayout(menu_layout)
         menu_frame.setStyleSheet("background-color: #34495E; color: white; padding: 10px;")
         menu_frame.setFixedWidth(310)
-        # menu_frame.setMinimumWidth(310)
-        # menu_frame.setMaximumWidth(310)
         return menu_frame
-    
+
+
     def toggle_menu(self):
         """Animates and toggles the sidebar width."""
         new_width = 100 if self.sidebar_expanded else 310
@@ -157,29 +158,6 @@ class WelcomePage(QWidget):
         self.content_layout.setStretch(0, 0 if new_width == 50 else 1)
         self.content_layout.setStretch(1, 6 if new_width == 50 else 5)
     
-    # def toggle_menu(self):
-    #     # Determine the target width based on current width.
-    #     current_width = self.menu_frame.width()
-    #     print("current_width:",current_width)
-    #     if current_width > 50:
-    #         new_width = 50
-    #         self.toggle_button.setText("Expand Menu")
-    #     else:
-    #         new_width = 310
-    #         self.toggle_button.setText("Collapse Menu")
-
-    #     # Animate the transition for a smoother user experience
-    #     self.animation = QPropertyAnimation(self.menu_frame, b"minimumWidth")
-    #     self.animation.setDuration(250)  # duration in milliseconds
-    #     self.animation.setStartValue(current_width)
-    #     self.animation.setEndValue(new_width)
-    #     self.animation.start()
-
-    #     self.animation = QPropertyAnimation(self.menu_frame, b"geometry")
-        # self.animation.setDuration(250)
-        # self.animation.setStartValue(self.menu_frame.geometry())
-        # self.animation.setEndValue(QRect(self.menu_frame.x(), self.menu_frame.y(), new_width, self.menu_frame.height()))
-        # self.animation.start()
 
     def create_menu_button(self, text, icon_path):
         button = QPushButton(text)
@@ -191,6 +169,7 @@ class WelcomePage(QWidget):
             QPushButton:hover { background-color: #2980B9; }
         """)
         return button
+
 
     def update_menu_button_style(self, clicked_button):
         # Reset the style of all buttons
@@ -204,6 +183,7 @@ class WelcomePage(QWidget):
             QPushButton { background-color: #2980B9; color: white; border-radius: 5px; padding: 10px 20px; text-align: left;}
         """)
 
+
     def show_add_vehicle_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
         self.update_menu_button_style(clicked_button)
@@ -211,13 +191,15 @@ class WelcomePage(QWidget):
         self.content_area.addWidget(self.add_vehicle_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.add_vehicle_obj)  # Switch view
 
+
     def show_users_management_button_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
         self.update_menu_button_style(clicked_button)
         self.users_obj = Users(self)
         self.content_area.addWidget(self.users_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.users_obj)  # Switch view
-    
+
+
     def show_home_page(self, clicked_button):
         
         self.update_menu_button_style(clicked_button)
@@ -229,6 +211,7 @@ class WelcomePage(QWidget):
         # self.update_menu_button_style(clicked_button)
         # self.content_area.setCurrentIndex(0)
 
+
     def show_all_vehicle_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
         if hasattr(self, "all_vehicle_obj"):
@@ -239,6 +222,7 @@ class WelcomePage(QWidget):
         self.all_vehicle_obj = ViewALLVehicles(user_session=self.user_session, parent=self)
         self.content_area.addWidget(self.all_vehicle_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.all_vehicle_obj)  # Switch view
+
 
     def logout_function(self):
         """Log out the user and redirect to the login page."""

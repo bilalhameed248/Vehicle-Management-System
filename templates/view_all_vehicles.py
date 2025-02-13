@@ -11,6 +11,7 @@ from controllers.load_assets import *
 from controllers.report_all_vehicles import Report
 
 class MultiLevelHeaderView(QHeaderView):
+    
     def __init__(self, orientation, parent=None):
         super(MultiLevelHeaderView, self).__init__(orientation, parent)
         self.group_headers = []  # List of tuples: (start_index, span, label)
@@ -47,10 +48,12 @@ class MultiLevelHeaderView(QHeaderView):
         self.group_headers = group_headers
         self.update()
 
+
     def sizeHint(self):
         original = super(MultiLevelHeaderView, self).sizeHint()
         # Double the height to allow for two rows (group header + sub header).
         return QSize(original.width(), original.height() * 2)
+
 
     def paintEvent(self, event):
         painter = QPainter(self.viewport())
@@ -87,6 +90,7 @@ class MultiLevelHeaderView(QHeaderView):
             painter.drawText(sub_rect, Qt.AlignCenter, str(text))
 
 class ViewALLVehicles(QWidget):
+
     def __init__(self, user_session=None, parent=None):
         super().__init__(parent)
         self.user_session = user_session if user_session else {}
@@ -102,6 +106,7 @@ class ViewALLVehicles(QWidget):
         self.rpt_obj = Report()
         self.columns = []
         self.initUI()
+
 
     def initUI(self):
         """Initialize UI and load the data table."""
@@ -173,6 +178,7 @@ class ViewALLVehicles(QWidget):
         self.table_widget.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.table_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_widget.verticalHeader().setVisible(False)
+        self.table_widget.setAlternatingRowColors(True)
 
         # Replace the default horizontal header with our custom header
         header = MultiLevelHeaderView(Qt.Horizontal, self.table_widget)
@@ -183,6 +189,7 @@ class ViewALLVehicles(QWidget):
 
         layout.addWidget(self.table_widget)
         self.setLayout(layout)
+
 
     def populate_table(self):
         """Fetches and populates the table with vehicle data."""
@@ -399,6 +406,7 @@ class ViewALLVehicles(QWidget):
 
     def report_row(self, row):
         self.vr_obj.generate_vehicle_pdf_report_updated(row)
+
 
     def report_all_vehicle(self):
         is_generated = self.rpt_obj.generate_report()
