@@ -142,7 +142,6 @@ class AddVehicle(QWidget):
                 f"current_mileage_{title.lower().replace(' ', '_')}": current_mileage,
                 f"due_mileage_{title.lower().replace(' ', '_')}": due_mileage
             }
-
     
         def add_battery_section(title, row):
             group_box = QGroupBox(title)
