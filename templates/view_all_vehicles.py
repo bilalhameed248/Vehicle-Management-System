@@ -146,7 +146,7 @@ class ViewALLVehicles(QWidget):
 
         # Export Button
         export_button = QPushButton("Export")
-        export_button.setFixedSize(100, 30)  # Set button size
+        export_button.setFixedSize(100, 45)  # Set button size
         export_button.setStyleSheet("""
             QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
             QPushButton:hover { background-color: #218838; }

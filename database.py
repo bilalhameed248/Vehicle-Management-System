@@ -202,20 +202,60 @@
 
 #************************************************************************************************************
 
-import sqlite3, sys, os, traceback
+import sqlite3, sys, os, traceback, shutil
 DB_NAME = "vms44AKDB.db"
 class VMS_DB:
     def __init__(self) -> None:
         self.db_path = self.get_database_path()
 
-    def get_database_path(self):
-        """Returns the correct database path, whether running as script or executable."""
-        if getattr(sys, 'frozen', False):  # If running as an executable (PyInstaller)
-            base_path = sys._MEIPASS
+    def get_writable_directory(self, app_name="MyApp"):
+        # Choose a directory that is writable by the current user.
+        if sys.platform == "win32":
+            # For Windows, use the APPDATA folder
+            base_dir = os.getenv("APPDATA")
+        elif sys.platform == "darwin":
+            # For macOS, use the user's Application Support folder
+            base_dir = os.path.expanduser("~/Library/Application Support")
         else:
-            base_path = os.path.dirname(os.path.abspath(__file__))  # Normal script execution
+            # For Linux and other UNIX systems, use ~/.local/share
+            base_dir = os.path.expanduser("~/.local/share")
+        print("base_dir:",base_dir)
+        app_dir = os.path.join(base_dir, app_name)
+        if not os.path.exists(app_dir):
+            os.makedirs(app_dir)
+        print("app_dir:",app_dir)
+        return app_dir
+    
+
+    def get_database_path(self):
+        db_filename = "vms44AKDB.db"
         
-        return os.path.join(base_path, "vms44AKDB.db") 
+        if getattr(sys, 'frozen', False):
+            # When frozen, the bundled database is located in sys._MEIPASS.
+            bundled_db_path = os.path.join(sys._MEIPASS, db_filename)
+            # Define a permanent (writable) directory for the database.
+            permanent_dir = self.get_writable_directory("44_AK_VMS")  # change "MyApp" to your app name
+            permanent_db_path = os.path.join(permanent_dir, db_filename)
+            # If the permanent copy doesn't exist, copy it from the bundled location.
+            if not os.path.exists(permanent_db_path):
+                try:
+                    shutil.copy2(bundled_db_path, permanent_db_path)
+                except Exception as e:
+                    raise RuntimeError(f"Failed to copy database file: {e}")
+            return permanent_db_path
+        else:
+            # Running in development mode—use the local file.
+            return os.path.join(os.path.dirname(os.path.abspath(__file__)), db_filename)
+
+
+    # def get_database_path(self):
+    #     """Returns the correct database path, whether running as script or executable."""
+    #     if getattr(sys, 'frozen', False):  # If running as an executable (PyInstaller)
+    #         base_path = sys._MEIPASS
+    #     else:
+    #         base_path = os.path.dirname(os.path.abspath(__file__))  # Normal script execution
+        
+    #     return os.path.join(base_path, "vms44AKDB.db") 
 
     def db_connect(self):
         try:
@@ -285,18 +325,6 @@ class VMS_DB:
         result = cursor.fetchone()
         self.db_disconnect(conn, cursor)
         return result
-    
-    # def get_vehicle_count(self):
-    #     """Fetch the count of non-deleted vehicles from the all_vehicles table."""
-    #     try:
-    #         conn, cursor = self.db_connect()
-    #         cursor.execute("SELECT COUNT(*) FROM all_vehicles WHERE is_deleted = 0;")
-    #         count = cursor.fetchone()[0]
-    #         conn.close()
-    #         return count
-    #     except Exception as e:
-    #         print("Database error:", e)
-    #         return None
     
     def get_all_vehicle(self):
         try:
