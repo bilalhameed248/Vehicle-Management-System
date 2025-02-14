@@ -13,6 +13,8 @@ class WelcomeSummary(QWidget):
     def init_ui(self):
         """Initializes UI components."""
 
+        self.summary_columns = ["Category", "BA No.", "Make & Type", "Status"]
+
         self.setStyleSheet("""
             QTableWidget { padding: 20px; border: 1px solid #ddd; background-color: white; border-radius: 6px; font-size: 16px; }
             QHeaderView::section { background-color: #007BFF; color: white; font-weight: bold; padding: 8px; }
@@ -57,10 +59,11 @@ class WelcomeSummary(QWidget):
         self.total_vehicle_label.setStyleSheet("color: #2C3E50; padding-bottom: 10px;")
         search_layout.addWidget(self.total_vehicle_label)
 
-        self.search_box = QLineEdit(self)
-        self.search_box.setPlaceholderText("Search...")
-        self.search_box.setFixedWidth(200)  # Adjust width as needed
-        search_layout.addWidget(self.search_box)
+        self.search_box_vhl = QLineEdit(self)
+        self.search_box_vhl.setPlaceholderText("Search...")
+        self.search_box_vhl.setFixedWidth(200)  # Adjust width as needed
+        self.search_box_vhl.textChanged.connect(self.filter_wep_table)
+        search_layout.addWidget(self.search_box_vhl)
 
         veh_summary_layout.addLayout(search_layout)
         
@@ -124,7 +127,7 @@ class WelcomeSummary(QWidget):
         """Creates a styled table widget."""
         table = QTableWidget(self)
         table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Category", "BA No.", "Make & Type", "Status"])
+        table.setHorizontalHeaderLabels(self.summary_columns)
         table.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         table.setAlternatingRowColors(True)
         table.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
@@ -165,3 +168,15 @@ class WelcomeSummary(QWidget):
         # Adjust table size
         self.vehicle_table.resizeRowsToContents()
         self.vehicle_table.setSizeAdjustPolicy(QTableWidget.AdjustToContents)
+
+    def filter_wep_table(self):
+        """Filter table rows based on the search box input."""
+        filter_text = self.search_box_vhl.text().lower()
+        for row in range(self.vehicle_table.rowCount()):
+            row_visible = False
+            for col in range(len(self.summary_columns)):
+                item = self.vehicle_table.item(row, col)
+                if item and filter_text in item.text().lower():
+                    row_visible = True
+                    break
+            self.vehicle_table.setRowHidden(row, not row_visible)

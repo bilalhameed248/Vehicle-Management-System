@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QDateEdit, QTextEdit, QGridLayout, QVBoxLayout, QComboBox,
-    QPushButton, QScrollArea, QFormLayout, QHBoxLayout, QGroupBox, QMessageBox
+    QPushButton, QScrollArea, QFormLayout, QHBoxLayout, QGroupBox, QMessageBox, QSizePolicy
 )
 from PyQt5.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QIcon, QFont
 from PyQt5.QtCore import Qt, QDate, QTimer, QSize
@@ -56,6 +56,7 @@ class AddVehicle(QWidget):
             QComboBox::item:selected {{ background-color: #4a90e2; color: white; }}
         """)
 
+        self.basic_details = {}
         self.maintenance_fields = {}
         self.battery_fields = {}
         self.flusing_fields = {}
@@ -64,27 +65,61 @@ class AddVehicle(QWidget):
         self.overhaul_fields = {}
 
         layout = QVBoxLayout()
+        
         form_layout = QGridLayout()
         form_layout.setSpacing(12)
 
-        # Create input fields
-        self.blocked_combo = QComboBox()
-        self.blocked_combo.addItems(["A", "B"])
-        
-        self.ba_no_input = QLineEdit()
-        self.make_type_input = QLineEdit()
-        self.engine_no_input = QLineEdit()
-        
-        form_layout.addWidget(QLabel("Category:"), 0, 0)
-        form_layout.addWidget(self.blocked_combo, 0, 1)
-        form_layout.addWidget(QLabel("BA No:"), 0, 2)
-        form_layout.addWidget(self.ba_no_input, 0, 3)
-        form_layout.addWidget(QLabel("Make & Type:"), 1, 0)
-        form_layout.addWidget(self.make_type_input, 1, 1)
-        form_layout.addWidget(QLabel("Engine No:"), 1, 2)
-        form_layout.addWidget(self.engine_no_input, 1, 3)
+        def add_basic_section(title, row):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()    
+            
+            # Row 1: Issue Date & Due Date
+            row1_layout = QHBoxLayout()
 
-        # Add all widgets in one row
+            combo_layout = QVBoxLayout()
+            combo_layout.addWidget(QLabel("Category:"))
+            self.blocked_combo = QComboBox()
+            self.blocked_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            self.blocked_combo.addItems(["A", "B"])
+            combo_layout.addWidget(self.blocked_combo)
+
+            ba_no_layout = QVBoxLayout()
+            ba_no_layout.addWidget(QLabel("BA No:"))
+            self.ba_no_input = QLineEdit()
+            ba_no_layout.addWidget(self.ba_no_input)
+
+            row1_layout.addLayout(combo_layout)
+            row1_layout.addLayout(ba_no_layout)
+
+            row2_layout = QHBoxLayout()
+
+            make_type_layout = QVBoxLayout()
+            make_type_layout.addWidget(QLabel("Make & Type:"))
+            self.make_type_input = QLineEdit()
+            make_type_layout.addWidget(self.make_type_input)
+
+            engine_no_layout = QVBoxLayout()
+            engine_no_layout.addWidget(QLabel("Engine No:"))
+            self.engine_no_input = QLineEdit()
+            engine_no_layout.addWidget(self.engine_no_input)
+
+            row2_layout.addLayout(make_type_layout)
+            row2_layout.addLayout(engine_no_layout)
+
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, 0, 1, 4)
+
+            # # Store references to input fields
+            self.basic_details[title] = {
+                f"category": self.blocked_combo,
+                f"ba_no_input": self.ba_no_input,
+                f"make_type_input": self.make_type_input,
+                f"engine_no_input": self.engine_no_input
+            }
+
 
         def add_maintenance_section(title, row):
             group_box = QGroupBox(title)
@@ -134,6 +169,7 @@ class AddVehicle(QWidget):
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, 0, 1, 4)
+            # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
             self.maintenance_fields[title] = {
@@ -142,6 +178,7 @@ class AddVehicle(QWidget):
                 f"current_mileage_{title.lower().replace(' ', '_')}": current_mileage,
                 f"due_mileage_{title.lower().replace(' ', '_')}": due_mileage
             }
+    
     
         def add_battery_section(title, row):
             group_box = QGroupBox(title)
@@ -384,7 +421,54 @@ class AddVehicle(QWidget):
                 "tr_adjustment": tr_adjustment
             }
 
+
+        def add_overhaul_section(title, row):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()    
+        
+            # Row 1: Current Mileage & Due Mileage
+            row1_layout = QHBoxLayout()
+
+            current_mileage_layout = QVBoxLayout()
+            current_mileage_layout.addWidget(QLabel("Current Mileage:"))
+            overhaul_current_milage = QLineEdit()
+            current_mileage_layout.addWidget(overhaul_current_milage)
+
+            due_mileage_layout = QVBoxLayout()
+            due_mileage_layout.addWidget(QLabel("Due Mileage:"))
+            overhaul_due_milage = QLineEdit()
+            due_mileage_layout.addWidget(overhaul_due_milage)
+
+            row1_layout.addLayout(current_mileage_layout)
+            row1_layout.addLayout(due_mileage_layout)
+
+            # Row 2: Remarks/Status
+            row2_layout = QHBoxLayout()
+
+            coverhaul_remarks_layout = QVBoxLayout()
+            coverhaul_remarks_layout.addWidget(QLabel("Remarks/Status:"))
+            overhaul_remarks_input = QTextEdit()
+            coverhaul_remarks_layout.addWidget(overhaul_remarks_input)
+
+            row2_layout.addLayout(coverhaul_remarks_layout)
+
+            # Add rows to the group layout
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, 0, 1, 4)
+
+            # Store references to input fields
+            self.overhaul_fields[title] = {
+                "overhaul_current_milage": overhaul_current_milage,
+                "overhaul_due_milage": overhaul_due_milage,
+                "overhaul_remarks_input": overhaul_remarks_input if overhaul_remarks_input else "Nothing Mentioned"
+            }
+
+
         # Maintenance Sections
+        add_basic_section("Basic Details", 0)
         add_maintenance_section("Oil Filter", 2)
         add_maintenance_section("Fuel Filter", 4)
         add_maintenance_section("Air Filter", 6)
@@ -394,26 +478,7 @@ class AddVehicle(QWidget):
         add_greasing_section("Greasing", 14)
         add_flusing_section("Flushing", 16)
         add_gen_maint_section("Gen Maint (Monthly)", 18)
-        
-        # Overhaul Section
-        form_layout.addWidget(QLabel("Overhaul - Current Mileage:"), 20, 0)
-        overhaul_current_milage = QLineEdit()
-        form_layout.addWidget(overhaul_current_milage, 20, 1)
-        
-        form_layout.addWidget(QLabel("Due Mileage:"), 20, 2)
-        overhaul_due_milage = QLineEdit()
-        form_layout.addWidget(overhaul_due_milage, 20, 3)
-
-        # Remarks Section
-        form_layout.addWidget(QLabel("Remarks/Status:"), 21, 0)
-        overhaul_remarks_input = QTextEdit()
-        form_layout.addWidget(overhaul_remarks_input, 21, 1, 1, 3)
-
-        self.overhaul_fields['Overhaul'] = {
-            "overhaul_current_milage": overhaul_current_milage,
-            "overhaul_due_milage": overhaul_due_milage,
-            "overhaul_remarks_input": overhaul_remarks_input if overhaul_remarks_input else "Nothing Mentioned"
-        }
+        add_overhaul_section("Overhaul", 20)
 
         # Buttons
         button_layout = QHBoxLayout()
@@ -451,19 +516,16 @@ class AddVehicle(QWidget):
         """ Inserts user into the database """
         add_Vehicle_data = {}
 
-        category = "A" if self.blocked_combo.currentIndex() == 0 else "B"
-        ba_no_input = self.ba_no_input.text().strip()
-        make_type_input = self.make_type_input.text().strip()
-        engine_no_input = self.engine_no_input.text().strip()
-
-        if not (ba_no_input or make_type_input or engine_no_input):
+        if not (self.basic_details['Basic Details']['ba_no_input'].text().strip() and self.basic_details['Basic Details']['make_type_input'].text().strip() and self.basic_details['Basic Details']['engine_no_input'].text().strip()):
             QMessageBox.warning(self, "Error", "BA NO, Make Type & Engine Number are required!")
             return
 
-        add_Vehicle_data['category'] = category
-        add_Vehicle_data['ba_no_input'] = ba_no_input
-        add_Vehicle_data['make_type_input'] = make_type_input
-        add_Vehicle_data['engine_no_input'] = engine_no_input
+        for fields in self.basic_details.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_Vehicle_data[key] = widget.currentText().strip()
+                elif isinstance(widget, QLineEdit):
+                    add_Vehicle_data[key] = widget.text().strip()
 
         for fields in self.maintenance_fields.values():
             for key, widget in fields.items():
