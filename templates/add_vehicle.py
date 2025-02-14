@@ -67,9 +67,9 @@ class AddVehicle(QWidget):
         layout = QVBoxLayout()
         
         form_layout = QGridLayout()
-        form_layout.setSpacing(12)
+        form_layout.setSpacing(6)
 
-        def add_basic_section(title, row):
+        def add_basic_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()    
             
@@ -110,7 +110,7 @@ class AddVehicle(QWidget):
             group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, 0, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
 
             # # Store references to input fields
             self.basic_details[title] = {
@@ -121,7 +121,7 @@ class AddVehicle(QWidget):
             }
 
 
-        def add_maintenance_section(title, row):
+        def add_maintenance_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()    
             
@@ -168,7 +168,7 @@ class AddVehicle(QWidget):
             group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, 0, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
@@ -180,7 +180,7 @@ class AddVehicle(QWidget):
             }
     
     
-        def add_battery_section(title, row):
+        def add_battery_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
             
@@ -190,20 +190,20 @@ class AddVehicle(QWidget):
             # Issue Date
             issue_layout = QVBoxLayout()
             issue_layout.addWidget(QLabel("Issue Date:"))
-            battery_issue_date = QDateEdit()
-            battery_issue_date.setCalendarPopup(True)
-            battery_issue_date.setDate(QDate.currentDate())
-            battery_issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(battery_issue_date)
+            self.battery_issue_date = QDateEdit()
+            self.battery_issue_date.setCalendarPopup(True)
+            self.battery_issue_date.setDate(QDate.currentDate())
+            self.battery_issue_date.setDisplayFormat("dd-MM-yyyy")
+            issue_layout.addWidget(self.battery_issue_date)
 
             # Due Date
             due_layout = QVBoxLayout()
             due_layout.addWidget(QLabel("Due Date:"))
-            battery_due_date = QDateEdit()
-            battery_due_date.setCalendarPopup(True)
-            battery_due_date.setDate(QDate.currentDate())
-            battery_due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(battery_due_date)
+            self.battery_due_date = QDateEdit()
+            self.battery_due_date.setCalendarPopup(True)
+            self.battery_due_date.setDate(QDate.currentDate())
+            self.battery_due_date.setDisplayFormat("dd-MM-yyyy")
+            due_layout.addWidget(self.battery_due_date)
 
             # Add both to the horizontal layout
             row_layout.addLayout(issue_layout)
@@ -213,71 +213,15 @@ class AddVehicle(QWidget):
             group_layout.addLayout(row_layout)
             group_box.setLayout(group_layout)
             # Add the group box to the form
-            form_layout.addWidget(group_box, row, 0, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 4)
 
             self.battery_fields[title] = {
-                "battery_issue_date": battery_issue_date,
-                "battery_due_date": battery_due_date
+                "battery_issue_date": self.battery_issue_date,
+                "battery_due_date": self.battery_due_date
             }
 
-
-        def add_flusing_section(title, row):
-            group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()
-            # Row 1: Issue Date & Due Date
-            row1_layout = QHBoxLayout()
-
-            issue_layout = QVBoxLayout()
-            issue_layout.addWidget(QLabel("Issue Date:"))
-            issue_date = QDateEdit()
-            issue_date.setCalendarPopup(True)
-            issue_date.setDate(QDate.currentDate())
-            issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(issue_date)
-
-            due_layout = QVBoxLayout()
-            due_layout.addWidget(QLabel("Due Date:"))
-            due_date = QDateEdit()
-            due_date.setCalendarPopup(True)
-            due_date.setDate(QDate.currentDate())
-            due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(due_date)
-
-            row1_layout.addLayout(issue_layout)
-            row1_layout.addLayout(due_layout)
-
-            # Row 2: Current Mileage & Due Mileage
-            row2_layout = QHBoxLayout()
-
-            fuel_tank_flush_layout = QVBoxLayout()
-            fuel_tank_flush_layout.addWidget(QLabel("Fuel Tank Flush:"))
-            fuel_tank_flush = QLineEdit()
-            fuel_tank_flush_layout.addWidget(fuel_tank_flush)
-
-            radiator_flush_layout = QVBoxLayout()
-            radiator_flush_layout.addWidget(QLabel("Radiator Flush:"))
-            radiator_flush = QLineEdit()
-            radiator_flush_layout.addWidget(radiator_flush)
-
-            row2_layout.addLayout(fuel_tank_flush_layout)
-            row2_layout.addLayout(radiator_flush_layout)
-
-            # Add rows to the group layout
-            group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-
-            group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, 0, 1, 4)
-
-            self.flusing_fields[title] = {
-                "flusing_issue_date": issue_date,
-                "flusing_due_date": due_date,
-                "fuel_tank_flush": fuel_tank_flush,
-                "radiator_flush": radiator_flush
-            }
         
-
-        def add_greasing_section(title, row):
+        def add_greasing_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
             # Row 1: Issue Date & Due Date
@@ -285,19 +229,19 @@ class AddVehicle(QWidget):
 
             issue_layout = QVBoxLayout()
             issue_layout.addWidget(QLabel("Issue Date:"))
-            issue_date = QDateEdit()
-            issue_date.setCalendarPopup(True)
-            issue_date.setDate(QDate.currentDate())
-            issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(issue_date)
+            self.greasing_issue_date = QDateEdit()
+            self.greasing_issue_date.setCalendarPopup(True)
+            self.greasing_issue_date.setDate(QDate.currentDate())
+            self.greasing_issue_date.setDisplayFormat("dd-MM-yyyy")
+            issue_layout.addWidget(self.greasing_issue_date)
 
             due_layout = QVBoxLayout()
             due_layout.addWidget(QLabel("Due Date:"))
-            due_date = QDateEdit()
-            due_date.setCalendarPopup(True)
-            due_date.setDate(QDate.currentDate())
-            due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(due_date)
+            self.greasing_due_date = QDateEdit()
+            self.greasing_due_date.setCalendarPopup(True)
+            self.greasing_due_date.setDate(QDate.currentDate())
+            self.greasing_due_date.setDisplayFormat("dd-MM-yyyy")
+            due_layout.addWidget(self.greasing_due_date)
 
             row1_layout.addLayout(issue_layout)
             row1_layout.addLayout(due_layout)
@@ -307,21 +251,21 @@ class AddVehicle(QWidget):
 
             trs_and_suspension_layout = QVBoxLayout()
             trs_and_suspension_layout.addWidget(QLabel("Trs and suspension:"))
-            trs_and_suspension = QLineEdit()
-            trs_and_suspension_layout.addWidget(trs_and_suspension)
+            self.trs_and_suspension = QLineEdit()
+            trs_and_suspension_layout.addWidget(self.trs_and_suspension)
 
             engine_part_layout = QVBoxLayout()
             engine_part_layout.addWidget(QLabel("Engine parts:"))
-            engine_part = QLineEdit()
-            engine_part_layout.addWidget(engine_part)
+            self.engine_part = QLineEdit()
+            engine_part_layout.addWidget(self.engine_part)
 
             row2_layout.addLayout(trs_and_suspension_layout)
             row2_layout.addLayout(engine_part_layout)
 
             steering_lever_Pts_layout = QVBoxLayout()
             steering_lever_Pts_layout.addWidget(QLabel("Steering lever Pts:"))
-            steering_lever_Pts = QLineEdit()
-            steering_lever_Pts_layout.addWidget(steering_lever_Pts)
+            self.steering_lever_Pts = QLineEdit()
+            steering_lever_Pts_layout.addWidget(self.steering_lever_Pts)
 
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(steering_lever_Pts_layout)
@@ -332,18 +276,74 @@ class AddVehicle(QWidget):
             group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, 0, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
 
             self.greasing_fields[title] = {
-                "greasing_issue_date": issue_date,
-                "greasing_due_date": due_date,
-                "trs_and_suspension": trs_and_suspension,
-                "engine_part": engine_part,
-                "steering_lever_Pts": steering_lever_Pts
+                "greasing_issue_date": self.greasing_issue_date,
+                "greasing_due_date": self.greasing_due_date,
+                "trs_and_suspension": self.trs_and_suspension,
+                "engine_part": self.engine_part,
+                "steering_lever_Pts": self.steering_lever_Pts
             }
 
 
-        def add_gen_maint_section(title, row):
+        def add_flusing_section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()
+            # Row 1: Issue Date & Due Date
+            row1_layout = QHBoxLayout()
+
+            issue_layout = QVBoxLayout()
+            issue_layout.addWidget(QLabel("Issue Date:"))
+            self.flushing_issue_date = QDateEdit()
+            self.flushing_issue_date.setCalendarPopup(True)
+            self.flushing_issue_date.setDate(QDate.currentDate())
+            self.flushing_issue_date.setDisplayFormat("dd-MM-yyyy")
+            issue_layout.addWidget(self.flushing_issue_date)
+
+            due_layout = QVBoxLayout()
+            due_layout.addWidget(QLabel("Due Date:"))
+            self.flushing_due_date = QDateEdit()
+            self.flushing_due_date.setCalendarPopup(True)
+            self.flushing_due_date.setDate(QDate.currentDate())
+            self.flushing_due_date.setDisplayFormat("dd-MM-yyyy")
+            due_layout.addWidget(self.flushing_due_date)
+
+            row1_layout.addLayout(issue_layout)
+            row1_layout.addLayout(due_layout)
+
+            # Row 2: Current Mileage & Due Mileage
+            row2_layout = QHBoxLayout()
+
+            fuel_tank_flush_layout = QVBoxLayout()
+            fuel_tank_flush_layout.addWidget(QLabel("Fuel Tank Flush:"))
+            self.fuel_tank_flush = QLineEdit()
+            fuel_tank_flush_layout.addWidget(self.fuel_tank_flush)
+
+            radiator_flush_layout = QVBoxLayout()
+            radiator_flush_layout.addWidget(QLabel("Radiator Flush:"))
+            self.radiator_flush = QLineEdit()
+            radiator_flush_layout.addWidget(self.radiator_flush)
+
+            row2_layout.addLayout(fuel_tank_flush_layout)
+            row2_layout.addLayout(radiator_flush_layout)
+
+            # Add rows to the group layout
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, col, 1, 1)
+
+            self.flusing_fields[title] = {
+                "flusing_issue_date": self.flushing_issue_date,
+                "flusing_due_date": self.flushing_due_date,
+                "fuel_tank_flush": self.fuel_tank_flush,
+                "radiator_flush": self.radiator_flush
+            }
+
+
+        def add_gen_maint_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
             # Row 1: Issue Date & Due Date
@@ -351,13 +351,13 @@ class AddVehicle(QWidget):
 
             wash_layout = QVBoxLayout()
             wash_layout.addWidget(QLabel("Wash:"))
-            wash = QLineEdit()
-            wash_layout.addWidget(wash)
+            self.wash = QLineEdit()
+            wash_layout.addWidget(self.wash)
 
             oil_level_check_layout = QVBoxLayout()
             oil_level_check_layout.addWidget(QLabel("Oil Level Check:"))
-            oil_level_check = QLineEdit()
-            oil_level_check_layout.addWidget(oil_level_check)
+            self.oil_level_check = QLineEdit()
+            oil_level_check_layout.addWidget(self.oil_level_check)
 
             row1_layout.addLayout(wash_layout)
             row1_layout.addLayout(oil_level_check_layout)
@@ -367,13 +367,13 @@ class AddVehicle(QWidget):
 
             lubrication_of_parts_layout = QVBoxLayout()
             lubrication_of_parts_layout.addWidget(QLabel("Lubrication of parts:"))
-            lubrication_of_parts = QLineEdit()
-            lubrication_of_parts_layout.addWidget(lubrication_of_parts)
+            self.lubrication_of_parts = QLineEdit()
+            lubrication_of_parts_layout.addWidget(self.lubrication_of_parts)
 
             air_cleaner_layout = QVBoxLayout()
             air_cleaner_layout.addWidget(QLabel("Air Cleaner Maint:"))
-            air_cleaner = QLineEdit()
-            air_cleaner_layout.addWidget(air_cleaner)
+            self.air_cleaner = QLineEdit()
+            air_cleaner_layout.addWidget(self.air_cleaner)
 
             row2_layout.addLayout(lubrication_of_parts_layout)
             row2_layout.addLayout(air_cleaner_layout)
@@ -382,13 +382,13 @@ class AddVehicle(QWidget):
 
             fuel_filter_layout = QVBoxLayout()
             fuel_filter_layout.addWidget(QLabel("Fuel Filter Maint:"))
-            fuel_filter = QLineEdit()
-            fuel_filter_layout.addWidget(fuel_filter)
+            self.fuel_filter = QLineEdit()
+            fuel_filter_layout.addWidget(self.fuel_filter)
 
             french_chalk_layout = QVBoxLayout()
             french_chalk_layout.addWidget(QLabel("French chalk:"))
-            french_chalk = QLineEdit()
-            french_chalk_layout.addWidget(french_chalk)
+            self.french_chalk = QLineEdit()
+            french_chalk_layout.addWidget(self.french_chalk)
 
             row3_layout.addLayout(fuel_filter_layout)
             row3_layout.addLayout(french_chalk_layout)
@@ -397,8 +397,8 @@ class AddVehicle(QWidget):
             
             tr_adjustment_layout = QVBoxLayout()
             tr_adjustment_layout.addWidget(QLabel("Tr Adjustment:"))
-            tr_adjustment = QLineEdit()
-            tr_adjustment_layout.addWidget(tr_adjustment)
+            self.tr_adjustment = QLineEdit()
+            tr_adjustment_layout.addWidget(self.tr_adjustment)
 
             row4_layout.addLayout(tr_adjustment_layout)
 
@@ -409,20 +409,20 @@ class AddVehicle(QWidget):
             group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, 0, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
 
             self.gen_maint_fields[title] = {
-                "wash": wash,
-                "oil_level_check": oil_level_check,
-                "lubrication_of_parts": lubrication_of_parts,
-                "air_cleaner": air_cleaner,
-                "fuel_filter": fuel_filter,
-                "french_chalk": french_chalk,
-                "tr_adjustment": tr_adjustment
+                "wash": self.wash,
+                "oil_level_check": self.oil_level_check,
+                "lubrication_of_parts": self.lubrication_of_parts,
+                "air_cleaner": self.air_cleaner,
+                "fuel_filter": self.fuel_filter,
+                "french_chalk": self.french_chalk,
+                "tr_adjustment": self.tr_adjustment
             }
 
 
-        def add_overhaul_section(title, row):
+        def add_overhaul_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()    
         
@@ -431,13 +431,13 @@ class AddVehicle(QWidget):
 
             current_mileage_layout = QVBoxLayout()
             current_mileage_layout.addWidget(QLabel("Current Mileage:"))
-            overhaul_current_milage = QLineEdit()
-            current_mileage_layout.addWidget(overhaul_current_milage)
+            self.overhaul_current_milage = QLineEdit()
+            current_mileage_layout.addWidget(self.overhaul_current_milage)
 
             due_mileage_layout = QVBoxLayout()
             due_mileage_layout.addWidget(QLabel("Due Mileage:"))
-            overhaul_due_milage = QLineEdit()
-            due_mileage_layout.addWidget(overhaul_due_milage)
+            self.overhaul_due_milage = QLineEdit()
+            due_mileage_layout.addWidget(self.overhaul_due_milage)
 
             row1_layout.addLayout(current_mileage_layout)
             row1_layout.addLayout(due_mileage_layout)
@@ -447,8 +447,8 @@ class AddVehicle(QWidget):
 
             coverhaul_remarks_layout = QVBoxLayout()
             coverhaul_remarks_layout.addWidget(QLabel("Remarks/Status:"))
-            overhaul_remarks_input = QTextEdit()
-            coverhaul_remarks_layout.addWidget(overhaul_remarks_input)
+            self.overhaul_remarks_input = QTextEdit()
+            coverhaul_remarks_layout.addWidget(self.overhaul_remarks_input)
 
             row2_layout.addLayout(coverhaul_remarks_layout)
 
@@ -457,28 +457,28 @@ class AddVehicle(QWidget):
             group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, 0, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
 
             # Store references to input fields
             self.overhaul_fields[title] = {
-                "overhaul_current_milage": overhaul_current_milage,
-                "overhaul_due_milage": overhaul_due_milage,
-                "overhaul_remarks_input": overhaul_remarks_input if overhaul_remarks_input else "Nothing Mentioned"
+                "overhaul_current_milage": self.overhaul_current_milage,
+                "overhaul_due_milage": self.overhaul_due_milage,
+                "overhaul_remarks_input": self.overhaul_remarks_input if self.overhaul_remarks_input else "Nothing Mentioned"
             }
 
 
         # Maintenance Sections
-        add_basic_section("Basic Details", 0)
-        add_maintenance_section("Oil Filter", 2)
-        add_maintenance_section("Fuel Filter", 4)
-        add_maintenance_section("Air Filter", 6)
-        add_maintenance_section("Transmission Filter", 8)
-        add_maintenance_section("Differential Oil", 10)
-        add_battery_section("Battery", 12)
-        add_greasing_section("Greasing", 14)
-        add_flusing_section("Flushing", 16)
-        add_gen_maint_section("Gen Maint (Monthly)", 18)
-        add_overhaul_section("Overhaul", 20)
+        add_basic_section("Basic Details", 0, 0)
+        add_maintenance_section("Oil Filter", 0, 1)
+        add_maintenance_section("Fuel Filter", 2, 0)
+        add_maintenance_section("Air Filter", 2, 1)
+        add_maintenance_section("Transmission Filter", 4, 0)
+        add_maintenance_section("Differential Oil", 4, 1)
+        add_battery_section("Battery", 6, 0)
+        add_greasing_section("Greasing", 8, 0)
+        add_flusing_section("Flushing", 8, 1)
+        add_gen_maint_section("Gen Maint (Monthly)", 10, 0)
+        add_overhaul_section("Overhaul", 10, 1)
 
         # Buttons
         button_layout = QHBoxLayout()
@@ -487,9 +487,10 @@ class AddVehicle(QWidget):
         save_button.setIconSize(QSize(20, 20))
         save_button.clicked.connect(self.save_vehicle)
 
-        clear_button = QPushButton("Clear")
+        clear_button = QPushButton(" Clear/Reset")
         clear_button.setIcon(QIcon(get_asset_path("assets/icons/clear.png")))
         clear_button.setIconSize(QSize(20, 20))
+        clear_button.clicked.connect(self.clear_fields)
 
         cancel_button = QPushButton(" Cancel")
         cancel_button.setIcon(QIcon(get_asset_path("assets/icons/cancel.png")))
@@ -582,3 +583,35 @@ class AddVehicle(QWidget):
             QMessageBox.information(self, "Success", "Vehicle added successfully!")
             return
     
+
+    def clear_fields(self):
+        self.blocked_combo.setCurrentIndex(0)
+        self.ba_no_input.setText("")
+        self.make_type_input.setText("")
+        self.engine_no_input.setText("")
+
+        self.battery_issue_date.setDate(QDate.currentDate())
+        self.battery_due_date.setDate(QDate.currentDate())
+
+        self.greasing_issue_date.setDate(QDate.currentDate())
+        self.greasing_due_date.setDate(QDate.currentDate())
+        self.trs_and_suspension.setText("")
+        self.engine_part.setText("")
+        self.steering_lever_Pts.setText("")
+
+        self.flushing_issue_date.setDate(QDate.currentDate())
+        self.flushing_due_date.setDate(QDate.currentDate())
+        self.fuel_tank_flush.setText("")
+        self.radiator_flush.setText("")
+
+        self.wash.setText("")
+        self.oil_level_check.setText("")
+        self.lubrication_of_parts.setText("")
+        self.air_cleaner.setText("")
+        self.fuel_filter.setText("")
+        self.french_chalk.setText("")
+        self.tr_adjustment.setText("")
+
+        self.overhaul_current_milage.setText("")
+        self.overhaul_due_milage.setText("")
+        self.overhaul_remarks_input.setText("")
