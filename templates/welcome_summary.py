@@ -1,13 +1,17 @@
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableWidget, QSplitter, 
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableWidget, QSplitter, QPushButton,
                               QTableWidgetItem, QHeaderView, QAbstractItemView, QSizePolicy, QLineEdit)
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainter, QColor, QFontMetrics
+from PyQt5.QtCore import Qt, QTimer, QSize, QRect
 from database import VMS_DB
+from controllers.load_assets import *
+import math
 
 class WelcomeSummary(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.db_obj = VMS_DB()
+        self.current_page = 0
+        self.page_size = 10
         self.init_ui()
 
     def init_ui(self):
@@ -16,6 +20,8 @@ class WelcomeSummary(QWidget):
         self.summary_columns = ["Category", "BA No.", "Make & Type", "Status"]
 
         self.setStyleSheet("""
+            QPushButton { background-color: #007BFF; color: white; padding: 6px 10px; border-radius: 4px; font-weight: bold; border: none; }
+            QPushButton:hover { background-color: #0056b3; }
             QTableWidget { padding: 20px; border: 1px solid #ddd; background-color: white; border-radius: 6px; font-size: 16px; }
             QHeaderView::section { background-color: #007BFF; color: white; font-weight: bold; padding: 8px; }
             QTableWidget::item { padding: 6px; }
@@ -69,6 +75,38 @@ class WelcomeSummary(QWidget):
         
         self.vehicle_table = self.create_table()
         veh_summary_layout.addWidget(self.vehicle_table)
+
+        #************************************************************
+        # --- Pagination Controls ---
+        pagination_layout = QHBoxLayout()
+        # Label to show "Showing x to y of z entries"
+        self.entries_label = QLabel("Showing 0 to 0 of 0 entries")
+        self.entries_label.setStyleSheet("color: white; font-size: 16px; font-weight: bold; padding: 12px; border-radius: 4px;")
+        pagination_layout.addWidget(self.entries_label)
+        
+        pagination_layout.addStretch()
+        
+        # Container layout for page number buttons
+        self.page_buttons_layout = QHBoxLayout()
+        pagination_layout.addLayout(self.page_buttons_layout)
+        
+        pagination_layout.addStretch()
+        
+        # Previous and Next buttons
+        self.btn_prev = QPushButton(" Prev")
+        self.btn_prev.setIcon(QIcon(get_asset_path("assets/icons/btn_prev.png")))
+        self.btn_prev.setIconSize(QSize(30, 30))
+        self.btn_prev.clicked.connect(self.prev_page)
+        pagination_layout.addWidget(self.btn_prev)
+        
+        self.btn_next = QPushButton(" Next")
+        self.btn_next.setIcon(QIcon(get_asset_path("assets/icons/btn_next.png")))
+        self.btn_next.setIconSize(QSize(30, 30))
+        self.btn_next.clicked.connect(self.next_page)
+        pagination_layout.addWidget(self.btn_next)
+        
+        veh_summary_layout.addLayout(pagination_layout)
+        #************************************************************
 
         veh_container.setLayout(veh_summary_layout)
         splitter.addWidget(veh_container)
@@ -148,18 +186,15 @@ class WelcomeSummary(QWidget):
     
     def load_data(self):
         """Loads fresh data from the database and updates the UI."""
-        all_vehicle_data = self.db_obj.get_all_vehicle()
-        total_vehicles = len(all_vehicle_data)
-        
+        all_vehicle_data = self.db_obj.get_vehicle_summary(self.current_page, self.page_size)
+        total_vehicles = self.db_obj.get_vehicle_count()
         # Update Summary Label
         self.total_vehicle_label.setText(f"🚗 Total Vehicles: {total_vehicles}")
         self.total_weapon_label.setText(f"🔫 Total Weapons: {total_vehicles}")
         
         # Update Table Data
-        # display_rows = min(5, total_vehicles)
-        display_rows = total_vehicles
-        self.vehicle_table.setRowCount(display_rows)
-        for row, vehicle in enumerate(all_vehicle_data[:display_rows]):
+        self.vehicle_table.setRowCount(len(all_vehicle_data))
+        for row, vehicle in enumerate(all_vehicle_data):
             self.vehicle_table.setItem(row, 0, QTableWidgetItem(str(vehicle["category"])))
             self.vehicle_table.setItem(row, 1, QTableWidgetItem(str(vehicle["ba_no_input"])))
             self.vehicle_table.setItem(row, 2, QTableWidgetItem(str(vehicle["make_type_input"])))
@@ -168,6 +203,68 @@ class WelcomeSummary(QWidget):
         # Adjust table size
         self.vehicle_table.resizeRowsToContents()
         self.vehicle_table.setSizeAdjustPolicy(QTableWidget.AdjustToContents)
+
+        self.update_pagination_buttons()
+
+    def prev_page(self):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.load_data()
+
+
+    def next_page(self):
+        total_count = self.db_obj.get_vehicle_count()
+        total_pages = math.ceil(total_count / self.page_size)
+        if self.current_page < total_pages - 1:
+            self.current_page += 1
+            self.load_data()
+
+
+    def go_to_page(self, page):
+        self.current_page = page
+        self.load_data()
+
+
+    def update_pagination_buttons(self):
+        # Get the total count from the database.
+        total_count = self.db_obj.get_vehicle_count()
+        total_pages = math.ceil(total_count / self.page_size) if self.page_size else 1
+        
+        # Calculate the current entries range.
+        start_entry = self.current_page * self.page_size + 1
+        end_entry = min((self.current_page + 1) * self.page_size, total_count)
+        
+        # Update the entries label.
+        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count} entries")
+        
+        # Clear existing page number buttons.
+        for i in reversed(range(self.page_buttons_layout.count())):
+            widget = self.page_buttons_layout.itemAt(i).widget()
+            if widget:
+                self.page_buttons_layout.removeWidget(widget)
+                widget.deleteLater()
+        
+        # Create page number buttons.
+        for page in range(total_pages):
+            btn = QPushButton(str(page + 1))
+            btn.setCheckable(True)
+            btn.setStyleSheet("""
+                QPushButton { background-color: #f0f0f0; color: black; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; }
+                QPushButton:hover { background-color: #e0e0e0; }
+                QPushButton:checked { background-color: #007bff; color: white;font-weight: bold; }
+            """)
+            # Mark the current page button as checked.
+            if page == self.current_page:
+                btn.setChecked(True)
+            # When a button is clicked, jump to that page.
+            btn.clicked.connect(lambda checked, p=page: self.go_to_page(p))
+            self.page_buttons_layout.addWidget(btn)
+        
+        # Enable/disable previous/next buttons.
+        self.btn_prev.setEnabled(self.current_page > 0)
+        self.btn_next.setEnabled(self.current_page < total_pages - 1)
+
+
 
     def filter_wep_table(self):
         """Filter table rows based on the search box input."""

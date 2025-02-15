@@ -15,7 +15,7 @@ class Report:
     def generate_report(self):
         try:
             db = VMS_DB()
-            vehicles = db.get_all_vehicle()
+            vehicles = db.get_all_vehicle(page=None, page_size=None)
 
             self.groupColors = {
                 "Basic Details": "FF5733",  # Red-Orange

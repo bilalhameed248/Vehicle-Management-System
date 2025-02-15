@@ -17,6 +17,7 @@ class AddVehicle(QWidget):
         self.username = self.user_session.get('username')
         # print("self.user_id:",self.user_id)
         # print("self.username:",self.username)
+        self.main_parent_welcome = parent
         self.initUI()
         self.db_obj = VMS_DB() 
 
@@ -495,6 +496,7 @@ class AddVehicle(QWidget):
         cancel_button = QPushButton(" Cancel")
         cancel_button.setIcon(QIcon(get_asset_path("assets/icons/cancel.png")))
         cancel_button.setIconSize(QSize(20, 20))
+        # cancel_button.clicked.connect(self.cancel_add_vehicle)
 
         button_layout.addWidget(save_button)
         button_layout.addWidget(clear_button)
@@ -615,3 +617,7 @@ class AddVehicle(QWidget):
         self.overhaul_current_milage.setText("")
         self.overhaul_due_milage.setText("")
         self.overhaul_remarks_input.setText("")
+
+    # def cancel_add_vehicle(self):
+    #     self.main_parent_welcome.welcome_summary_obj.load_data()  # Reload fresh data
+    #     self.main_parent_welcome.content_area.setCurrentWidget(self.welcome_summary_obj)  # Switch view

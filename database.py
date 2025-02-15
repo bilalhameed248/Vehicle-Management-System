@@ -326,30 +326,54 @@ class VMS_DB:
         self.db_disconnect(conn, cursor)
         return result
     
-    def get_all_vehicle(self):
+    def get_all_vehicle(self, page=0, page_size=10):
         try:
             all_vehicles = []
             conn, cursor = self.db_connect()
-            sql = """SELECT 
-                    av.id, av.category, av.ba_no_input, av.make_type_input, av.engine_no_input,
-                    av.issue_date_oil_filter, av.due_date_oil_filter, av.current_mileage_oil_filter, av.due_mileage_oil_filter,
-                    av.issue_date_fuel_filter, av.due_date_fuel_filter, av.current_mileage_fuel_filter, av.due_mileage_fuel_filter,
-                    av.issue_date_air_filter, av.due_date_air_filter, av.current_mileage_air_filter, av.due_mileage_air_filter,
-                    av.issue_date_transmission_filter, av.due_date_transmission_filter, av.current_mileage_transmission_filter, av.due_mileage_transmission_filter,
-                    av.issue_date_differential_oil, av.due_date_differential_oil, av.current_mileage_differential_oil, av.due_mileage_differential_oil,
-                    av.battery_issue_date, av.battery_due_date,
-                    av.flusing_issue_date, av.flusing_due_date, av.fuel_tank_flush, av.radiator_flush,
-                    av.greasing_issue_date, av.greasing_due_date,
-                    av.trs_and_suspension, av.engine_part, av.steering_lever_Pts, av.wash, av.oil_level_check, av.lubrication_of_parts,
-                    av.air_cleaner, av.fuel_filter, av.french_chalk, av.tr_adjustment,
-                    av.overhaul_current_milage, av.overhaul_due_milage, av.overhaul_remarks_input,
-                    u.name AS created_by,
-                    av.created_at
-                FROM all_vehicles av
-                LEFT JOIN users u ON av.created_by = u.id  -- Joining users table to get the name
-                WHERE av.is_deleted = 0 
-                ORDER BY av.created_at DESC;"""
-            cursor.execute(sql)
+            if page_size:
+                offset = page * page_size
+                sql = """SELECT 
+                        av.id, av.category, av.ba_no_input, av.make_type_input, av.engine_no_input,
+                        av.issue_date_oil_filter, av.due_date_oil_filter, av.current_mileage_oil_filter, av.due_mileage_oil_filter,
+                        av.issue_date_fuel_filter, av.due_date_fuel_filter, av.current_mileage_fuel_filter, av.due_mileage_fuel_filter,
+                        av.issue_date_air_filter, av.due_date_air_filter, av.current_mileage_air_filter, av.due_mileage_air_filter,
+                        av.issue_date_transmission_filter, av.due_date_transmission_filter, av.current_mileage_transmission_filter, av.due_mileage_transmission_filter,
+                        av.issue_date_differential_oil, av.due_date_differential_oil, av.current_mileage_differential_oil, av.due_mileage_differential_oil,
+                        av.battery_issue_date, av.battery_due_date,
+                        av.flusing_issue_date, av.flusing_due_date, av.fuel_tank_flush, av.radiator_flush,
+                        av.greasing_issue_date, av.greasing_due_date,
+                        av.trs_and_suspension, av.engine_part, av.steering_lever_Pts, av.wash, av.oil_level_check, av.lubrication_of_parts,
+                        av.air_cleaner, av.fuel_filter, av.french_chalk, av.tr_adjustment,
+                        av.overhaul_current_milage, av.overhaul_due_milage, av.overhaul_remarks_input,
+                        u.name AS created_by,
+                        av.created_at
+                    FROM all_vehicles av
+                    LEFT JOIN users u ON av.created_by = u.id  -- Joining users table to get the name
+                    WHERE av.is_deleted = 0 
+                    ORDER BY av.created_at DESC
+                    LIMIT ? OFFSET ?;"""
+                cursor.execute(sql, (page_size, offset))
+            else:
+                sql = """SELECT 
+                        av.id, av.category, av.ba_no_input, av.make_type_input, av.engine_no_input,
+                        av.issue_date_oil_filter, av.due_date_oil_filter, av.current_mileage_oil_filter, av.due_mileage_oil_filter,
+                        av.issue_date_fuel_filter, av.due_date_fuel_filter, av.current_mileage_fuel_filter, av.due_mileage_fuel_filter,
+                        av.issue_date_air_filter, av.due_date_air_filter, av.current_mileage_air_filter, av.due_mileage_air_filter,
+                        av.issue_date_transmission_filter, av.due_date_transmission_filter, av.current_mileage_transmission_filter, av.due_mileage_transmission_filter,
+                        av.issue_date_differential_oil, av.due_date_differential_oil, av.current_mileage_differential_oil, av.due_mileage_differential_oil,
+                        av.battery_issue_date, av.battery_due_date,
+                        av.flusing_issue_date, av.flusing_due_date, av.fuel_tank_flush, av.radiator_flush,
+                        av.greasing_issue_date, av.greasing_due_date,
+                        av.trs_and_suspension, av.engine_part, av.steering_lever_Pts, av.wash, av.oil_level_check, av.lubrication_of_parts,
+                        av.air_cleaner, av.fuel_filter, av.french_chalk, av.tr_adjustment,
+                        av.overhaul_current_milage, av.overhaul_due_milage, av.overhaul_remarks_input,
+                        u.name AS created_by,
+                        av.created_at
+                    FROM all_vehicles av
+                    LEFT JOIN users u ON av.created_by = u.id  -- Joining users table to get the name
+                    WHERE av.is_deleted = 0 
+                    ORDER BY av.created_at DESC;"""
+                cursor.execute(sql)
             columns = [desc[0] for desc in cursor.description]  # Get column names
             rows = cursor.fetchall()
             all_vehicles = [dict(zip(columns, row)) for row in rows]
@@ -358,7 +382,29 @@ class VMS_DB:
         except Exception as e:
             traceback.print_exc()
             print(f"Exception: get_all_vehicle {e}")
+            return []
+        
+    def get_vehicle_summary(self, page=0, page_size=10):
+        try:
+            all_vehicles = []
+            conn, cursor = self.db_connect()
+            offset = page * page_size
+            sql = """SELECT 
+                    av.id, av.category, av.ba_no_input, av.make_type_input, av.overhaul_remarks_input
+                FROM all_vehicles av
+                WHERE av.is_deleted = 0 
+                ORDER BY av.created_at DESC
+                LIMIT ? OFFSET ?;"""
+            cursor.execute(sql, (page_size, offset))
+            columns = [desc[0] for desc in cursor.description]  # Get column names
+            rows = cursor.fetchall()
+            all_vehicles = [dict(zip(columns, row)) for row in rows]
+            self.db_disconnect(conn, cursor)
             return all_vehicles
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_all_vehicle {e}")
+            return []
         
     def delete_vehicle(self, vehicle_id):
         try:
@@ -375,6 +421,19 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: delete_vehicle {e}")
             return False
+        
+    def get_vehicle_count(self):
+        try:
+            conn, cursor = self.db_connect()
+            sql = "SELECT COUNT(*) FROM all_vehicles WHERE is_deleted = 0;"
+            cursor.execute(sql)
+            total = cursor.fetchone()[0]
+            self.db_disconnect(conn, cursor)
+            return total
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_vehicle_count {e}")
+            return 0
 
     def insert_vehicle(self, data):
         try:

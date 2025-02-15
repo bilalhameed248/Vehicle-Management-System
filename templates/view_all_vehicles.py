@@ -9,6 +9,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
 from controllers.report_all_vehicles import Report
+import math
 
 class MultiLevelHeaderView(QHeaderView):
     
@@ -100,11 +101,49 @@ class ViewALLVehicles(QWidget):
         # print("self.username:", self.username)
         self.main_parent = parent
         # print("VIew All Vehicle: self.main_parent:",self.main_parent, "\n")
+
+        self.current_page = 0
+        self.page_size = 10
         
         self.vr_obj = VehicleReport()
         self.db_obj = VMS_DB() 
         self.rpt_obj = Report()
         self.columns = []
+
+        # Mapping from DB keys to header names – not used for ordering now.
+        self.db_to_display = {
+            "category": "Category", "ba_no_input": "BA No.", "make_type_input": "Make Type", "engine_no_input": "Engine No.",
+            "issue_date_oil_filter": "Issue Date (Oil Filter)", "due_date_oil_filter": "Due Date (Oil Filter)", "current_mileage_oil_filter": "Current Mileage (Oil Filter)", "due_mileage_oil_filter": "Due Mileage (Oil Filter)",
+            "issue_date_fuel_filter": "Issue Date (Fuel Filter)", "due_date_fuel_filter": "Due Date (Fuel Filter)", "current_mileage_fuel_filter": "Current Mileage (Fuel Filter)", "due_mileage_fuel_filter": "Due Mileage (Fuel Filter)",
+            "issue_date_air_filter": "Issue Date (Air Filter)", "due_date_air_filter": "Due Date (Air Filter)", "current_mileage_air_filter": "Current Mileage (Air Filter)", "due_mileage_air_filter": "Due Mileage (Air Filter)",
+            "issue_date_transmission_filter": "Issue Date (Transmission Filter)", "due_date_transmission_filter": "Due Date (Transmission Filter)", "current_mileage_transmission_filter": "Current Mileage (Transmission Filter)", "due_mileage_transmission_filter": "Due Mileage (Transmission Filter)",
+            "issue_date_differential_oil": "Issue Date (Differential Oil)", "due_date_differential_oil": "Due Date (Differential Oil)", "current_mileage_differential_oil": "Current Mileage (Differential Oil)", "due_mileage_differential_oil": "Due Mileage (Differential Oil)",
+            "battery_issue_date": "Battery Issue Date", "battery_due_date": "Battery Due Date",
+            "flusing_issue_date": "Flushing Issue Date", "flusing_due_date": "Flushing Due Date", "fuel_tank_flush": "Fuel Tank Flush", "radiator_flush": "Radiator Flush",
+            "greasing_issue_date": "Greasing Issue Date", "greasing_due_date": "Greasing Due Date", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
+            "wash": "Wash", "oil_level_check": "Oil Level Check", "lubrication_of_parts": "Lubrication of Parts",
+            "air_cleaner": "Air Cleaner", "fuel_filter": "Fuel Filter", "french_chalk": "French Chalk", "tr_adjustment": "TR Adjustment",
+            "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
+            "overhaul_remarks_input": "Status",
+            "created_by": "Created By", "created_at": "Created At"
+        }
+
+        # Define your main header grouping in the order you want:
+        self.main_header = {
+            'Basic Details': ['Category', 'BA No.', 'Make Type', 'Engine No.'], 
+            'Oil Filter' : ["Issue Date (Oil Filter)", "Due Date (Oil Filter)",  "Current Mileage (Oil Filter)", "Due Mileage (Oil Filter)"],
+            'Fuel Filter': ["Issue Date (Fuel Filter)", "Due Date (Fuel Filter)", "Current Mileage (Fuel Filter)", "Due Mileage (Fuel Filter)"],
+            'Air Filter': ["Issue Date (Air Filter)", "Due Date (Air Filter)", "Current Mileage (Air Filter)", "Due Mileage (Air Filter)"],
+            'Transmission Filter': ["Issue Date (Transmission Filter)", "Due Date (Transmission Filter)", "Current Mileage (Transmission Filter)", "Due Mileage (Transmission Filter)"],
+            'Differential Oil': ["Issue Date (Differential Oil)", "Due Date (Differential Oil)", "Current Mileage (Differential Oil)", "Due Mileage (Differential Oil)"],
+            'Battery Info': ["Battery Issue Date", "Battery Due Date"],
+            'Flushing Info': ["Flushing Issue Date", "Flushing Due Date", "Fuel Tank Flush", "Radiator Flush"],
+            'Greasing Info': ["Greasing Issue Date", "Greasing Due Date", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
+            'General Maint': ["Wash", "Oil Level Check", "Lubrication of Parts", "Air Cleaner", "Fuel Filter", "French Chalk", "TR Adjustment"],
+            'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
+            'Status & Creation Details': ["Status", "Created By", "Created At"]
+        }
+
         self.initUI()
 
 
@@ -188,48 +227,48 @@ class ViewALLVehicles(QWidget):
         header.setDefaultAlignment(Qt.AlignCenter)
 
         layout.addWidget(self.table_widget)
+
+        # --- Pagination Controls ---
+        pagination_layout = QHBoxLayout()
+        # Label to show "Showing x to y of z entries"
+        self.entries_label = QLabel("Showing 0 to 0 of 0 entries")
+        self.entries_label.setStyleSheet("font-size: 16px; font-weight: bold; padding: 12px; border-radius: 4px;")
+        pagination_layout.addWidget(self.entries_label)
+        
+        pagination_layout.addStretch()
+        
+        # Container layout for page number buttons
+        self.page_buttons_layout = QHBoxLayout()
+        pagination_layout.addLayout(self.page_buttons_layout)
+        
+        pagination_layout.addStretch()
+        
+        # Previous and Next buttons
+        self.btn_prev = QPushButton(" Prev")
+        self.btn_prev.setIcon(QIcon(get_asset_path("assets/icons/btn_prev.png")))
+        self.btn_prev.setIconSize(QSize(30, 30))
+        self.btn_prev.clicked.connect(self.prev_page)
+        pagination_layout.addWidget(self.btn_prev)
+        
+        self.btn_next = QPushButton(" Next")
+        self.btn_next.setIcon(QIcon(get_asset_path("assets/icons/btn_next.png")))
+        self.btn_next.setIconSize(QSize(30, 30))
+        self.btn_next.clicked.connect(self.next_page)
+        pagination_layout.addWidget(self.btn_next)
+        
+        layout.addLayout(pagination_layout)
+
         self.setLayout(layout)
 
+    def header_setup():
+        pass
 
     def populate_table(self):
         """Fetches and populates the table with vehicle data."""
-        # Mapping from DB keys to header names – not used for ordering now.
-        db_to_display = {
-            "category": "Category", "ba_no_input": "BA No.", "make_type_input": "Make Type", "engine_no_input": "Engine No.",
-            "issue_date_oil_filter": "Issue Date (Oil Filter)", "due_date_oil_filter": "Due Date (Oil Filter)", "current_mileage_oil_filter": "Current Mileage (Oil Filter)", "due_mileage_oil_filter": "Due Mileage (Oil Filter)",
-            "issue_date_fuel_filter": "Issue Date (Fuel Filter)", "due_date_fuel_filter": "Due Date (Fuel Filter)", "current_mileage_fuel_filter": "Current Mileage (Fuel Filter)", "due_mileage_fuel_filter": "Due Mileage (Fuel Filter)",
-            "issue_date_air_filter": "Issue Date (Air Filter)", "due_date_air_filter": "Due Date (Air Filter)", "current_mileage_air_filter": "Current Mileage (Air Filter)", "due_mileage_air_filter": "Due Mileage (Air Filter)",
-            "issue_date_transmission_filter": "Issue Date (Transmission Filter)", "due_date_transmission_filter": "Due Date (Transmission Filter)", "current_mileage_transmission_filter": "Current Mileage (Transmission Filter)", "due_mileage_transmission_filter": "Due Mileage (Transmission Filter)",
-            "issue_date_differential_oil": "Issue Date (Differential Oil)", "due_date_differential_oil": "Due Date (Differential Oil)", "current_mileage_differential_oil": "Current Mileage (Differential Oil)", "due_mileage_differential_oil": "Due Mileage (Differential Oil)",
-            "battery_issue_date": "Battery Issue Date", "battery_due_date": "Battery Due Date",
-            "flusing_issue_date": "Flushing Issue Date", "flusing_due_date": "Flushing Due Date", "fuel_tank_flush": "Fuel Tank Flush", "radiator_flush": "Radiator Flush",
-            "greasing_issue_date": "Greasing Issue Date", "greasing_due_date": "Greasing Due Date", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
-            "wash": "Wash", "oil_level_check": "Oil Level Check", "lubrication_of_parts": "Lubrication of Parts",
-            "air_cleaner": "Air Cleaner", "fuel_filter": "Fuel Filter", "french_chalk": "French Chalk", "tr_adjustment": "TR Adjustment",
-            "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
-            "overhaul_remarks_input": "Status",
-            "created_by": "Created By", "created_at": "Created At"
-        }
-
-        # Define your main header grouping in the order you want:
-        main_header = {
-            'Basic Details': ['Category', 'BA No.', 'Make Type', 'Engine No.'], 
-            'Oil Filter' : ["Issue Date (Oil Filter)", "Due Date (Oil Filter)",  "Current Mileage (Oil Filter)", "Due Mileage (Oil Filter)"],
-            'Fuel Filter': ["Issue Date (Fuel Filter)", "Due Date (Fuel Filter)", "Current Mileage (Fuel Filter)", "Due Mileage (Fuel Filter)"],
-            'Air Filter': ["Issue Date (Air Filter)", "Due Date (Air Filter)", "Current Mileage (Air Filter)", "Due Mileage (Air Filter)"],
-            'Transmission Filter': ["Issue Date (Transmission Filter)", "Due Date (Transmission Filter)", "Current Mileage (Transmission Filter)", "Due Mileage (Transmission Filter)"],
-            'Differential Oil': ["Issue Date (Differential Oil)", "Due Date (Differential Oil)", "Current Mileage (Differential Oil)", "Due Mileage (Differential Oil)"],
-            'Battery Info': ["Battery Issue Date", "Battery Due Date"],
-            'Flushing Info': ["Flushing Issue Date", "Flushing Due Date", "Fuel Tank Flush", "Radiator Flush"],
-            'Greasing Info': ["Greasing Issue Date", "Greasing Due Date", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
-            'General Maint': ["Wash", "Oil Level Check", "Lubrication of Parts", "Air Cleaner", "Fuel Filter", "French Chalk", "TR Adjustment"],
-            'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
-            'Status & Creation Details': ["Status", "Created By", "Created At"]
-        }
-
+        
         # Build the flat list of columns based on the main_header order.
         columns = []
-        for group, cols in main_header.items():
+        for group, cols in self.main_header.items():
             columns.extend(cols)
         self.columns = columns.copy()
         # Append the Actions column (not part of any group)
@@ -242,7 +281,7 @@ class ViewALLVehicles(QWidget):
         # Compute group header positions.
         group_headers = []
         current_index = 0
-        for group, cols in main_header.items():
+        for group, cols in self.main_header.items():
             span = len(cols)
             group_headers.append((current_index, span, group))
             current_index += span
@@ -252,17 +291,17 @@ class ViewALLVehicles(QWidget):
             header.setGroupHeaders(group_headers)
 
         # Fetch the data from the database.
-        all_vehicle_data = self.db_obj.get_all_vehicle()
+        all_vehicle_data = self.db_obj.get_all_vehicle(self.current_page, self.page_size)
         self.data = []
         for row in all_vehicle_data:
             # Build the record in the same order as columns.
-            record = {col: row.get(key) for key, col in db_to_display.items() if col in columns}
+            record = {col: row.get(key) for key, col in self.db_to_display.items() if col in columns}
             record["id"] = row["id"]  # Keep ID for actions
             self.data.append(record)
 
         self.table_widget.setRowCount(len(self.data))
         # Fill table cells.
-
+        
         for row_index, row_data in enumerate(self.data):
             for col_index, col_name in enumerate(self.columns):
                 cell_value = row_data.get(col_name, "")
@@ -339,6 +378,68 @@ class ViewALLVehicles(QWidget):
         # Adjust Column Width for the Actions column.
         action_col_index = self.table_widget.columnCount() - 1
         self.table_widget.setColumnWidth(action_col_index, 280)
+
+        # Update pagination button state based on returned data.
+        self.update_pagination_buttons()
+
+
+    def prev_page(self):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.populate_table()
+
+
+    def next_page(self):
+        total_count = self.db_obj.get_vehicle_count()
+        total_pages = math.ceil(total_count / self.page_size)
+        if self.current_page < total_pages - 1:
+            self.current_page += 1
+            self.populate_table()
+
+
+    def go_to_page(self, page):
+        self.current_page = page
+        self.populate_table()
+
+
+    def update_pagination_buttons(self):
+        # Get the total count from the database.
+        total_count = self.db_obj.get_vehicle_count()
+        total_pages = math.ceil(total_count / self.page_size) if self.page_size else 1
+        
+        # Calculate the current entries range.
+        start_entry = self.current_page * self.page_size + 1
+        end_entry = min((self.current_page + 1) * self.page_size, total_count)
+        
+        # Update the entries label.
+        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count} entries")
+        
+        # Clear existing page number buttons.
+        for i in reversed(range(self.page_buttons_layout.count())):
+            widget = self.page_buttons_layout.itemAt(i).widget()
+            if widget:
+                self.page_buttons_layout.removeWidget(widget)
+                widget.deleteLater()
+        
+        # Create page number buttons.
+        for page in range(total_pages):
+            btn = QPushButton(str(page + 1))
+            btn.setCheckable(True)
+            btn.setStyleSheet("""
+                QPushButton { background-color: #f0f0f0; color: black; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; }
+                QPushButton:hover { background-color: #e0e0e0; }
+                QPushButton:checked { background-color: #007bff; color: white;font-weight: bold; }
+            """)
+            # Mark the current page button as checked.
+            if page == self.current_page:
+                btn.setChecked(True)
+            # When a button is clicked, jump to that page.
+            btn.clicked.connect(lambda checked, p=page: self.go_to_page(p))
+            self.page_buttons_layout.addWidget(btn)
+        
+        # Enable/disable previous/next buttons.
+        self.btn_prev.setEnabled(self.current_page > 0)
+        self.btn_next.setEnabled(self.current_page < total_pages - 1)
 
 
     def date_rules(self, cell_value, row_index, col_index, no_of_month, no_of_days):
