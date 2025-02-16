@@ -62,7 +62,7 @@ class WelcomeSummary(QWidget):
 
         self.total_vehicle_label = QLabel("", self)
         self.total_vehicle_label.setFont(QFont("Arial", 16, QFont.Bold))
-        self.total_vehicle_label.setStyleSheet("color: #2C3E50; padding-bottom: 10px;")
+        self.total_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px;")
         search_layout.addWidget(self.total_vehicle_label)
 
         self.search_box_vhl = QLineEdit(self)
@@ -71,7 +71,40 @@ class WelcomeSummary(QWidget):
         self.search_box_vhl.textChanged.connect(self.filter_wep_table)
         search_layout.addWidget(self.search_box_vhl)
 
-        veh_summary_layout.addLayout(search_layout)
+        veh_summary_layout.addLayout(search_layout) 
+
+        #************************************************************
+
+        detail_summary = QHBoxLayout()
+
+        self.total_a_vehicle_label = QLabel("", self)
+        self.total_a_vehicle_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.total_a_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px;")
+        detail_summary.addWidget(self.total_a_vehicle_label)
+
+        self.total_b_vehicle_label = QLabel("", self)
+        self.total_b_vehicle_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.total_b_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px;")
+        detail_summary.addWidget(self.total_b_vehicle_label)
+
+        self.total_fit_vehicle_label = QLabel("", self)
+        self.total_fit_vehicle_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.total_fit_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px;")
+        detail_summary.addWidget(self.total_fit_vehicle_label)
+
+        self.total_unfit_vehicle_label = QLabel("", self)
+        self.total_unfit_vehicle_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.total_unfit_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px;")
+        detail_summary.addWidget(self.total_unfit_vehicle_label)
+
+        self.total_a_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px; border: 2px solid white; padding: 5px;")
+        self.total_b_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px; border: 2px solid white; padding: 5px;")
+        self.total_fit_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px; border: 2px solid white; padding: 5px;")
+        self.total_unfit_vehicle_label.setStyleSheet("color: white; padding-bottom: 10px; border: 2px solid white; padding: 5px;")
+
+        veh_summary_layout.addLayout(detail_summary) 
+
+        #************************************************************
         
         self.vehicle_table = self.create_table()
         veh_summary_layout.addWidget(self.vehicle_table)
@@ -186,10 +219,15 @@ class WelcomeSummary(QWidget):
     def load_data(self):
         """Loads fresh data from the database and updates the UI."""
         all_vehicle_data = self.db_obj.get_vehicle_summary(self.current_page, self.page_size)
-        total_vehicles = self.db_obj.get_vehicle_count()
+        vehicles_summary_count = self.db_obj.get_vehicle_count()
         # Update Summary Label
-        self.total_vehicle_label.setText(f"🚗 Total Vehicles: {total_vehicles}")
-        self.total_weapon_label.setText(f"🔫 Total Weapons: {total_vehicles}")
+        self.total_vehicle_label.setText(f"🚗 Total Vehicles: {vehicles_summary_count['total']}")
+        self.total_a_vehicle_label.setText(f"A Vehicles: {vehicles_summary_count['category_A']}")
+        self.total_b_vehicle_label.setText(f"B Vehicles: {vehicles_summary_count['category_B']}")
+        self.total_fit_vehicle_label.setText(f"Fit: {vehicles_summary_count['fit_vehicle']}")
+        self.total_unfit_vehicle_label.setText(f"Unfit: {vehicles_summary_count['unfit_vehicle']}")
+
+        self.total_weapon_label.setText(f"🔫 Total Weapons: {vehicles_summary_count['total']}")
         
         # Update Table Data
         self.vehicle_table.setRowCount(len(all_vehicle_data))
@@ -213,7 +251,7 @@ class WelcomeSummary(QWidget):
 
     def next_page(self):
         total_count = self.db_obj.get_vehicle_count()
-        total_pages = math.ceil(total_count / self.page_size)
+        total_pages = math.ceil(total_count['total'] / self.page_size)
         if self.current_page < total_pages - 1:
             self.current_page += 1
             self.load_data()
@@ -227,14 +265,14 @@ class WelcomeSummary(QWidget):
     def update_pagination_buttons(self):
         # Get the total count from the database.
         total_count = self.db_obj.get_vehicle_count()
-        total_pages = math.ceil(total_count / self.page_size) if self.page_size else 1
+        total_pages = math.ceil(total_count['total'] / self.page_size) if self.page_size else 1
         
         # Calculate the current entries range.
         start_entry = self.current_page * self.page_size + 1
-        end_entry = min((self.current_page + 1) * self.page_size, total_count)
+        end_entry = min((self.current_page + 1) * self.page_size, total_count['total'])
         
         # Update the entries label.
-        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count} entries")
+        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count['total']} entries")
         
         # Clear existing page number buttons.
         for i in reversed(range(self.page_buttons_layout.count())):

@@ -400,7 +400,7 @@ class ViewALLVehicles(QWidget):
 
     def next_page(self):
         total_count = self.db_obj.get_vehicle_count()
-        total_pages = math.ceil(total_count / self.page_size)
+        total_pages = math.ceil(total_count['total'] / self.page_size)
         if self.current_page < total_pages - 1:
             self.current_page += 1
             self.populate_table()
@@ -414,14 +414,14 @@ class ViewALLVehicles(QWidget):
     def update_pagination_buttons(self):
         # Get the total count from the database.
         total_count = self.db_obj.get_vehicle_count()
-        total_pages = math.ceil(total_count / self.page_size) if self.page_size else 1
+        total_pages = math.ceil(total_count['total'] / self.page_size) if self.page_size else 1
         
         # Calculate the current entries range.
         start_entry = self.current_page * self.page_size + 1
-        end_entry = min((self.current_page + 1) * self.page_size, total_count)
+        end_entry = min((self.current_page + 1) * self.page_size, total_count['total'])
         
         # Update the entries label.
-        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count} entries")
+        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count['total']} entries")
         
         # Clear existing page number buttons.
         for i in reversed(range(self.page_buttons_layout.count())):

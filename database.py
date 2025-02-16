@@ -425,11 +425,27 @@ class VMS_DB:
     def get_vehicle_count(self):
         try:
             conn, cursor = self.db_connect()
-            sql = "SELECT COUNT(*) FROM all_vehicles WHERE is_deleted = 0;"
+            sql = """
+                SELECT 
+                    COUNT(*) AS total_count,
+                    SUM(CASE WHEN category = 'A' THEN 1 ELSE 0 END) AS category_a_count,
+                    SUM(CASE WHEN category = 'B' THEN 1 ELSE 0 END) AS category_b_count,
+                    SUM(CASE WHEN overhaul_remarks_input = 'Fit' THEN 1 ELSE 0 END) AS status_fit_count,
+                    SUM(CASE WHEN overhaul_remarks_input = 'Unfit' THEN 1 ELSE 0 END) AS status_unfit_count
+                FROM all_vehicles 
+                WHERE is_deleted = 0;
+            """
             cursor.execute(sql)
-            total = cursor.fetchone()[0]
+            result = cursor.fetchone()
+            counts = {
+                "total": result[0],
+                "category_A": result[1],
+                "category_B": result[2],
+                "fit_vehicle": result[3],
+                "unfit_vehicle": result[4],
+            }
             self.db_disconnect(conn, cursor)
-            return total
+            return counts
         except Exception as e:
             traceback.print_exc()
             print(f"Exception: get_vehicle_count {e}")
