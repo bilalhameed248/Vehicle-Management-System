@@ -242,10 +242,10 @@ class VehicleReport:
         # --- Section: Battery Details (2-column table) ---
         elements.append(Paragraph("Battery Details", subheader_style))
         battery_data = [
-            ['Battery Issue Date', 'Battery Due Date'],
+            ['Issue Date', 'Due Date'],
             [
-                row_data.get('Battery Issue Date', ''),
-                row_data.get('Battery Due Date', '')
+                row_data.get('Issue Date (Battery)', ''),
+                row_data.get('Issue Date (Battery)', '')
             ]
         ]
         num_cols = 2
@@ -264,10 +264,10 @@ class VehicleReport:
         # --- Section: Flushing Details (4-column table) ---
         elements.append(Paragraph("Flushing Details", subheader_style))
         flushing_data = [
-            ['Flushing Issue Date', 'Flushing Due Date', 'Fuel Tank Flush', 'Radiator Flush'],
+            ['Issue Date', 'Due Date', 'Fuel Tank Flush', 'Radiator Flush'],
             [
-                row_data.get('Flushing Issue Date', ''),
-                row_data.get('Flushing Due Date', ''),
+                row_data.get('Issue Date (Flushing)', ''),
+                row_data.get('Due Date (Flushing)', ''),
                 row_data.get('Fuel Tank Flush', ''),
                 row_data.get('Radiator Flush', '')
             ]
@@ -288,10 +288,10 @@ class VehicleReport:
         # --- Section: Greasing Details (5-column table) ---
         elements.append(Paragraph("Greasing Details", subheader_style))
         greasing_data = [
-            ['Greasing Issue Date', 'Greasing Due Date', 'TRS and Suspension', 'Engine Part', 'Steering Lever Pts'],
+            ['Issue Date', 'Due Date', 'TRS and Suspension', 'Engine Part', 'Steering Lever Pts'],
             [
-                row_data.get('Greasing Issue Date', ''),
-                row_data.get('Greasing Due Date', ''),
+                row_data.get('Issue Date (Greasing)', ''),
+                row_data.get('Due Date (Greasing)', ''),
                 row_data.get('TRS and Suspension', ''),
                 row_data.get('Engine Part', ''),
                 row_data.get('Steering Lever Pts', '')
@@ -359,11 +359,11 @@ class VehicleReport:
         # --- Section: Overhaul Details (3-column table) ---
         elements.append(Paragraph("Overhaul Details", subheader_style))
         overhaul_data = [
-            ['Current Milage (Overhaul)', 'Due Milage (Overhaul)', 'Remarks'],
+            ['Current Milage (Overhaul)', 'Due Milage (Overhaul)', 'Remarks/Status'],
             [
                 row_data.get('Current Milage (Overhaul)', ''),
                 row_data.get('Due Milage (Overhaul)', ''),
-                row_data.get('Remarks', '')
+                row_data.get('Status', '')
             ]
         ]
         num_cols = 3

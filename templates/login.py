@@ -10,7 +10,7 @@ class LoginPage(QWidget):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Login - Vehicle Maintenance Module")
+        self.setWindowTitle("Login - ArmourTrack")
         self.setStyleSheet("background-color: #1E1E1E;")
         self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
         self.initUI()
@@ -34,10 +34,21 @@ class LoginPage(QWidget):
         layout.setContentsMargins(40,40,40,40)
         
         # Title
-        self.title = QLabel("Vehicle Maintenance Module")
-        self.title.setFont(QFont("Arial", 16, QFont.Bold))
-        self.title.setStyleSheet("color: #FFFFFF;")
+        self.title = QLabel()
+        self.title.setText("""
+            <div style="text-align: center; color: #FFFFFF;">
+                <p style="font-family: Arial; font-size: 16pt; font-weight: bold; margin-bottom: 5px;">
+                    ArmourTrack
+                </p>
+                <p style="font-family: Arial; font-size: 12pt;">
+                    Comprehensive Vehicle and Weapon Management System for the Pakistan Armed Forces
+                </p>
+            </div>
+        """)
+        # self.title.setFont(QFont("Arial", 16, QFont.Bold))
+        # self.title.setStyleSheet("color: #FFFFFF;")
         self.title.setAlignment(Qt.AlignCenter)
+        self.title.setWordWrap(True)
         layout.addWidget(self.title)
 
         # Username Field

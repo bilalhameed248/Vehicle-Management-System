@@ -31,7 +31,7 @@ class UpdateVehicle(QWidget):
         self.setStyleSheet(f"""
             QWidget {{ background-color: #f4f4f4; font-size: 18px; }}
             QLabel {{ font-weight: bold; }}
-            QLineEdit, QTextEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px;}}
+            QLineEdit, QTextEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 18px;}}
             QPushButton {{ background-color: #007BFF; color: white; padding: 8px; border-radius: 4px; font-weight: bold; }}
             QPushButton:hover {{ background-color: #0056b3; }}
             QPushButton:pressed {{ background-color: #004085; }}
@@ -44,7 +44,7 @@ class UpdateVehicle(QWidget):
             QScrollBar::handle:horizontal {{ background: blue; min-width: 20px; border-radius: 5px; }}
             QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{background: none;}}
             
-            QDateEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
+            QDateEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 18px; }}
             QDateEdit::drop-down {{ width: 20px; border: none; background: transparent; image: url({calendar_icon_path});}}
             QCalendarWidget QWidget {{ alternate-background-color: #f0f0f0; background-color: white; border-radius: 5px; }}
             QCalendarWidget QToolButton {{ color: white; background-color: #0078D7; border: none; padding: 5px; border-radius: 3px; }}
@@ -52,7 +52,7 @@ class UpdateVehicle(QWidget):
             QCalendarWidget QTableView {{ selection-background-color: #0078D7; color: black; }}
             QCalendarWidget QHeaderView::section {{ background-color: #0078D7; color: white;}}
 
-            QComboBox {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
+            QComboBox {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 18px; }}
             QComboBox::down-arrow {{ width: 20px; border: none; background: transparent; image: url({combo_dd_icon_path});}}
             QComboBox QAbstractItemView {{background-color: white;border: 1px solid #4a90e2;selection-background-color: #4a90e2; selection-color: white;}}
             QComboBox::item {{padding: 8px;}}
@@ -251,8 +251,8 @@ class UpdateVehicle(QWidget):
             row_layout.addLayout(issue_layout)
             row_layout.addLayout(due_layout)
 
-            issue_date_db = self.data["Battery Issue Date"]
-            due_date_db = self.data["Battery Due Date"]
+            issue_date_db = self.data["Issue Date (Battery)"]
+            due_date_db = self.data["Due Date (Battery)"]
             battery_issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
             battery_due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
 
@@ -309,8 +309,8 @@ class UpdateVehicle(QWidget):
             row2_layout.addLayout(fuel_tank_flush_layout)
             row2_layout.addLayout(radiator_flush_layout)
 
-            issue_date_db = self.data["Flushing Issue Date"]
-            due_date_db = self.data["Flushing Due Date"]
+            issue_date_db = self.data["Issue Date (Flushing)"]
+            due_date_db = self.data["Due Date (Flushing)"]
             issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
             due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
             fuel_tank_flush.setText(self.data["Fuel Tank Flush"])
@@ -378,8 +378,8 @@ class UpdateVehicle(QWidget):
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(steering_lever_Pts_layout)
 
-            issue_date_db = self.data["Greasing Issue Date"]
-            due_date_db = self.data["Greasing Due Date"]
+            issue_date_db = self.data["Issue Date (Greasing)"]
+            due_date_db = self.data["Due Date (Greasing)"]
             issue_date.setDate(QDate(issue_date_db.year, issue_date_db.month, issue_date_db.day))
             due_date.setDate(QDate(due_date_db.year, due_date_db.month, due_date_db.day))
             trs_and_suspension.setText(self.data["TRS and Suspension"])

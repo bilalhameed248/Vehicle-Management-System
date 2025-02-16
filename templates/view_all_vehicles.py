@@ -41,8 +41,16 @@ class MultiLevelHeaderView(QHeaderView):
         self.subTextColor = QColor("white")        # Sub header text color.
 
         # Font for main headers (larger & bold)
-        self.mainHeaderFont = QFont("Segoe UI", 14, QFont.Bold)
-        self.subHeaderFont = QFont("Segoe UI", 10, QFont.Bold)
+        self.mainHeaderFont = QFont("Segoe UI", 16, QFont.Bold)
+        self.subHeaderFont = QFont("Segoe UI", 14, QFont.Bold)
+
+        self.setFont(self.subHeaderFont)
+
+    def sectionSizeFromContents(self, logicalIndex):
+        size = super(MultiLevelHeaderView, self).sectionSizeFromContents(logicalIndex)
+        padding = 60
+        size.setWidth(size.width() + padding)
+        return size
 
     def setGroupHeaders(self, group_headers):
         """Set group headers as list of tuples: (start_index, span, label)."""
@@ -52,8 +60,7 @@ class MultiLevelHeaderView(QHeaderView):
 
     def sizeHint(self):
         original = super(MultiLevelHeaderView, self).sizeHint()
-        # Double the height to allow for two rows (group header + sub header).
-        return QSize(original.width(), original.height() * 2)
+        return QSize(original.width(), int(original.height() * 2.5))
 
 
     def paintEvent(self, event):
@@ -87,8 +94,9 @@ class MultiLevelHeaderView(QHeaderView):
             painter.setPen(self.subTextColor)
             painter.drawRect(sub_rect)
             # Get the text from the header model.
+            text_rect = sub_rect.adjusted(8, 0, -8, 0)
             text = self.model().headerData(i, self.orientation(), Qt.DisplayRole)
-            painter.drawText(sub_rect, Qt.AlignCenter, str(text))
+            painter.drawText(text_rect, Qt.AlignCenter, str(text).split('(')[0].strip())
 
 class ViewALLVehicles(QWidget):
 
@@ -118,9 +126,9 @@ class ViewALLVehicles(QWidget):
             "issue_date_air_filter": "Issue Date (Air Filter)", "due_date_air_filter": "Due Date (Air Filter)", "current_mileage_air_filter": "Current Mileage (Air Filter)", "due_mileage_air_filter": "Due Mileage (Air Filter)",
             "issue_date_transmission_filter": "Issue Date (Transmission Filter)", "due_date_transmission_filter": "Due Date (Transmission Filter)", "current_mileage_transmission_filter": "Current Mileage (Transmission Filter)", "due_mileage_transmission_filter": "Due Mileage (Transmission Filter)",
             "issue_date_differential_oil": "Issue Date (Differential Oil)", "due_date_differential_oil": "Due Date (Differential Oil)", "current_mileage_differential_oil": "Current Mileage (Differential Oil)", "due_mileage_differential_oil": "Due Mileage (Differential Oil)",
-            "battery_issue_date": "Battery Issue Date", "battery_due_date": "Battery Due Date",
-            "flusing_issue_date": "Flushing Issue Date", "flusing_due_date": "Flushing Due Date", "fuel_tank_flush": "Fuel Tank Flush", "radiator_flush": "Radiator Flush",
-            "greasing_issue_date": "Greasing Issue Date", "greasing_due_date": "Greasing Due Date", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
+            "battery_issue_date": "Issue Date (Battery)", "battery_due_date": "Due Date (Battery)",
+            "flusing_issue_date": "Issue Date (Flushing)", "flusing_due_date": "Due Date (Flushing)", "fuel_tank_flush": "Fuel Tank Flush", "radiator_flush": "Radiator Flush",
+            "greasing_issue_date": "Issue Date (Greasing)", "greasing_due_date": "Due Date (Greasing)", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
             "wash": "Wash", "oil_level_check": "Oil Level Check", "lubrication_of_parts": "Lubrication of Parts",
             "air_cleaner": "Air Cleaner", "fuel_filter": "Fuel Filter", "french_chalk": "French Chalk", "tr_adjustment": "TR Adjustment",
             "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
@@ -136,14 +144,14 @@ class ViewALLVehicles(QWidget):
             'Air Filter': ["Issue Date (Air Filter)", "Due Date (Air Filter)", "Current Mileage (Air Filter)", "Due Mileage (Air Filter)"],
             'Transmission Filter': ["Issue Date (Transmission Filter)", "Due Date (Transmission Filter)", "Current Mileage (Transmission Filter)", "Due Mileage (Transmission Filter)"],
             'Differential Oil': ["Issue Date (Differential Oil)", "Due Date (Differential Oil)", "Current Mileage (Differential Oil)", "Due Mileage (Differential Oil)"],
-            'Battery Info': ["Battery Issue Date", "Battery Due Date"],
-            'Flushing Info': ["Flushing Issue Date", "Flushing Due Date", "Fuel Tank Flush", "Radiator Flush"],
-            'Greasing Info': ["Greasing Issue Date", "Greasing Due Date", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
+            'Battery Info': ["Issue Date (Battery)", "Due Date (Battery)"],
+            'Flushing Info': ["Issue Date (Flushing)", "Due Date (Flushing)", "Fuel Tank Flush", "Radiator Flush"],
+            'Greasing Info': ["Issue Date (Greasing)", "Due Date (Greasing)", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
             'General Maint': ["Wash", "Oil Level Check", "Lubrication of Parts", "Air Cleaner", "Fuel Filter", "French Chalk", "TR Adjustment"],
             'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
             'Status & Creation Details': ["Status", "Created By", "Created At"]
         }
-
+        self.tbL_data_font = QFont("Arial", 12)
         self.initUI()
 
 
@@ -170,7 +178,7 @@ class ViewALLVehicles(QWidget):
             QTableView { border: 1px solid #ddd; background-color: white; border-radius: 8px; font-size: 18px; }
             QTableWidget {border: 1px solid #ddd; background-color: white; border-radius: 6px; }
             QHeaderView::section { background-color: #007BFF; color: white; font-weight: bold; padding: 8px; }
-            QTableWidgetItem { padding: 8px; }
+            QTableWidgetItem { padding: 12px; }
             QLineEdit#searchLineEdit { padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;}
             QScrollBar:horizontal {border: none; background: #f0f0f0; height: 12px; margin: 0px 0px 0px 0px; border-radius: 4px;}
             QScrollBar::handle:horizontal {background: #007BFF; min-width: 20px; border-radius: 4px;}
@@ -265,7 +273,6 @@ class ViewALLVehicles(QWidget):
 
     def populate_table(self):
         """Fetches and populates the table with vehicle data."""
-        
         # Build the flat list of columns based on the main_header order.
         columns = []
         for group, cols in self.main_header.items():
@@ -285,6 +292,7 @@ class ViewALLVehicles(QWidget):
             span = len(cols)
             group_headers.append((current_index, span, group))
             current_index += span
+
         # Set the group headers in the custom header.
         header = self.table_widget.horizontalHeader()
         if isinstance(header, MultiLevelHeaderView):
@@ -300,8 +308,8 @@ class ViewALLVehicles(QWidget):
             self.data.append(record)
 
         self.table_widget.setRowCount(len(self.data))
-        # Fill table cells.
         
+        # Fill table cells.        
         for row_index, row_data in enumerate(self.data):
             for col_index, col_name in enumerate(self.columns):
                 cell_value = row_data.get(col_name, "")
@@ -332,17 +340,18 @@ class ViewALLVehicles(QWidget):
                 elif col_name in ['Issue Date (Air Filter)', 'Issue Date (Transmission Filter)', 'Issue Date (Differential Oil)']:
                     self.date_rules(cell_value, row_index, col_index, 18 , 20)
 
-                elif col_name == 'Battery Issue Date':
+                elif col_name == 'Issue Date (Battery)':
                     self.date_rules(cell_value, row_index, col_index, 42 , 20)
                 
-                elif col_name == 'Flushing Issue Date':
+                elif col_name == 'Issue Date (Flushing)':
                     self.date_rules(cell_value, row_index, col_index, 4 , 20)
 
-                elif col_name == 'Greasing Issue Date':
+                elif col_name == 'Issue Date (Greasing)':
                     self.date_rules(cell_value, row_index, col_index, 3 , 20)
 
                 else:
                     item = QTableWidgetItem(str(cell_value))
+                    item.setFont(self.tbL_data_font)
                     item.setTextAlignment(Qt.AlignCenter)
                     self.table_widget.setItem(row_index, col_index, item)
 
@@ -457,6 +466,7 @@ class ViewALLVehicles(QWidget):
         elif months_diff >= (no_of_month-1) and days_diff >= no_of_days and days_diff <= (no_of_days+10):
             item.setBackground(QColor(255, 255, 0))
             item.setForeground(QColor(0, 0, 0))
+        item.setFont(self.tbL_data_font)
         self.table_widget.setItem(row_index, col_index, item)
 
 

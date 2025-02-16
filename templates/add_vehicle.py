@@ -29,7 +29,7 @@ class AddVehicle(QWidget):
 
         self.setStyleSheet(f"""QWidget {{ background-color: #f4f4f4; font-size: 18px; }}
             QLabel {{ font-weight: bold; }}
-            QLineEdit, QTextEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px;}}
+            QLineEdit, QTextEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 18px;}}
             QPushButton {{ background-color: #007BFF; color: white; padding: 8px; border-radius: 4px; font-weight: bold; }}
             QPushButton:hover {{ background-color: #0056b3; }}
             QPushButton:pressed {{ background-color: #004085; }}
@@ -42,7 +42,7 @@ class AddVehicle(QWidget):
             QScrollBar::handle:horizontal {{ background: blue; min-width: 20px; border-radius: 5px; }}
             QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{background: none;}}
             
-            QDateEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
+            QDateEdit {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 18px; }}
             QDateEdit::drop-down {{ width: 20px; border: none; background: transparent; image: url({calendar_icon_path}); }}
             QCalendarWidget QWidget {{ alternate-background-color: #f0f0f0; background-color: white; border-radius: 5px; }}
             QCalendarWidget QToolButton {{ color: white; background-color: #0078D7; border: none; padding: 5px; border-radius: 3px; }}
@@ -50,7 +50,7 @@ class AddVehicle(QWidget):
             QCalendarWidget QTableView {{ selection-background-color: #0078D7; color: black; }}
             QCalendarWidget QHeaderView::section {{ background-color: #0078D7; color: white; }}
 
-            QComboBox {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 14px; }}
+            QComboBox {{ padding: 5px; border: 1px solid #0078D7; border-radius: 4px; background-color: white; font-size: 18px; }}
             QComboBox::down-arrow {{ width: 20px; border: none; background: transparent; image: url({combo_dd_icon_path}); }}
             QComboBox QAbstractItemView {{ background-color: white; border: 1px solid #4a90e2; selection-background-color: #4a90e2; selection-color: white;}}
             QComboBox::item {{ padding: 8px; }}

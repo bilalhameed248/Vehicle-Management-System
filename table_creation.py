@@ -69,7 +69,7 @@ import sqlite3
 
 # insert_vehicle()
 
-
+# pyinstaller --onefile --windowed --icon=app_icon.ico --add-data "assets;assets" --add-data "vms44AKDB.db;." main.py
 
 from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QFont
@@ -80,7 +80,7 @@ table = QTableWidget(3, 3)  # Create a table with 3 rows and 3 columns
 font = QFont("Arial", 16)  # Set font size to 14
 
 # Apply font to all cells
-for row in range(table.rowCount()):
+for row in range(table.rowCount()): 
     for col in range(table.columnCount()):
         item = QTableWidgetItem(f"Cell {row},{col}")
         item.setFont(font)  # Set font size

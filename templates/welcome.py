@@ -17,7 +17,7 @@ class WelcomePage(QWidget):
 
     def __init__(self, session):
         super().__init__()
-        self.setWindowTitle("Home - Vehicle Maintenance Module")
+        self.setWindowTitle("Home - ArmourTrack")
         self.setStyleSheet("background-color: #1E1E1E;")
         self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
         self.setWindowState(Qt.WindowMaximized)
@@ -72,7 +72,7 @@ class WelcomePage(QWidget):
         navbar_layout = QHBoxLayout()
         
         # Title on the left
-        title_label = QLabel("Vehicle Management System")
+        title_label = QLabel("ArmourTrack")
         title_label.setFont(QFont("Arial", 18, QFont.Bold))
         title_label.setStyleSheet("color: white;")
         

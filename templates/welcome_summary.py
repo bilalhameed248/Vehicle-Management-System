@@ -37,10 +37,10 @@ class WelcomeSummary(QWidget):
         #*********************************************************************************************************************
         
         # Welcome Message
-        self.welcome_message = QLabel("Welcome to the Vehicle & Weapons Maintenance Record Portal", self)
+        self.welcome_message = QLabel("Welcome to ArmourTrack – Your Ultimate Vehicle & Weapon Management Portal", self)
         self.welcome_message.setAlignment(Qt.AlignCenter)
         self.welcome_message.setWordWrap(True)
-        self.welcome_message.setFont(QFont("Arial", 24, QFont.Bold))
+        self.welcome_message.setFont(QFont("Arial", 20, QFont.Bold))
         self.welcome_message.setStyleSheet("color: #2C3E50; padding: 20px;")
         main_layout.addWidget(self.welcome_message, alignment=Qt.AlignTop)
 
@@ -148,8 +148,7 @@ class WelcomeSummary(QWidget):
         
         # Additional Information Label
         self.additional_message = QLabel(
-            "This portal is designed to streamline and enhance the management of vehicle & weapons "
-            "maintenance records of 44 AK Pak ARMY", self)
+            "ArmourTrack ensures efficient and organized management of vehicle & weapon maintenance records for 44 AK Pak Army.", self)
         self.additional_message.setAlignment(Qt.AlignCenter)
         self.additional_message.setWordWrap(True)
         self.additional_message.setFont(QFont("Arial", 14))
