@@ -513,3 +513,81 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: update_vehicle {e}")
             return False
+        
+    #******************************************************************************************************************************************************
+    
+    def insert_weapon(self, data):
+        try:
+            """ Inserts vehicle data into SQLite Database """
+            conn, cursor = self.db_connect()
+            data = {k: (v if v != "" else None) for k, v in data.items()}
+            sql = """
+                INSERT INTO all_weapons (
+                Wpn_No,
+                T_Pod_Leg_lock_handle, T_Pod_Anchor_claw, T_Pod_Leveling_Bubbles, T_Pod_Lubrication, T_Pod_Pull_tube, T_Pod_Detent_stop_lever, T_Pod_Foot_pad_legs_body_condition,
+                T_Unit_Traversing_Lock, T_Unit_Elevation_lock_check, T_Unit_Elevation_lock_handle, T_Unit_Viscosity_of_Viscos_damper, T_Unit_Azimuth_lock_check, T_Unit_Lubrication, T_Unit_Protective_cover, T_Unit_Coil_Card,
+                OS_Eye_Shield, OS_Focusing_knob, OS_Sillica_gel_condition, OS_Reticle_lamp, OS_Body_condition, OS_N2_purg_filling_connection, OS_Reticle_switch, OS_Cable_connector, OS_Locking_device, OS_Lens_cover, OS_Objective_lens,
+                DMGS_Meter_indicator_AZ_Elev, DMGS_Sockets, DMGS_MGS_DMGS_case, DMGS_Protective_cover, DMGS_Cable, DMGS_Bty_connector, DMGS_Self_test,
+                L_Tube_Body_Condition,
+                TVPC_Body_Condition, TVPC_Fly_Net, TVPC_On_Off_Switch, TVPC_Indicator_It, TVPC_Connector, TVPC_Voltage,
+                Bty_BB_287_Bty_connector, Bty_BB_287_Voltage_24V_sec, Bty_BB_287_Voltage_50V, Bty_BB_287_Voltage_50V_sec, Bty_BB_287_Bty_condition, Bty_BB_287_Power_cable_condition,
+                NVS_Coolant_unit, NVS_Eye_piece, NVS_Cable_connector, NVS_Lens_assy, NVS_Power_cable_condition, 
+                BPC_Body, BPC_Cables, BPC_On_Off_Switch,
+                VPC_Body, VPC_Switch, VPC_VPC_Power_Cable,
+                L_Bty_Bty_Voltage,
+                Doc_6_Monthly_verification_record, Doc_Last_ATI_pts_has_been_killed, Doc_Bty_charging_record, Doc_Storage_temp_Humidity_record, Doc_Firing_record_check, Doc_Svc_ability_Completeness_of_tools_accy, 
+                Doc_Self_test_record_check, Doc_Is_eARMS_fully_func, Doc_Complete_eqpt_inventory_update_on_eARMS, Doc_DRWO_work_order_being_processed_on_eARMS, Doc_Are_Log_book_maintain_properly,
+                Status, created_by
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?
+            ); 
+            """
+            values = tuple(data.values())
+            cursor.execute(sql, values)
+            conn.commit()
+            self.db_disconnect(conn, cursor)
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: insert_vehicle {e}")
+            return False
+        
+    
+    def update_weapon(self, data, weapon_id):
+        try:
+            """ Updates vehicle data in SQLite Database """
+            conn, cursor = self.db_connect()
+            data = {k: (v if v != "" else None) for k, v in data.items()}
+            sql = """
+                UPDATE all_weapons SET
+                Wpn_No = ?,
+                T_Pod_Leg_lock_handle = ?, T_Pod_Anchor_claw = ?, T_Pod_Leveling_Bubbles = ?, T_Pod_Lubrication = ?, T_Pod_Pull_tube = ?, 
+                T_Pod_Detent_stop_lever = ?, T_Pod_Foot_pad_legs_body_condition = ?,
+                T_Unit_Traversing_Lock = ?, T_Unit_Elevation_lock_check = ?, T_Unit_Elevation_lock_handle = ?, T_Unit_Viscosity_of_Viscos_damper = ?, 
+                T_Unit_Azimuth_lock_check = ?, T_Unit_Lubrication = ?, T_Unit_Protective_cover = ?, T_Unit_Coil_Card = ?,
+                OS_Eye_Shield = ?, OS_Focusing_knob = ?, OS_Sillica_gel_condition = ?, OS_Reticle_lamp = ?, OS_Body_condition = ?, OS_N2_purg_filling_connection = ?,
+                OS_Reticle_switch = ?, OS_Cable_connector = ?, OS_Locking_device = ?, OS_Lens_cover = ?, OS_Objective_lens = ?,
+                DMGS_Meter_indicator_AZ_Elev = ?, DMGS_Sockets = ?, DMGS_MGS_DMGS_case = ?, DMGS_Protective_cover = ?, DMGS_Cable = ?, DMGS_Bty_connector = ?, DMGS_Self_test = ?,
+                L_Tube_Body_Condition = ?,
+                TVPC_Body_Condition = ?, TVPC_Fly_Net = ?, TVPC_On_Off_Switch = ?, TVPC_Indicator_It = ?, TVPC_Connector = ?, TVPC_Voltage = ?,
+                Bty_BB_287_Bty_connector = ?, Bty_BB_287_Voltage_24V_sec = ?, Bty_BB_287_Voltage_50V = ?, Bty_BB_287_Voltage_50V_sec = ?, Bty_BB_287_Bty_condition = ?, Bty_BB_287_Power_cable_condition = ?,
+                NVS_Coolant_unit = ?, NVS_Eye_piece = ?, NVS_Cable_connector = ?, NVS_Lens_assy = ?, NVS_Power_cable_condition = ?,
+                BPC_Body = ?, BPC_Cables = ?, BPC_On_Off_Switch = ?,
+                VPC_Body = ?, VPC_Switch = ?, VPC_VPC_Power_Cable = ?,
+                L_Bty_Bty_Voltage = ?,
+                Doc_6_Monthly_verification_record = ?, Doc_Last_ATI_pts_has_been_killed = ?, Doc_Bty_charging_record = ?, Doc_Storage_temp_Humidity_record = ?,
+                Doc_Firing_record_check = ?, Doc_Svc_ability_Completeness_of_tools_accy = ?, Doc_Self_test_record_check = ?, Doc_Is_eARMS_fully_func = ?, Doc_Complete_eqpt_inventory_update_on_eARMS = ?,
+                Doc_DRWO_work_order_being_processed_on_eARMS = ?, Doc_Are_Log_book_maintain_properly = ?,
+                Status = ?,
+                updated_at = CURRENT_TIMESTAMP,
+                updated_by = ?
+            WHERE ID = ?;"""
+            weapon_data_with_id = tuple(data.values()) + (weapon_id,)
+            cursor.execute(sql, weapon_data_with_id)
+            conn.commit()
+            self.db_disconnect(conn, cursor)
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: update_vehicle {e}")
+            return False

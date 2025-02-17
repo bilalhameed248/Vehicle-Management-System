@@ -23,16 +23,18 @@ class MultiLevelHeaderView(QHeaderView):
 
         self.groupColors = {
             "Basic Details": QColor("#FF5733"),  # Red-Orange
-            "Oil Filter": QColor("#33A1FF"),     # Blue
-            "Fuel Filter": QColor("#28B463"),    # Green
-            "Air Filter": QColor("#F1C40F"),     # Yellow
-            "Transmission Filter": QColor("#8E44AD"),  # Purple
-            "Differential Oil": QColor("#E67E22"),  # Orange
-            "Battery Info": QColor("#2C3E50"),  # Dark Blue
-            "Flushing Info": QColor("#D35400"),  # Dark Orange
-            "Greasing Info": QColor("#C0392B"),  # Dark Red
-            "General Maint": QColor("#16A085"),  # Teal
-            "Overhaul": QColor("#7F8C8D"),         # Gray
+            "T.Pod": QColor("#33A1FF"),     # Blue
+            "T. Unit": QColor("#28B463"),    # Green
+            "OS": QColor("#F1C40F"),     # Yellow
+            "DMGS": QColor("#8E44AD"),  # Purple
+            "L-Tube": QColor("#E67E22"),  # Orange
+            "TVPC": QColor("#7F8C8D"),         # Gray
+            "Bty BB-287": QColor("#2C3E50"),  # Dark Blue
+            "NVS": QColor("#D35400"),  # Dark Orange
+            "BPC": QColor("#C0392B"),  # Dark Red
+            "VPC": QColor("#16A085"),  # Teal
+            "L.Bty": QColor("#A569BD"),         # Soft Purple
+            "Doc": QColor("#5D6D7E"),         # Slate Blue-Gray
             "Status & Creation Details": QColor("#008B8B") # Deep Cyan
         }
 
@@ -51,6 +53,7 @@ class MultiLevelHeaderView(QHeaderView):
         padding = 60
         size.setWidth(size.width() + padding)
         return size
+
 
     def setGroupHeaders(self, group_headers):
         """Set group headers as list of tuples: (start_index, span, label)."""
@@ -119,6 +122,7 @@ class ViewALLWeapons(QWidget):
         self.columns = []
 
         # Mapping from DB keys to header names – not used for ordering now.
+
         self.db_to_display = {
             "category": "Category", "ba_no_input": "BA No.", "make_type_input": "Make Type", "engine_no_input": "Engine No.",
             "issue_date_oil_filter": "Issue Date (Oil Filter)", "due_date_oil_filter": "Due Date (Oil Filter)", "current_mileage_oil_filter": "Current Mileage (Oil Filter)", "due_mileage_oil_filter": "Due Mileage (Oil Filter)",
@@ -134,6 +138,63 @@ class ViewALLWeapons(QWidget):
             "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
             "overhaul_remarks_input": "Status",
             "created_by": "Created By", "created_at": "Created At"
+        }
+
+        self.db_to_display1 = {
+            "Wpn_No": "Wpn No",
+            "T_Pod_Leg_lock_handle": "Leg lock handle",  "T_Pod_Anchor_claw": "Anchor claw",  "T_Pod_Leveling_Bubbles": "Leveling Bubbles", "T_Pod_Lubrication":"Lubrication",  
+            "T_Pod_Pull_tube":"Pull tube",  "T_Pod_Detent_stop_lever":"Detent stop lever", "T_Pod_Foot_pad_legs_body_condition":"Foot pad/ legs body condition",
+
+            "T_Unit_Traversing_Lock":"Traversing Lock",  "T_Unit_Elevation_lock_check":"Elevation lock check", "T_Unit_Elevation_lock_handle":"Elevation lock handle",  "T_Unit_Viscosity_of_Viscos_damper":"Viscosity of Viscos damper", 
+            "T_Unit_Azimuth_lock_check":"Azimuth lock check", "T_Unit_Lubrication":"Lubrication", "T_Unit_Protective_cover":"Protective cover",  "T_Unit_Coil_Card":"Coil Card",
+
+            "OS_Eye_Shield": "Eye Shield", "OS_Focusing_knob": "Focusing knob",  "OS_Sillica_gel_condition": "Sillica gel condition", "OS_Reticle_lamp": "Reticle lamp",  
+            "OS_Body_condition": "Body condition", "OS_N2_purg_filling_connection": "N2 purg / filling connection", "OS_Reticle_switch": "Reticle switch",  "OS_Cable_connector": "Cable connector", 
+            "OS_Locking_device": "Locking device", "OS_Lens_cover": "Lens cover", "OS_Objective_lens": "Objective lens",
+
+            "DMGS_Meter_indicator_AZ_Elev":" Meter indicator (AZ & Elev)",  "DMGS_Sockets":" Sockets", "DMGS_MGS_DMGS_case":" MGS/ DMGS case",  
+            "DMGS_Protective_cover":" Protective cover", "DMGS_Cable":" Cable", "DMGS_Bty_connector":" Bty connector",  "DMGS_Self_test":" Self/ test", 
+
+            "L_Tube_Body_Condition":"Body Condition",
+            "TVPC_Body_Condition":"Body Condition", "TVPC_Fly_Net":"Fly Net", "TVPC_On_Off_Switch":"On/Off Switch", "TVPC_Indicator_It":"Indicator It", "TVPC_Connector":"Connector", "TVPC_Voltage":"Voltage",
+
+            "Bty_BB_287_Bty_connector": "Bty connector", "Bty_BB_287_Voltage_24V_sec": "Voltage +24 V sec",  "Bty_BB_287_Voltage_50V": "Voltage +50 V", 
+            "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Power_cable_condition": "Power cable condition",
+            
+            "NVS_Coolant_unit": "Coolant unit", "NVS_Eye_piece": "Eye piece", "NVS_Cable_connector": "Cable connector", "NVS_Lens_assy": "Lens assy", "NVS_Power_cable_condition": "Power cable condition",
+            "BPC_Body": "Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "Cables",
+            "VPC_Body": "Body", "VPC_Switch": "Switch", "VPC_VPC_Power_Cable": "VPC Power Cable",            
+            "L_Bty_Bty_Voltage":"Bty Voltage",
+
+            "Doc_6_Monthly_verification_record":"6 Monthly verification record", "Doc_Last_ATI_pts_has_been_killed":"Last ATI pts has been killed", "Doc_Bty_charging_record":"Bty charging record", 
+            "Doc_Storage_temp_Humidity_record":"Storage temp & Humidity record", "Doc_Firing_record_check":"Firing record check", "Doc_Svc_ability_Completeness_of_tools_accy":"Svc ability & Completeness of tools & accy", 
+            "Doc_Self_test_record_check":"Self test record check", "Doc_Is_eARMS_fully_func":"Is eARMS fully func and all the processes involved are being carried out through eARMS",
+            "Doc_Complete_eqpt_inventory_update_on_eARMS":"Complete eqpt inventory update on eARMS", "Doc_DRWO_work_order_being_processed_on_eARMS":"DRWO/ work order being processed on eARMS", 
+            "Doc_Are_Log_book_maintain_properly":"Are Log book maintain properly",
+
+            "Status": "Status", "created_by": "Created By", "created_at": "Created At"
+        }
+
+        self.main_header1 = {
+            "Basic Details": ["Wpn No"],
+            "T.Pod": [ "Leg lock handle", "Anchor claw", "Leveling Bubbles", "Lubrication", "Pull tube", "Detent stop lever", "Foot pad/ legs body condition" ],
+            "T. Unit": [ "Traversing Lock", "Elevation lock check", "Elevation lock handle", "Viscosity of Viscos damper", "Azimuth lock check", "Lubrication", "Protective cover", "Coil Card" ],
+            "OS": [ "Eye Shield", "Focusing knob", "Sillica gel condition", "Reticle lamp", "Body condition", "N2 purg / filling connection", "Reticle switch", "Cable connector", "Locking device", 
+                "Lens cover", "Objective lens" ],
+
+            "DMGS": [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "Protective cover", "Cable", "Bty connector", "Self/ test" ],
+            "L-Tube": [ "Body Condition" ],
+            "TVPC": [ "Body Condition", "Fly Net", "On/Off Switch", "Indicator It", "Connector", "Voltage"],
+            "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "Power cable condition" ],
+            "NVS": [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
+            
+            "BPC": ["Body", "Cables", "Cables"],
+            "VPC": ["Body", "Switch", "VPC Power Cable"],
+            "L.Bty": ["Bty Voltage"],
+            "Doc": [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record", "Storage temp & Humidity record", "Firing record check",
+            "Svc ability & Completeness of tools & accy", "Self test record check", "Is eARMS fully func and all the processes involved are being carried out through eARMS",
+            "Complete eqpt inventory update on eARMS", "DRWO/ work order being processed on eARMS", "Are Log book maintain properly" ],
+            "Status & Creation Details": ["Status", "Created By", "Created At"]
         }
 
         # Define your main header grouping in the order you want:

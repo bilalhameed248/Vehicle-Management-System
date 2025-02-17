@@ -71,20 +71,121 @@ import sqlite3
 
 # pyinstaller --onefile --windowed --icon=app_icon.ico --add-data "assets;assets" --add-data "vms44AKDB.db;." main.py
 
-from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem
-from PyQt5.QtGui import QFont
 
-app = QApplication([])
 
-table = QTableWidget(3, 3)  # Create a table with 3 rows and 3 columns
-font = QFont("Arial", 16)  # Set font size to 14
+{
+    "Wpn No": ["Wpn No"],
+    "T.Pod": [ "Leg lock handle", "Anchor claw", "Leveling Bubbles", "Lubrication", "Pull tube", "Detent stop lever", "Foot pad/ legs body condition" ],
+    "T. Unit": [ "Traversing Lock", "Elevation lock check", "Elevation lock handle", "Viscosity of Viscos damper", "Azimuth lock check", "Lubrication", "Protective cover", "Coil Card" ],
+    "OS": [ "Eye Shield", "Focusing knob", "Sillica gel condition", "Reticle lamp", "Body condition", "N2 purg / filling connection", "Reticle switch", "Cable connector", "Locking device", 
+           "Lens cover", "Objective lens" ],
 
-# Apply font to all cells
-for row in range(table.rowCount()): 
-    for col in range(table.columnCount()):
-        item = QTableWidgetItem(f"Cell {row},{col}")
-        item.setFont(font)  # Set font size
-        table.setItem(row, col, item)
+    "DMGS": [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "Protective cover", "Cable", "Bty connector", "Self/ test" ],
+    "L-Tube": [ "Body Condition" ],
+    "TVPC": [ "Body Condition", "Fly Net", "On/Off Switch", "Indicator It", "Connector", "Voltage"],
+    "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "Power cable condition" ],
+    "NVS": [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
+    
+    "BPC": ["Body", "Cables", "Cables"],
+    "VPC": ["Body", "Switch", "VPC Power Cable"],
+    "L.Bty": ["Bty Voltage"],
+    "Doc": [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record", "Storage temp & Humidity record", "Firing record check",
+      "Svc ability & Completeness of tools & accy", "Self test record check", "Is eARMS fully func and all the processes involved are being carried out through eARMS",
+      "Complete eqpt inventory update on eARMS", "DRWO/ work order being processed on eARMS", "Are Log book maintain properly" ],
+    "Status": ["Status"]
+}
 
-table.show()
-app.exec_()
+
+# CREATE TABLE all_weapons (
+#     ID INTEGER PRIMARY KEY AUTOINCREMENT,
+#     Wpn_No TEXT,
+
+#     T_Pod_Leg_lock_handle TEXT,
+#     T_Pod_Anchor_claw TEXT,
+#     T_Pod_Leveling_Bubbles TEXT,
+#     T_Pod_Lubrication TEXT,
+#     T_Pod_Pull_tube TEXT,
+#     T_Pod_Detent_stop_lever TEXT,
+#     T_Pod_Foot_pad_legs_body_condition TEXT,
+
+#     T_Unit_Traversing_Lock TEXT,
+#     T_Unit_Elevation_lock_check TEXT,
+#     T_Unit_Elevation_lock_handle TEXT,
+#     T_Unit_Viscosity_of_Viscos_damper TEXT,
+#     T_Unit_Azimuth_lock_check TEXT,
+#     T_Unit_Lubrication TEXT,
+#     T_Unit_Protective_cover TEXT,
+#     T_Unit_Coil_Card TEXT,
+
+#     OS_Eye_Shield TEXT,
+#     OS_Focusing_knob TEXT,
+#     OS_Sillica_gel_condition TEXT,
+#     OS_Reticle_lamp TEXT,
+#     OS_Body_condition TEXT,
+#     OS_N2_purg_filling_connection TEXT,
+#     OS_Reticle_switch TEXT,
+#     OS_Cable_connector TEXT,
+#     OS_Locking_device TEXT,
+#     OS_Lens_cover TEXT,
+#     OS_Objective_lens TEXT,
+
+#     DMGS_Meter_indicator_AZ_Elev TEXT,
+#     DMGS_Sockets TEXT,
+#     DMGS_MGS_DMGS_case TEXT,
+#     DMGS_Protective_cover TEXT,
+#     DMGS_Cable TEXT,
+#     DMGS_Bty_connector TEXT,
+#     DMGS_Self_test TEXT,
+
+#     L_Tube_Body_Condition TEXT,
+
+#     TVPC_Body_Condition TEXT,
+#     TVPC_Fly_Net TEXT,
+#     TVPC_On_Off_Switch TEXT,
+#     TVPC_Indicator_It TEXT,
+#     TVPC_Connector TEXT,
+#     TVPC_Voltage TEXT,
+
+#     Bty_BB_287_Bty_connector TEXT,
+#     Bty_BB_287_Voltage_24V_sec TEXT,
+#     Bty_BB_287_Voltage_50V TEXT,
+#     Bty_BB_287_Voltage_50V_sec TEXT,
+#     Bty_BB_287_Bty_condition TEXT,
+#     Bty_BB_287_Power_cable_condition TEXT,
+
+#     NVS_Coolant_unit TEXT,
+#     NVS_Eye_piece TEXT,
+#     NVS_Cable_connector TEXT,
+#     NVS_Lens_assy TEXT,
+#     NVS_Power_cable_condition TEXT,
+
+#     BPC_Body TEXT,
+#     BPC_Cables TEXT,
+#     BPC_On_Off_Switch TEXT,
+
+#     VPC_Body TEXT,
+#     VPC_Switch TEXT,
+#     VPC_VPC_Power_Cable TEXT,
+
+#     L_Bty_Bty_Voltage TEXT,
+
+#     Doc_6_Monthly_verification_record TEXT,
+#     Doc_Last_ATI_pts_has_been_killed TEXT,
+#     Doc_Bty_charging_record TEXT,
+#     Doc_Storage_temp_Humidity_record TEXT,
+#     Doc_Firing_record_check TEXT,
+#     Doc_Svc_ability_Completeness_of_tools_accy TEXT,
+#     Doc_Self_test_record_check TEXT,
+#     Doc_Is_eARMS_fully_func TEXT,
+#     Doc_Complete_eqpt_inventory_update_on_eARMS TEXT,
+#     Doc_DRWO_work_order_being_processed_on_eARMS TEXT,
+#     Doc_Are_Log_book_maintain_properly TEXT,
+
+#     Status TEXT,
+#     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+#     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+#     created_by TEXT,
+#     updated_by TEXT
+# );
+
+
