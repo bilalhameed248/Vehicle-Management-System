@@ -124,23 +124,6 @@ class ViewALLWeapons(QWidget):
         # Mapping from DB keys to header names – not used for ordering now.
 
         self.db_to_display = {
-            "category": "Category", "ba_no_input": "BA No.", "make_type_input": "Make Type", "engine_no_input": "Engine No.",
-            "issue_date_oil_filter": "Issue Date (Oil Filter)", "due_date_oil_filter": "Due Date (Oil Filter)", "current_mileage_oil_filter": "Current Mileage (Oil Filter)", "due_mileage_oil_filter": "Due Mileage (Oil Filter)",
-            "issue_date_fuel_filter": "Issue Date (Fuel Filter)", "due_date_fuel_filter": "Due Date (Fuel Filter)", "current_mileage_fuel_filter": "Current Mileage (Fuel Filter)", "due_mileage_fuel_filter": "Due Mileage (Fuel Filter)",
-            "issue_date_air_filter": "Issue Date (Air Filter)", "due_date_air_filter": "Due Date (Air Filter)", "current_mileage_air_filter": "Current Mileage (Air Filter)", "due_mileage_air_filter": "Due Mileage (Air Filter)",
-            "issue_date_transmission_filter": "Issue Date (Transmission Filter)", "due_date_transmission_filter": "Due Date (Transmission Filter)", "current_mileage_transmission_filter": "Current Mileage (Transmission Filter)", "due_mileage_transmission_filter": "Due Mileage (Transmission Filter)",
-            "issue_date_differential_oil": "Issue Date (Differential Oil)", "due_date_differential_oil": "Due Date (Differential Oil)", "current_mileage_differential_oil": "Current Mileage (Differential Oil)", "due_mileage_differential_oil": "Due Mileage (Differential Oil)",
-            "battery_issue_date": "Issue Date (Battery)", "battery_due_date": "Due Date (Battery)",
-            "flusing_issue_date": "Issue Date (Flushing)", "flusing_due_date": "Due Date (Flushing)", "fuel_tank_flush": "Fuel Tank Flush", "radiator_flush": "Radiator Flush",
-            "greasing_issue_date": "Issue Date (Greasing)", "greasing_due_date": "Due Date (Greasing)", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
-            "wash": "Wash", "oil_level_check": "Oil Level Check", "lubrication_of_parts": "Lubrication of Parts",
-            "air_cleaner": "Air Cleaner", "fuel_filter": "Fuel Filter", "french_chalk": "French Chalk", "tr_adjustment": "TR Adjustment",
-            "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
-            "overhaul_remarks_input": "Status",
-            "created_by": "Created By", "created_at": "Created At"
-        }
-
-        self.db_to_display1 = {
             "Wpn_No": "Wpn No",
             "T_Pod_Leg_lock_handle": "Leg lock handle",  "T_Pod_Anchor_claw": "Anchor claw",  "T_Pod_Leveling_Bubbles": "Leveling Bubbles", "T_Pod_Lubrication":"Lubrication",  
             "T_Pod_Pull_tube":"Pull tube",  "T_Pod_Detent_stop_lever":"Detent stop lever", "T_Pod_Foot_pad_legs_body_condition":"Foot pad/ legs body condition",
@@ -159,7 +142,7 @@ class ViewALLWeapons(QWidget):
             "TVPC_Body_Condition":"Body Condition", "TVPC_Fly_Net":"Fly Net", "TVPC_On_Off_Switch":"On/Off Switch", "TVPC_Indicator_It":"Indicator It", "TVPC_Connector":"Connector", "TVPC_Voltage":"Voltage",
 
             "Bty_BB_287_Bty_connector": "Bty connector", "Bty_BB_287_Voltage_24V_sec": "Voltage +24 V sec",  "Bty_BB_287_Voltage_50V": "Voltage +50 V", 
-            "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Power_cable_condition": "Power cable condition",
+            "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Bty_Tvpc" : "TVPC", "Bty_BB_287_Power_cable_condition": "Power cable condition",
             
             "NVS_Coolant_unit": "Coolant unit", "NVS_Eye_piece": "Eye piece", "NVS_Cable_connector": "Cable connector", "NVS_Lens_assy": "Lens assy", "NVS_Power_cable_condition": "Power cable condition",
             "BPC_Body": "Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "Cables",
@@ -175,7 +158,7 @@ class ViewALLWeapons(QWidget):
             "Status": "Status", "created_by": "Created By", "created_at": "Created At"
         }
 
-        self.main_header1 = {
+        self.main_header = {
             "Basic Details": ["Wpn No"],
             "T.Pod": [ "Leg lock handle", "Anchor claw", "Leveling Bubbles", "Lubrication", "Pull tube", "Detent stop lever", "Foot pad/ legs body condition" ],
             "T. Unit": [ "Traversing Lock", "Elevation lock check", "Elevation lock handle", "Viscosity of Viscos damper", "Azimuth lock check", "Lubrication", "Protective cover", "Coil Card" ],
@@ -185,7 +168,7 @@ class ViewALLWeapons(QWidget):
             "DMGS": [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "Protective cover", "Cable", "Bty connector", "Self/ test" ],
             "L-Tube": [ "Body Condition" ],
             "TVPC": [ "Body Condition", "Fly Net", "On/Off Switch", "Indicator It", "Connector", "Voltage"],
-            "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "Power cable condition" ],
+            "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "TVPC", "Power cable condition" ],
             "NVS": [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
             
             "BPC": ["Body", "Cables", "Cables"],
@@ -197,21 +180,6 @@ class ViewALLWeapons(QWidget):
             "Status & Creation Details": ["Status", "Created By", "Created At"]
         }
 
-        # Define your main header grouping in the order you want:
-        self.main_header = {
-            'Basic Details': ['Category', 'BA No.', 'Make Type', 'Engine No.'], 
-            'Oil Filter' : ["Issue Date (Oil Filter)", "Due Date (Oil Filter)",  "Current Mileage (Oil Filter)", "Due Mileage (Oil Filter)"],
-            'Fuel Filter': ["Issue Date (Fuel Filter)", "Due Date (Fuel Filter)", "Current Mileage (Fuel Filter)", "Due Mileage (Fuel Filter)"],
-            'Air Filter': ["Issue Date (Air Filter)", "Due Date (Air Filter)", "Current Mileage (Air Filter)", "Due Mileage (Air Filter)"],
-            'Transmission Filter': ["Issue Date (Transmission Filter)", "Due Date (Transmission Filter)", "Current Mileage (Transmission Filter)", "Due Mileage (Transmission Filter)"],
-            'Differential Oil': ["Issue Date (Differential Oil)", "Due Date (Differential Oil)", "Current Mileage (Differential Oil)", "Due Mileage (Differential Oil)"],
-            'Battery Info': ["Issue Date (Battery)", "Due Date (Battery)"],
-            'Flushing Info': ["Issue Date (Flushing)", "Due Date (Flushing)", "Fuel Tank Flush", "Radiator Flush"],
-            'Greasing Info': ["Issue Date (Greasing)", "Due Date (Greasing)", "TRS and Suspension", "Engine Part", "Steering Lever Pts"],
-            'General Maint': ["Wash", "Oil Level Check", "Lubrication of Parts", "Air Cleaner", "Fuel Filter", "French Chalk", "TR Adjustment"],
-            'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
-            'Status & Creation Details': ["Status", "Created By", "Created At"]
-        }
         self.tbL_data_font = QFont("Arial", 12)
         self.initUI()
 
@@ -360,7 +328,7 @@ class ViewALLWeapons(QWidget):
             header.setGroupHeaders(group_headers)
 
         # Fetch the data from the database.
-        all_vehicle_data = self.db_obj.get_all_vehicle(self.current_page, self.page_size)
+        all_vehicle_data = self.db_obj.get_all_weapons(self.current_page, self.page_size)
         self.data = []
         for row in all_vehicle_data:
             # Build the record in the same order as columns.
@@ -474,7 +442,7 @@ class ViewALLWeapons(QWidget):
 
     def update_pagination_buttons(self):
         # Get the total count from the database.
-        total_count = self.db_obj.get_vehicle_count()
+        total_count = self.db_obj.get_weapon_count()
         total_pages = math.ceil(total_count['total'] / self.page_size) if self.page_size else 1
         
         # Calculate the current entries range.
@@ -547,24 +515,24 @@ class ViewALLWeapons(QWidget):
 
     def edit_row(self, row):
         # print("edit_row parent:",self.main_parent, "\n\n")
-        if hasattr(self.main_parent, "update_vehicle_obj") and self.main_parent.update_vehicle_obj is not None:
-            self.main_parent.content_area.removeWidget(self.main_parent.update_vehicle_obj)
-            self.main_parent.update_vehicle_obj.deleteLater()
-            self.main_parent.update_vehicle_obj = None  # Reset the reference
+        if hasattr(self.main_parent, "update_weapon_obj") and self.main_parent.update_weapon_obj is not None:
+            self.main_parent.content_area.removeWidget(self.main_parent.update_weapon_obj)
+            self.main_parent.update_weapon_obj.deleteLater()
+            self.main_parent.update_weapon_obj = None  # Reset the reference
 
         # Create new instance and switch view
-        self.main_parent.update_vehicle_obj = UpdateVehicle(user_session = self.user_session, data = row, parent = self.main_parent)
-        self.main_parent.content_area.addWidget(self.main_parent.update_vehicle_obj)
-        self.main_parent.content_area.setCurrentWidget(self.main_parent.update_vehicle_obj)
+        self.main_parent.update_weapon_obj = UpdateVehicle(user_session = self.user_session, data = row, parent = self.main_parent)
+        self.main_parent.content_area.addWidget(self.main_parent.update_weapon_obj)
+        self.main_parent.content_area.setCurrentWidget(self.main_parent.update_weapon_obj)
 
 
     def delete_row(self, row):
         vehicle_id = row['id']
-        vehicle_ba_no = row['BA No.']
+        Wpn_No = row['Wpn No']
         confirm = QMessageBox(self)
-        confirm.setWindowTitle("Delete Vehicle")
+        confirm.setWindowTitle("Delete Weapon")
         confirm.setWindowIcon(QIcon(get_asset_path("assets/icons/delete.png")))  # Replace with your actual icon path
-        confirm.setText(f"Are you sure you want to delete vehicle {vehicle_ba_no}?")
+        confirm.setText(f"Are you sure you want to delete weapon no {Wpn_No}?")
         confirm.setIcon(QMessageBox.Question)
         confirm.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = confirm.exec_()
@@ -573,7 +541,7 @@ class ViewALLWeapons(QWidget):
             if is_deleted_result:
                 self.populate_table()  # Refresh table after deletion
             else:
-                QMessageBox.warning(self, "Error", "Failed to delete vehicle.")
+                QMessageBox.warning(self, "Error", "Failed to delete weapon.")
 
 
     def report_row(self, row):

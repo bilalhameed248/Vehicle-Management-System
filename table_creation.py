@@ -83,10 +83,11 @@ import sqlite3
     "DMGS": [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "Protective cover", "Cable", "Bty connector", "Self/ test" ],
     "L-Tube": [ "Body Condition" ],
     "TVPC": [ "Body Condition", "Fly Net", "On/Off Switch", "Indicator It", "Connector", "Voltage"],
-    "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "Power cable condition" ],
+    "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "Tvpc", "Power cable condition" ],
+
     "NVS": [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
     
-    "BPC": ["Body", "Cables", "Cables"],
+    "BPC": ["Body", "Cables", "On/Off Switch"],
     "VPC": ["Body", "Switch", "VPC Power Cable"],
     "L.Bty": ["Bty Voltage"],
     "Doc": [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record", "Storage temp & Humidity record", "Firing record check",
@@ -99,7 +100,6 @@ import sqlite3
 # CREATE TABLE all_weapons (
 #     ID INTEGER PRIMARY KEY AUTOINCREMENT,
 #     Wpn_No TEXT,
-
 #     T_Pod_Leg_lock_handle TEXT,
 #     T_Pod_Anchor_claw TEXT,
 #     T_Pod_Leveling_Bubbles TEXT,
@@ -107,7 +107,6 @@ import sqlite3
 #     T_Pod_Pull_tube TEXT,
 #     T_Pod_Detent_stop_lever TEXT,
 #     T_Pod_Foot_pad_legs_body_condition TEXT,
-
 #     T_Unit_Traversing_Lock TEXT,
 #     T_Unit_Elevation_lock_check TEXT,
 #     T_Unit_Elevation_lock_handle TEXT,
@@ -116,7 +115,6 @@ import sqlite3
 #     T_Unit_Lubrication TEXT,
 #     T_Unit_Protective_cover TEXT,
 #     T_Unit_Coil_Card TEXT,
-
 #     OS_Eye_Shield TEXT,
 #     OS_Focusing_knob TEXT,
 #     OS_Sillica_gel_condition TEXT,
@@ -128,7 +126,6 @@ import sqlite3
 #     OS_Locking_device TEXT,
 #     OS_Lens_cover TEXT,
 #     OS_Objective_lens TEXT,
-
 #     DMGS_Meter_indicator_AZ_Elev TEXT,
 #     DMGS_Sockets TEXT,
 #     DMGS_MGS_DMGS_case TEXT,
@@ -136,39 +133,32 @@ import sqlite3
 #     DMGS_Cable TEXT,
 #     DMGS_Bty_connector TEXT,
 #     DMGS_Self_test TEXT,
-
 #     L_Tube_Body_Condition TEXT,
-
 #     TVPC_Body_Condition TEXT,
 #     TVPC_Fly_Net TEXT,
 #     TVPC_On_Off_Switch TEXT,
 #     TVPC_Indicator_It TEXT,
 #     TVPC_Connector TEXT,
 #     TVPC_Voltage TEXT,
-
 #     Bty_BB_287_Bty_connector TEXT,
 #     Bty_BB_287_Voltage_24V_sec TEXT,
 #     Bty_BB_287_Voltage_50V TEXT,
 #     Bty_BB_287_Voltage_50V_sec TEXT,
 #     Bty_BB_287_Bty_condition TEXT,
+#     Bty_BB_287_Bty_Tvpc TEXT,
 #     Bty_BB_287_Power_cable_condition TEXT,
-
 #     NVS_Coolant_unit TEXT,
 #     NVS_Eye_piece TEXT,
 #     NVS_Cable_connector TEXT,
 #     NVS_Lens_assy TEXT,
 #     NVS_Power_cable_condition TEXT,
-
 #     BPC_Body TEXT,
 #     BPC_Cables TEXT,
 #     BPC_On_Off_Switch TEXT,
-
 #     VPC_Body TEXT,
 #     VPC_Switch TEXT,
 #     VPC_VPC_Power_Cable TEXT,
-
 #     L_Bty_Bty_Voltage TEXT,
-
 #     Doc_6_Monthly_verification_record TEXT,
 #     Doc_Last_ATI_pts_has_been_killed TEXT,
 #     Doc_Bty_charging_record TEXT,
@@ -180,12 +170,12 @@ import sqlite3
 #     Doc_Complete_eqpt_inventory_update_on_eARMS TEXT,
 #     Doc_DRWO_work_order_being_processed_on_eARMS TEXT,
 #     Doc_Are_Log_book_maintain_properly TEXT,
-
 #     Status TEXT,
 #     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 #     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 #     created_by TEXT,
-#     updated_by TEXT
+#     updated_by TEXT,
+#     is_deleted INTEGER DEFAULT 0 CHECK (is_deleted IN (0, 1))
 # );
 
 

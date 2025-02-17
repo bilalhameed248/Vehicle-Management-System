@@ -516,6 +516,71 @@ class VMS_DB:
         
     #******************************************************************************************************************************************************
     
+    def get_all_weapons(self, page=0, page_size=10):
+        try:
+            all_vehicles = []
+            conn, cursor = self.db_connect()
+            if page_size:
+                offset = page * page_size
+                sql = """SELECT 
+                        av.ID as id, av.Wpn_No,
+                        av.T_Pod_Leg_lock_handle, av.T_Pod_Anchor_claw, av.T_Pod_Leveling_Bubbles, av.T_Pod_Lubrication, av.T_Pod_Pull_tube, 
+                        av.T_Pod_Detent_stop_lever, av.T_Pod_Foot_pad_legs_body_condition,
+                        av.T_Unit_Traversing_Lock, av.T_Unit_Elevation_lock_check, av.T_Unit_Elevation_lock_handle, av.T_Unit_Viscosity_of_Viscos_damper,
+                        av.T_Unit_Azimuth_lock_check, av.T_Unit_Lubrication, av.T_Unit_Protective_cover, av.T_Unit_Coil_Card,
+                        av.OS_Eye_Shield, av.OS_Focusing_knob, av.OS_Sillica_gel_condition, av.OS_Reticle_lamp, av.OS_Body_condition,
+                        av.OS_N2_purg_filling_connection, av.OS_Reticle_switch, av.OS_Cable_connector, av.OS_Locking_device, av.OS_Lens_cover, av.OS_Objective_lens,
+                        av.DMGS_Meter_indicator_AZ_Elev, av.DMGS_Sockets, av.DMGS_MGS_DMGS_case, av.DMGS_Protective_cover, av.DMGS_Cable,
+                        av.DMGS_Bty_connector, av.DMGS_Self_test, av.L_Tube_Body_Condition, av.TVPC_Body_Condition, av.TVPC_Fly_Net, av.TVPC_On_Off_Switch,
+                        av.TVPC_Indicator_It, av.TVPC_Connector, av.TVPC_Voltage, av.Bty_BB_287_Bty_connector, av.Bty_BB_287_Voltage_24V_sec, av.Bty_BB_287_Voltage_50V,
+                        av.Bty_BB_287_Voltage_50V_sec, av.Bty_BB_287_Bty_condition, av.Bty_BB_287_Bty_Tvpc, av.Bty_BB_287_Power_cable_condition, av.NVS_Coolant_unit,
+                        av.NVS_Eye_piece, av.NVS_Cable_connector, av.NVS_Lens_assy, av.NVS_Power_cable_condition, av.BPC_Body, av.BPC_Cables,
+                        av.BPC_On_Off_Switch, av.VPC_Body, av.VPC_Switch, av.VPC_VPC_Power_Cable, av.L_Bty_Bty_Voltage, av.Doc_6_Monthly_verification_record,
+                        av.Doc_Last_ATI_pts_has_been_killed, av.Doc_Bty_charging_record, av.Doc_Storage_temp_Humidity_record, av.Doc_Firing_record_check,
+                        av.Doc_Svc_ability_Completeness_of_tools_accy, av.Doc_Self_test_record_check, av.Doc_Is_eARMS_fully_func, av.Doc_Complete_eqpt_inventory_update_on_eARMS,
+                        av.Doc_DRWO_work_order_being_processed_on_eARMS, av.Doc_Are_Log_book_maintain_properly,
+                        av.Status, u.name AS created_by, av.created_at
+                    FROM all_weapons av 
+                    LEFT JOIN users u ON av.created_by = u.id
+                    WHERE av.is_deleted = 0 
+                    ORDER BY av.created_at DESC
+                    LIMIT ? OFFSET ?;"""
+                cursor.execute(sql, (page_size, offset))
+            else:
+                sql = """SELECT 
+                        av.ID as id, av.Wpn_No,
+                        av.T_Pod_Leg_lock_handle, av.T_Pod_Anchor_claw, av.T_Pod_Leveling_Bubbles, av.T_Pod_Lubrication, av.T_Pod_Pull_tube, 
+                        av.T_Pod_Detent_stop_lever, av.T_Pod_Foot_pad_legs_body_condition,
+                        av.T_Unit_Traversing_Lock, av.T_Unit_Elevation_lock_check, av.T_Unit_Elevation_lock_handle, av.T_Unit_Viscosity_of_Viscos_damper,
+                        av.T_Unit_Azimuth_lock_check, av.T_Unit_Lubrication, av.T_Unit_Protective_cover, av.T_Unit_Coil_Card,
+                        av.OS_Eye_Shield, av.OS_Focusing_knob, av.OS_Sillica_gel_condition, av.OS_Reticle_lamp, av.OS_Body_condition,
+                        av.OS_N2_purg_filling_connection, av.OS_Reticle_switch, av.OS_Cable_connector, av.OS_Locking_device, av.OS_Lens_cover, av.OS_Objective_lens,
+                        av.DMGS_Meter_indicator_AZ_Elev, av.DMGS_Sockets, av.DMGS_MGS_DMGS_case, av.DMGS_Protective_cover, av.DMGS_Cable,
+                        av.DMGS_Bty_connector, av.DMGS_Self_test, av.L_Tube_Body_Condition, av.TVPC_Body_Condition, av.TVPC_Fly_Net, av.TVPC_On_Off_Switch,
+                        av.TVPC_Indicator_It, av.TVPC_Connector, av.TVPC_Voltage, av.Bty_BB_287_Bty_connector, av.Bty_BB_287_Voltage_24V_sec, av.Bty_BB_287_Voltage_50V,
+                        av.Bty_BB_287_Voltage_50V_sec, av.Bty_BB_287_Bty_condition, av.Bty_BB_287_Bty_Tvpc, av.Bty_BB_287_Power_cable_condition, av.NVS_Coolant_unit,
+                        av.NVS_Eye_piece, av.NVS_Cable_connector, av.NVS_Lens_assy, av.NVS_Power_cable_condition, av.BPC_Body, av.BPC_Cables,
+                        av.BPC_On_Off_Switch, av.VPC_Body, av.VPC_Switch, av.VPC_VPC_Power_Cable, av.L_Bty_Bty_Voltage, av.Doc_6_Monthly_verification_record,
+                        av.Doc_Last_ATI_pts_has_been_killed, av.Doc_Bty_charging_record, av.Doc_Storage_temp_Humidity_record, av.Doc_Firing_record_check,
+                        av.Doc_Svc_ability_Completeness_of_tools_accy, av.Doc_Self_test_record_check, av.Doc_Is_eARMS_fully_func, av.Doc_Complete_eqpt_inventory_update_on_eARMS,
+                        av.Doc_DRWO_work_order_being_processed_on_eARMS, av.Doc_Are_Log_book_maintain_properly,
+                        av.Status, u.name AS created_by, av.created_at
+                    FROM all_weapons av 
+                    LEFT JOIN users u ON av.created_by = u.id
+                    WHERE av.is_deleted = 0 
+                    ORDER BY av.created_at DESC;"""
+                cursor.execute(sql)
+            columns = [desc[0] for desc in cursor.description]  # Get column names
+            rows = cursor.fetchall()
+            all_vehicles = [dict(zip(columns, row)) for row in rows]
+            self.db_disconnect(conn, cursor)
+            return all_vehicles
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_all_weapons {e}")
+            return []
+
+
     def insert_weapon(self, data):
         try:
             """ Inserts vehicle data into SQLite Database """
@@ -530,7 +595,7 @@ class VMS_DB:
                 DMGS_Meter_indicator_AZ_Elev, DMGS_Sockets, DMGS_MGS_DMGS_case, DMGS_Protective_cover, DMGS_Cable, DMGS_Bty_connector, DMGS_Self_test,
                 L_Tube_Body_Condition,
                 TVPC_Body_Condition, TVPC_Fly_Net, TVPC_On_Off_Switch, TVPC_Indicator_It, TVPC_Connector, TVPC_Voltage,
-                Bty_BB_287_Bty_connector, Bty_BB_287_Voltage_24V_sec, Bty_BB_287_Voltage_50V, Bty_BB_287_Voltage_50V_sec, Bty_BB_287_Bty_condition, Bty_BB_287_Power_cable_condition,
+                Bty_BB_287_Bty_connector, Bty_BB_287_Voltage_24V_sec, Bty_BB_287_Voltage_50V, Bty_BB_287_Voltage_50V_sec, Bty_BB_287_Bty_condition, Bty_BB_287_Bty_Tvpc, Bty_BB_287_Power_cable_condition,
                 NVS_Coolant_unit, NVS_Eye_piece, NVS_Cable_connector, NVS_Lens_assy, NVS_Power_cable_condition, 
                 BPC_Body, BPC_Cables, BPC_On_Off_Switch,
                 VPC_Body, VPC_Switch, VPC_VPC_Power_Cable,
@@ -539,8 +604,8 @@ class VMS_DB:
                 Doc_Self_test_record_check, Doc_Is_eARMS_fully_func, Doc_Complete_eqpt_inventory_update_on_eARMS, Doc_DRWO_work_order_being_processed_on_eARMS, Doc_Are_Log_book_maintain_properly,
                 Status, created_by
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?
-            ); 
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            );
             """
             values = tuple(data.values())
             cursor.execute(sql, values)
@@ -589,5 +654,30 @@ class VMS_DB:
             return True
         except Exception as e:
             traceback.print_exc()
-            print(f"Exception: update_vehicle {e}")
+            print(f"Exception: update_weapon {e}")
             return False
+        
+    def get_weapon_count(self):
+        try:
+            conn, cursor = self.db_connect()
+            sql = """
+                SELECT 
+                    COUNT(*) AS total_count,
+                    SUM(CASE WHEN Status = 'Svc' THEN 1 ELSE 0 END) AS status_fit_count,
+                    SUM(CASE WHEN Status = 'Unsvc' THEN 1 ELSE 0 END) AS status_unfit_count
+                FROM all_weapons 
+                WHERE is_deleted = 0;
+            """
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            counts = {
+                "total": result[0],
+                "fit_weapon": result[1],
+                "unfit_weapon": result[2],
+            }
+            self.db_disconnect(conn, cursor)
+            return counts
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_vehicle_count {e}")
+            return 0
