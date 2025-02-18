@@ -74,8 +74,18 @@ import sqlite3
 
 
 {
-    "Wpn No": ["Wpn No"],
-    "T.Pod": [ "Leg lock handle", "Anchor claw", "Leveling Bubbles", "Lubrication", "Pull tube", "Detent stop lever", "Foot pad/ legs body condition" ],
+    "Wpn No": 
+      ["Wpn No"],
+    
+    "T.Pod": 
+      [ 
+          "Leg lock handle", 
+          "Leg lock handle", 
+          "Leg lock handle", 
+          "Lubrication", 
+          "Pull tube", 
+          "Detent stop lever", 
+          "Foot pad/ legs body condition" ],
     "T. Unit": [ "Traversing Lock", "Elevation lock check", "Elevation lock handle", "Viscosity of Viscos damper", "Azimuth lock check", "Lubrication", "Protective cover", "Coil Card" ],
     "OS": [ "Eye Shield", "Focusing knob", "Sillica gel condition", "Reticle lamp", "Body condition", "N2 purg / filling connection", "Reticle switch", "Cable connector", "Locking device", 
            "Lens cover", "Objective lens" ],

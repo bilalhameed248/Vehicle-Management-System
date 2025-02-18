@@ -4,7 +4,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainte
 from PyQt5.QtCore import Qt, QTimer, QSize, QRect
 from database import VMS_DB
 from controllers.weapon_report import WeaponReport
-from templates.update_vehicle import UpdateVehicle
+from templates.update_weapon import UpdateWeapon
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
@@ -44,13 +44,13 @@ class MultiLevelHeaderView(QHeaderView):
 
         # Font for main headers (larger & bold)
         self.mainHeaderFont = QFont("Segoe UI", 16, QFont.Bold)
-        self.subHeaderFont = QFont("Segoe UI", 14, QFont.Bold)
+        self.subHeaderFont = QFont("Segoe UI", 13, QFont.Bold)
 
         self.setFont(self.subHeaderFont)
 
     def sectionSizeFromContents(self, logicalIndex):
         size = super(MultiLevelHeaderView, self).sectionSizeFromContents(logicalIndex)
-        padding = 60
+        padding = 120
         size.setWidth(size.width() + padding)
         return size
 
@@ -97,9 +97,9 @@ class MultiLevelHeaderView(QHeaderView):
             painter.setPen(self.subTextColor)
             painter.drawRect(sub_rect)
             # Get the text from the header model.
-            text_rect = sub_rect.adjusted(8, 0, -8, 0)
+            text_rect = sub_rect.adjusted(12, 0, -12, 0)
             text = self.model().headerData(i, self.orientation(), Qt.DisplayRole)
-            painter.drawText(text_rect, Qt.AlignCenter, str(text).split('(')[0].strip())
+            painter.drawText(text_rect, Qt.AlignCenter, str(text))
 
 class ViewALLWeapons(QWidget):
 
@@ -135,8 +135,8 @@ class ViewALLWeapons(QWidget):
             "OS_Body_condition": "Body condition", "OS_N2_purg_filling_connection": "N2 purg / filling connection", "OS_Reticle_switch": "Reticle switch",  "OS_Cable_connector": "Cable connector", 
             "OS_Locking_device": "Locking device", "OS_Lens_cover": "Lens cover", "OS_Objective_lens": "Objective lens",
 
-            "DMGS_Meter_indicator_AZ_Elev":" Meter indicator (AZ & Elev)",  "DMGS_Sockets":" Sockets", "DMGS_MGS_DMGS_case":" MGS/ DMGS case",  
-            "DMGS_Protective_cover":" Protective cover", "DMGS_Cable":" Cable", "DMGS_Bty_connector":" Bty connector",  "DMGS_Self_test":" Self/ test", 
+            "DMGS_Meter_indicator_AZ_Elev":"Meter indicator (AZ & Elev)",  "DMGS_Sockets":"Sockets", "DMGS_MGS_DMGS_case":"MGS/ DMGS case",  
+            "DMGS_Protective_cover":"Protective cover", "DMGS_Cable":"Cable", "DMGS_Bty_connector":"Bty connector",  "DMGS_Self_test":"Self/ test", 
 
             "L_Tube_Body_Condition":"Body Condition",
             "TVPC_Body_Condition":"Body Condition", "TVPC_Fly_Net":"Fly Net", "TVPC_On_Off_Switch":"On/Off Switch", "TVPC_Indicator_It":"Indicator It", "TVPC_Connector":"Connector", "TVPC_Voltage":"Voltage",
@@ -521,7 +521,7 @@ class ViewALLWeapons(QWidget):
             self.main_parent.update_weapon_obj = None  # Reset the reference
 
         # Create new instance and switch view
-        self.main_parent.update_weapon_obj = UpdateVehicle(user_session = self.user_session, data = row, parent = self.main_parent)
+        self.main_parent.update_weapon_obj = UpdateWeapon(user_session = self.user_session, data = row, parent = self.main_parent)
         self.main_parent.content_area.addWidget(self.main_parent.update_weapon_obj)
         self.main_parent.content_area.setCurrentWidget(self.main_parent.update_weapon_obj)
 

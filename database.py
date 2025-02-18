@@ -644,7 +644,7 @@ class VMS_DB:
                 Doc_Firing_record_check = ?, Doc_Svc_ability_Completeness_of_tools_accy = ?, Doc_Self_test_record_check = ?, Doc_Is_eARMS_fully_func = ?, Doc_Complete_eqpt_inventory_update_on_eARMS = ?,
                 Doc_DRWO_work_order_being_processed_on_eARMS = ?, Doc_Are_Log_book_maintain_properly = ?,
                 Status = ?,
-                updated_at = CURRENT_TIMESTAMP,
+                updated_at = ?,
                 updated_by = ?
             WHERE ID = ?;"""
             weapon_data_with_id = tuple(data.values()) + (weapon_id,)
