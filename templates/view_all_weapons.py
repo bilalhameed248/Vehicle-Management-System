@@ -116,7 +116,7 @@ class ViewALLWeapons(QWidget):
         self.current_page = 0
         self.page_size = 10
         
-        self.vr_obj = VehicleReport()
+        self.vr_obj = WeaponReport()
         self.db_obj = VMS_DB() 
         self.rpt_obj = Report()
         self.columns = []
