@@ -115,7 +115,6 @@ class Report:
                 cell.border = Border(bottom=Side(style='thin'))
 
             all_columns = [col for columns in main_header.values() for col in columns]
-            issue_date_index = all_columns.index("issue_date_oil_filter") + 1
 
             # Adding data
             for vehicle in vehicles:

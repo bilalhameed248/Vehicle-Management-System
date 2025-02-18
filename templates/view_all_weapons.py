@@ -3,12 +3,12 @@ from PyQt5.QtWidgets import (QWidget, QTableView, QVBoxLayout, QHBoxLayout, QPus
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainter, QColor, QFontMetrics
 from PyQt5.QtCore import Qt, QTimer, QSize, QRect
 from database import VMS_DB
-from templates.vehicle_report import VehicleReport
+from controllers.weapon_report import WeaponReport
 from templates.update_vehicle import UpdateVehicle
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
-from controllers.report_all_vehicles import Report
+from controllers.report_all_weapons import Report
 import math
 
 class MultiLevelHeaderView(QHeaderView):
@@ -145,7 +145,7 @@ class ViewALLWeapons(QWidget):
             "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Bty_Tvpc" : "TVPC", "Bty_BB_287_Power_cable_condition": "Power cable condition",
             
             "NVS_Coolant_unit": "Coolant unit", "NVS_Eye_piece": "Eye piece", "NVS_Cable_connector": "Cable connector", "NVS_Lens_assy": "Lens assy", "NVS_Power_cable_condition": "Power cable condition",
-            "BPC_Body": "Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "Cables",
+            "BPC_Body": "Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "On/Off Switch",
             "VPC_Body": "Body", "VPC_Switch": "Switch", "VPC_VPC_Power_Cable": "VPC Power Cable",            
             "L_Bty_Bty_Voltage":"Bty Voltage",
 
@@ -171,7 +171,7 @@ class ViewALLWeapons(QWidget):
             "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "TVPC", "Power cable condition" ],
             "NVS": [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
             
-            "BPC": ["Body", "Cables", "Cables"],
+            "BPC": ["Body", "Cables", "On/Off Switch"],
             "VPC": ["Body", "Switch", "VPC Power Cable"],
             "L.Bty": ["Bty Voltage"],
             "Doc": [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record", "Storage temp & Humidity record", "Firing record check",
@@ -234,7 +234,7 @@ class ViewALLWeapons(QWidget):
         """)
         export_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
         export_button.setIconSize(QSize(20, 20))
-        export_button.clicked.connect(self.report_all_vehicle)
+        export_button.clicked.connect(self.report_all_weapons)
         header_layout.addWidget(export_button)
 
         header_layout.addStretch()
@@ -537,7 +537,7 @@ class ViewALLWeapons(QWidget):
         confirm.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = confirm.exec_()
         if result == QMessageBox.Yes:
-            is_deleted_result  = self.db_obj.delete_vehicle(vehicle_id)
+            is_deleted_result  = self.db_obj.delete_weapon(vehicle_id)
             if is_deleted_result:
                 self.populate_table()  # Refresh table after deletion
             else:
@@ -545,10 +545,10 @@ class ViewALLWeapons(QWidget):
 
 
     def report_row(self, row):
-        self.vr_obj.generate_vehicle_pdf_report_updated(row)
+        self.vr_obj.generate_weapons_pdf_report_updated(row)
 
 
-    def report_all_vehicle(self):
+    def report_all_weapons(self):
         is_generated = self.rpt_obj.generate_report()
         if is_generated:
             message = "Report saved successfully to Downloads"

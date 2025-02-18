@@ -679,5 +679,22 @@ class VMS_DB:
             return counts
         except Exception as e:
             traceback.print_exc()
-            print(f"Exception: get_vehicle_count {e}")
+            print(f"Exception: get_weapon_count {e}")
             return 0
+        
+
+    def delete_weapon(self, weapon_id):
+        try:
+            conn, cursor = self.db_connect()
+            cursor.execute("""
+                UPDATE all_weapons
+                SET is_deleted = ?
+                WHERE id = ?
+            """, (1, weapon_id))
+            conn.commit()
+            self.db_disconnect(conn, cursor)
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: delete_weapon {e}")
+            return False
