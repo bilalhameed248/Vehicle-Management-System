@@ -265,18 +265,17 @@ class WeaponReport:
 
         #*******************************************************************************************************************************
 
-        # --- Section: Transmission Filter (4-column table) ---
+        # --- Section: DMGS (7-column table) ---
         elements.append(Paragraph("DMGS", subheader_style))
         DMGS_data = [
             [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case"],
             [
-                row_data.get('Issue Date (Transmission Filter)', ''),
-                row_data.get('Due Date (Transmission Filter)', ''),
-                row_data.get('Current Mileage (Transmission Filter)', ''),
-                row_data.get('Due Mileage (Transmission Filter)', '')
+                row_data.get('Meter indicator (AZ & Elev))', ''),
+                row_data.get('Sockets', ''),
+                row_data.get('MGS/ DMGS case', '')
             ]
         ]
-        num_cols = 4
+        num_cols = 3
         DMGS_table = Table(DMGS_data, colWidths=[content_width/num_cols]*num_cols)
         DMGS_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
@@ -287,12 +286,12 @@ class WeaponReport:
         elements.append(DMGS_table)
 
         DMGS_data = [
-            [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "Protective cover", "Cable", "Bty connector", "Self/ test" ],
+            [ "Protective cover", "Cable", "Bty connector", "Self/ test" ],
             [
-                row_data.get('Issue Date (Transmission Filter)', ''),
-                row_data.get('Due Date (Transmission Filter)', ''),
-                row_data.get('Current Mileage (Transmission Filter)', ''),
-                row_data.get('Due Mileage (Transmission Filter)', '')
+                row_data.get('Protective cover', ''),
+                row_data.get('Cable', ''),
+                row_data.get('Bty connector', ''),
+                row_data.get('Self/ test', '')
             ]
         ]
         num_cols = 4
@@ -313,117 +312,149 @@ class WeaponReport:
         L_Tube_data = [
             [ "Body Condition" ],
             [
-                row_data.get('Issue Date (Differential Oil)', ''),
-                row_data.get('Due Date (Differential Oil)', ''),
-                row_data.get('Current Mileage (Differential Oil)', ''),
-                row_data.get('Due Mileage (Differential Oil)', '')
+                row_data.get('Body Condition', '')
             ]
         ]
-        num_cols = 4
-        diff_table = Table(L_Tube_data, colWidths=[content_width/num_cols]*num_cols)
-        diff_table.setStyle(TableStyle([
+        num_cols = 1
+        L_Tube_table = Table(L_Tube_data, colWidths=[content_width/num_cols]*num_cols)
+        L_Tube_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(diff_table)
+        elements.append(L_Tube_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
 
-        # --- Section: Battery Details (2-column table) ---
+        # --- Section: TVPC (6-column table) ---
         elements.append(Paragraph("TVPC", subheader_style))
         TVPC_data = [
-            [ "Body Condition", "Fly Net", "On/Off Switch", "Indicator It", "Connector", "Voltage"],
+            [ "Body Condition", "Fly Net", "On/Off Switch", ],
             [
-                row_data.get('Issue Date (Battery)', ''),
-                row_data.get('Issue Date (Battery)', '')
+                row_data.get('Body Condition', ''),
+                row_data.get('Fly Net', ''),
+                row_data.get('On/Off Switch', '')
             ]
         ]
-        num_cols = 2
-        battery_table = Table(TVPC_data, colWidths=[content_width/num_cols]*num_cols)
-        battery_table.setStyle(TableStyle([
+        num_cols = 3
+        TVPC_table = Table(TVPC_data, colWidths=[content_width/num_cols]*num_cols)
+        TVPC_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(battery_table)
+        elements.append(TVPC_table)
+
+        TVPC_data = [
+            [ "Indicator It", "Connector", "Voltage"],
+            [
+                row_data.get('Indicator It', ''),
+                row_data.get('Connector', ''),
+                row_data.get('Voltage', '')
+            ]
+        ]
+        num_cols = 3
+        TVPC_table = Table(TVPC_data, colWidths=[content_width/num_cols]*num_cols)
+        TVPC_table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        ]))
+        elements.append(TVPC_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
 
-        # --- Section: Flushing Details (4-column table) ---
+        # --- Section: Bty BB-287 (7-column table) ---
         elements.append(Paragraph("Bty BB-287", subheader_style))
         Bty_BB_287_data = [
-            [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "Tvpc", "Power cable condition" ],
+            [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec" ],
             [
-                row_data.get('Issue Date (Flushing)', ''),
-                row_data.get('Due Date (Flushing)', ''),
-                row_data.get('Fuel Tank Flush', ''),
-                row_data.get('Radiator Flush', '')
+                row_data.get('Bty connector', ''),
+                row_data.get('Voltage +24 V sec', ''),
+                row_data.get('Voltage +50 V', ''),
+                row_data.get('Voltage +50 V sec', '')
             ]
         ]
         num_cols = 4
-        flushing_table = Table(Bty_BB_287_data, colWidths=[content_width/num_cols]*num_cols)
-        flushing_table.setStyle(TableStyle([
+        Bty_BB_287_table = Table(Bty_BB_287_data, colWidths=[content_width/num_cols]*num_cols)
+        Bty_BB_287_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(flushing_table)
+        elements.append(Bty_BB_287_table)
+
+        Bty_BB_287_data = [
+            [ "Bty condition", "Tvpc", "Power cable condition" ],
+            [
+                row_data.get('Bty condition', ''),
+                row_data.get('Tvpc', ''),
+                row_data.get('Power cable condition', '')
+            ]
+        ]
+        num_cols = 3
+        Bty_BB_287_table = Table(Bty_BB_287_data, colWidths=[content_width/num_cols]*num_cols)
+        Bty_BB_287_table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        ]))
+        elements.append(Bty_BB_287_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
 
-        # --- Section: Greasing Details (5-column table) ---
+        # --- Section: NVS (5-column table) ---
         elements.append(Paragraph("NVS", subheader_style))
         NVS_data = [
             [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
             [
-                row_data.get('Issue Date (Greasing)', ''),
-                row_data.get('Due Date (Greasing)', ''),
-                row_data.get('TRS and Suspension', ''),
-                row_data.get('Engine Part', ''),
-                row_data.get('Steering Lever Pts', '')
+                row_data.get('Coolant unit', ''),
+                row_data.get('Eye piece"', ''),
+                row_data.get('Cable connector', ''),
+                row_data.get('Lens assy', ''),
+                row_data.get('Power cable condition', '')
             ]
         ]
         num_cols = 5
-        greasing_table = Table(NVS_data, colWidths=[content_width/num_cols]*num_cols)
-        greasing_table.setStyle(TableStyle([
+        NVS_table = Table(NVS_data, colWidths=[content_width/num_cols]*num_cols)
+        NVS_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(greasing_table)
+        elements.append(NVS_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
 
-        # --- Section: Greasing Details (5-column table) ---
+        # --- Section: BPC (5-column table) ---
         elements.append(Paragraph("BPC", subheader_style))
         BPC_data = [
             ["Body", "Cables", "On/Off Switch"],
             [
-                row_data.get('Issue Date (Greasing)', ''),
-                row_data.get('Due Date (Greasing)', ''),
-                row_data.get('TRS and Suspension', ''),
-                row_data.get('Engine Part', ''),
-                row_data.get('Steering Lever Pts', '')
+                row_data.get('Body', ''),
+                row_data.get('Cables', ''),
+                row_data.get('On/Off Switch', '')
             ]
         ]
-        num_cols = 5
-        greasing_table = Table(BPC_data, colWidths=[content_width/num_cols]*num_cols)
-        greasing_table.setStyle(TableStyle([
+        num_cols = 3
+        BPC_table = Table(BPC_data, colWidths=[content_width/num_cols]*num_cols)
+        BPC_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(greasing_table)
+        elements.append(BPC_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
@@ -433,95 +464,117 @@ class WeaponReport:
         VPC_data = [
             ["Body", "Switch", "VPC Power Cable"],
             [
-                row_data.get('Issue Date (Greasing)', ''),
-                row_data.get('Due Date (Greasing)', ''),
-                row_data.get('TRS and Suspension', ''),
-                row_data.get('Engine Part', ''),
-                row_data.get('Steering Lever Pts', '')
+                row_data.get('Body', ''),
+                row_data.get('Switch', ''),
+                row_data.get('VPC Power Cable', '')
             ]
         ]
-        num_cols = 5
-        greasing_table = Table(VPC_data, colWidths=[content_width/num_cols]*num_cols)
-        greasing_table.setStyle(TableStyle([
+        num_cols = 3
+        VPC_table = Table(VPC_data, colWidths=[content_width/num_cols]*num_cols)
+        VPC_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(greasing_table)
+        elements.append(VPC_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
 
-        # --- Section: Greasing Details (5-column table) ---
+        # --- Section: L.Bty (1-column table) ---
         elements.append(Paragraph("L.Bty", subheader_style))
         L_Bty_data = [
             ["Bty Voltage"],
             [
-                row_data.get('Issue Date (Greasing)', ''),
-                row_data.get('Due Date (Greasing)', ''),
-                row_data.get('TRS and Suspension', ''),
-                row_data.get('Engine Part', ''),
-                row_data.get('Steering Lever Pts', '')
+                row_data.get('Bty Voltage', '')
             ]
         ]
         num_cols = 5
-        greasing_table = Table(L_Bty_data, colWidths=[content_width/num_cols]*num_cols)
-        greasing_table.setStyle(TableStyle([
+        L_Bty_table = Table(L_Bty_data, colWidths=[content_width/num_cols]*num_cols)
+        L_Bty_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(greasing_table)
+        elements.append(L_Bty_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
 
-        # --- Section: General Maintenance (7-column table) ---
+        # --- Section: Doc (9-column table) ---
         elements.append(Paragraph("Doc", subheader_style))
         Doc_data = [
-            [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record", "Storage temp & Humidity record", "Firing record check",
-      "Svc ability & Completeness of tools & accy", "Self test record check", "Is eARMS fully func and all the processes involved are being carried out through eARMS",
-      "Complete eqpt inventory update on eARMS", "DRWO/ work order being processed on eARMS", "Are Log book maintain properly" ],
+            [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record" ],
             [
-                row_data.get('Wash', ''),
-                row_data.get('Oil Level Check', ''),
-                row_data.get('Lubrication of Parts', ''),
-                row_data.get('Air Cleaner', '')
-            ]
-        ]
-        num_cols = 4
-        maintenance_table = Table(Doc_data, colWidths=[content_width/num_cols]*num_cols)
-        maintenance_table.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 1, colors.black),
-            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
-        ]))
-        elements.append(maintenance_table)
-        # elements.append(Spacer(1, 0.1*inch))
-
-        #*****************************************
-
-        # elements.append(Paragraph("General Maintenance", subheader_style))
-        Doc_data = [
-            ['Fuel Filter', 'French Chalk', 'TR Adjustment'],
-            [
-                row_data.get('Fuel Filter', ''),
-                row_data.get('French Chalk', ''),
-                row_data.get('TR Adjustment', '')
+                row_data.get('6 Monthly verification record', ''),
+                row_data.get('Last ATI pts has been killed', ''),
+                row_data.get('Bty charging record', '')
             ]
         ]
         num_cols = 3
-        maintenance_table = Table(Doc_data, colWidths=[content_width/num_cols]*num_cols)
-        maintenance_table.setStyle(TableStyle([
+        Doc_table = Table(Doc_data, colWidths=[content_width/num_cols]*num_cols)
+        Doc_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
             ('ALIGN', (0,0), (-1,-1), 'LEFT'),
             ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
         ]))
-        elements.append(maintenance_table)
+        elements.append(Doc_table)
+
+        Doc_data = [
+            [ "Storage temp & Humidity record", "Firing record check", "Svc ability & Completeness of tools & accy", ],
+            [
+                row_data.get('Storage temp & Humidity record', ''),
+                row_data.get('Firing record check', ''),
+                row_data.get('Svc ability & Completeness of tools & accy', '')
+            ]
+        ]
+        num_cols = 3
+        Doc_table = Table(Doc_data, colWidths=[content_width/num_cols]*num_cols)
+        Doc_table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        ]))
+        elements.append(Doc_table)
+
+        Doc_data = [
+            [ "Self test record check", "Is eARMS fully func \n and all the processes involved are \n being carried out through eARMS", "Complete eqpt inventory \n update on eARMS", ],
+            [
+                row_data.get('Self test record check', ''),
+                row_data.get('Is eARMS fully func and all the processes involved are being carried out through eARMS', ''),
+                row_data.get('Complete eqpt inventory update on eARMS', '')
+            ]
+        ]
+        num_cols = 3
+        Doc_table = Table(Doc_data, colWidths=[content_width/num_cols]*num_cols)
+        Doc_table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        ]))
+        elements.append(Doc_table)
+
+        Doc_data = [
+            [ "DRWO/ work order being processed on eARMS", "Are Log book maintain properly"],
+            [
+                row_data.get('DRWO/ work order being processed on eARMS', ''),
+                row_data.get('Are Log book maintain properly', '')
+            ]
+        ]
+        num_cols = 2
+        Doc_table = Table(Doc_data, colWidths=[content_width/num_cols]*num_cols)
+        Doc_table.setStyle(TableStyle([
+            ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#dceefc')),
+            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.gray)
+        ]))
+        elements.append(Doc_table)
         elements.append(Spacer(1, 0.1*inch))
 
         #*******************************************************************************************************************************
@@ -534,7 +587,7 @@ class WeaponReport:
                 row_data.get('Status', '')
             ]
         ]
-        num_cols = 3
+        num_cols = 1
         overhaul_table = Table(Status_data, colWidths=[content_width/num_cols]*num_cols)
         overhaul_table.setStyle(TableStyle([
             ('BOX', (0,0), (-1,-1), 1, colors.black),
