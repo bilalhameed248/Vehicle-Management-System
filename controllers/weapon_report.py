@@ -12,17 +12,17 @@ class WeaponReport:
     
     def generate_weapons_pdf_report_updated(self, row_data):
         """
-        Generates a one-page, sectioned PDF report for a vehicle record with 0.5-inch margins,
+        Generates a one-page, sectioned PDF report for a weapon record with 0.5-inch margins,
         full-width left-aligned tables, and minimal spacing between sections.
         The PDF is saved to the user's Downloads directory.
         
         Parameters:
-        row_data (dict): Dictionary containing vehicle data.
+        row_data (dict): Dictionary containing weapon data.
         """
         # Determine Downloads folder and generate a unique filename
         downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = os.path.join(downloads_path, f"vehicle_report_{timestamp}.pdf")
+        filename = os.path.join(downloads_path, f"weapon_report_{timestamp}.pdf")
 
         # Create document with 0.5-inch margins on all sides
         margin = 0.5 * inch

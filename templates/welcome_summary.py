@@ -10,14 +10,20 @@ class WelcomeSummary(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.db_obj = VMS_DB()
-        self.current_page = 0
-        self.page_size = 10
+
+        self.current_page_veh = 0
+        self.page_size_veh = 10
+
+        self.current_page_wpn = 0
+        self.page_size_wpn = 10
+
         self.init_ui()
 
     def init_ui(self):
         """Initializes UI components."""
 
-        self.summary_columns = ["Category", "BA No.", "Make & Type", "Status"]
+        self.summary_columns_veh = ["Category", "BA No.", "Make & Type", "Status"]
+        self.summary_columns_wep = ["Wpn No", "Status"]
 
         self.setStyleSheet("""
             QPushButton { background-color: #007BFF; color: white; padding: 6px 10px; border-radius: 4px; font-weight: bold; border: none; }
@@ -68,7 +74,7 @@ class WelcomeSummary(QWidget):
         self.search_box_vhl = QLineEdit(self)
         self.search_box_vhl.setPlaceholderText("Search...")
         self.search_box_vhl.setFixedWidth(200)  # Adjust width as needed
-        self.search_box_vhl.textChanged.connect(self.filter_wep_table)
+        self.search_box_vhl.textChanged.connect(self.filter_veh_table)
         search_layout.addWidget(self.search_box_vhl)
 
         veh_summary_layout.addLayout(search_layout) 
@@ -106,45 +112,19 @@ class WelcomeSummary(QWidget):
 
         #************************************************************
         
-        self.vehicle_table = self.create_table()
+        self.vehicle_table = self.create_table(4, "veh")
         veh_summary_layout.addWidget(self.vehicle_table)
 
         #************************************************************
         # --- Pagination Controls ---
-        pagination_layout = QHBoxLayout()
-        # Label to show "Showing x to y of z entries"
-        self.entries_label = QLabel("Showing 0 to 0 of 0 entries")
-        self.entries_label.setStyleSheet("color: white; font-size: 16px; font-weight: bold; padding: 12px; border-radius: 4px;")
-        pagination_layout.addWidget(self.entries_label)
-        
-        pagination_layout.addStretch()
-        
-        # Container layout for page number buttons
-        self.page_buttons_layout = QHBoxLayout()
-        pagination_layout.addLayout(self.page_buttons_layout)
-        
-        pagination_layout.addStretch()
-        
-        # Previous and Next buttons
-        self.btn_prev = QPushButton(" Prev")
-        self.btn_prev.setIcon(QIcon(get_asset_path("assets/icons/btn_prev.png")))
-        self.btn_prev.setIconSize(QSize(30, 30))
-        self.btn_prev.clicked.connect(self.prev_page)
-        pagination_layout.addWidget(self.btn_prev)
-        
-        self.btn_next = QPushButton(" Next")
-        self.btn_next.setIcon(QIcon(get_asset_path("assets/icons/btn_next.png")))
-        self.btn_next.setIconSize(QSize(30, 30))
-        self.btn_next.clicked.connect(self.next_page)
-        pagination_layout.addWidget(self.btn_next)
-        
-        veh_summary_layout.addLayout(pagination_layout)
+        veh_pagination_layout = self.get_pagination_layout_veh("veh")
+        veh_summary_layout.addLayout(veh_pagination_layout)
         #************************************************************
 
         veh_container.setLayout(veh_summary_layout)
         splitter.addWidget(veh_container)
 
-        #*********************************************************************************************************************
+        #******************************************************************************************************************************************************************
         
         # Right Side - Weapon Summary
         wep_container = QWidget()
@@ -162,20 +142,50 @@ class WelcomeSummary(QWidget):
         self.total_weapon_label.setStyleSheet("color: #2C3E50; padding-bottom: 10px;")
         search_layout_wpn.addWidget(self.total_weapon_label)
 
-        self.search_box = QLineEdit(self)
-        self.search_box.setPlaceholderText("Search...")
-        self.search_box.setFixedWidth(200)  # Adjust width as needed
-        search_layout_wpn.addWidget(self.search_box)
+        self.search_box_wpn = QLineEdit(self)
+        self.search_box_wpn.setPlaceholderText("Search...")
+        self.search_box_wpn.setFixedWidth(200)  # Adjust width as needed
+        self.search_box_wpn.textChanged.connect(self.filter_wep_table)
+        search_layout_wpn.addWidget(self.search_box_wpn)
 
         wep_summary_layout.addLayout(search_layout_wpn)
-        
-        self.weapon_table = self.create_table(dummy_data=True)
+
+        #************************************************************
+        #Details Summary
+        detail_summary = QHBoxLayout()
+
+        self.total_srv_weapon_label = QLabel("", self)
+        self.total_srv_weapon_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.total_srv_weapon_label.setStyleSheet("color: white; padding-bottom: 10px;")
+        detail_summary.addWidget(self.total_srv_weapon_label)
+
+        self.total_unsrv_weapon_label = QLabel("", self)
+        self.total_unsrv_weapon_label.setFont(QFont("Arial", 14, QFont.Bold))
+        self.total_unsrv_weapon_label.setStyleSheet("color: white; padding-bottom: 10px;")
+        detail_summary.addWidget(self.total_unsrv_weapon_label)
+
+        self.total_srv_weapon_label.setStyleSheet("color: white; padding-bottom: 10px; border: 2px solid white; padding: 5px;")
+        self.total_unsrv_weapon_label.setStyleSheet("color: white; padding-bottom: 10px; border: 2px solid white; padding: 5px;")
+
+        wep_summary_layout.addLayout(detail_summary) 
+
+        #************************************************************
+        #Table
+        self.weapon_table = self.create_table(2, "wep")
         wep_summary_layout.addWidget(self.weapon_table, Qt.AlignRight)
+
+        #************************************************************
+        # --- Pagination Controls ---
+        
+        wpn_pagination_layout = self.get_pagination_layout_wep("wep")
+        wep_summary_layout.addLayout(wpn_pagination_layout)
+
+        #************************************************************
         
         wep_container.setLayout(wep_summary_layout)
         splitter.addWidget(wep_container)
 
-        #*********************************************************************************************************************
+        #************************************************************************************************************************************************************************
         
         main_layout.addWidget(splitter)
         
@@ -191,13 +201,76 @@ class WelcomeSummary(QWidget):
         self.setLayout(main_layout)
         
         # Load initial data
-        self.load_data()
+        self.load_data_veh()
+        self.load_data_wep()
+
+    def get_pagination_layout_veh(self, title):
+        pagination_layout = QHBoxLayout()
+        # Label to show "Showing x to y of z entries"
+        self.entries_label_veh = QLabel("Showing 0 to 0 of 0 entries")
+        self.entries_label_veh.setStyleSheet("color: white; font-size: 16px; font-weight: bold; padding: 12px; border-radius: 4px;")
+        pagination_layout.addWidget(self.entries_label_veh)
+        
+        pagination_layout.addStretch()
+        
+        # Container layout for page number buttons
+        self.page_buttons_layout_veh = QHBoxLayout()
+        pagination_layout.addLayout(self.page_buttons_layout_veh)
+        
+        pagination_layout.addStretch()
+        
+        # Previous and Next buttons
+        self.btn_prev_veh = QPushButton(" Prev")
+        self.btn_prev_veh.setIcon(QIcon(get_asset_path("assets/icons/btn_prev.png")))
+        self.btn_prev_veh.setIconSize(QSize(30, 30))
+        self.btn_prev_veh.clicked.connect(lambda: self.prev_page(title))
+        pagination_layout.addWidget(self.btn_prev_veh)
+        
+        self.btn_next_veh = QPushButton(" Next")
+        self.btn_next_veh.setIcon(QIcon(get_asset_path("assets/icons/btn_next.png")))
+        self.btn_next_veh.setIconSize(QSize(30, 30))
+        self.btn_next_veh.clicked.connect(lambda: self.next_page(title))
+        pagination_layout.addWidget(self.btn_next_veh)
+        return pagination_layout
     
-    def create_table(self, dummy_data=False):
+    def get_pagination_layout_wep(self, title):
+        pagination_layout = QHBoxLayout()
+        # Label to show "Showing x to y of z entries"
+        self.entries_label_wep = QLabel("Showing 0 to 0 of 0 entries")
+        self.entries_label_wep.setStyleSheet("color: white; font-size: 16px; font-weight: bold; padding: 12px; border-radius: 4px;")
+        pagination_layout.addWidget(self.entries_label_wep)
+        
+        pagination_layout.addStretch()
+        
+        # Container layout for page number buttons
+        self.page_buttons_layout_wep = QHBoxLayout()
+        pagination_layout.addLayout(self.page_buttons_layout_wep)
+        
+        pagination_layout.addStretch()
+        
+        # Previous and Next buttons
+        self.btn_prev_wep = QPushButton(" Prev")
+        self.btn_prev_wep.setIcon(QIcon(get_asset_path("assets/icons/btn_prev.png")))
+        self.btn_prev_wep.setIconSize(QSize(30, 30))
+        self.btn_prev_wep.clicked.connect(lambda: self.prev_page(title))
+        pagination_layout.addWidget(self.btn_prev_wep)
+        
+        self.btn_next_wep = QPushButton(" Next")
+        self.btn_next_wep.setIcon(QIcon(get_asset_path("assets/icons/btn_next.png")))
+        self.btn_next_wep.setIconSize(QSize(30, 30))
+        self.btn_next_wep.clicked.connect(lambda: self.next_page(title))
+        pagination_layout.addWidget(self.btn_next_wep)
+        return pagination_layout
+    
+    def create_table(self, column_count, title):
         """Creates a styled table widget."""
         table = QTableWidget(self)
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(self.summary_columns)
+        table.setColumnCount(column_count)
+        table.setHorizontalHeaderLabels({"veh": self.summary_columns_veh, "wep": self.summary_columns_wep}.get(title, []))
+        # if title == "veh":
+        #     table.setHorizontalHeaderLabels(self.summary_columns_veh) 
+        # elif title =="wep":
+        #     table.setHorizontalHeaderLabels(self.summary_columns_wep)
         table.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         table.setAlternatingRowColors(True)
         table.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
@@ -207,18 +280,11 @@ class WelcomeSummary(QWidget):
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # table.setFixedWidth(int(self.width() * 1))
         table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-
-        if dummy_data:
-            table.setRowCount(5)
-            for row in range(5):
-                for col in range(4):
-                    table.setItem(row, col, QTableWidgetItem(f"Dummy {row}-{col}"))
-        
         return table
     
-    def load_data(self):
+    def load_data_veh(self):
         """Loads fresh data from the database and updates the UI."""
-        all_vehicle_data = self.db_obj.get_vehicle_summary(self.current_page, self.page_size)
+        all_vehicle_data = self.db_obj.get_vehicle_summary(self.current_page_veh, self.page_size_veh)
         vehicles_summary_count = self.db_obj.get_vehicle_count()
         # Update Summary Label
         self.total_vehicle_label.setText(f"🚗 Total Vehicles: {vehicles_summary_count['total']}")
@@ -226,8 +292,6 @@ class WelcomeSummary(QWidget):
         self.total_b_vehicle_label.setText(f"B Vehicles: {vehicles_summary_count['category_B']}")
         self.total_fit_vehicle_label.setText(f"Fit: {vehicles_summary_count['fit_vehicle']}")
         self.total_unfit_vehicle_label.setText(f"Unfit: {vehicles_summary_count['unfit_vehicle']}")
-
-        self.total_weapon_label.setText(f"🔫 Total Weapons: {vehicles_summary_count['total']}")
         
         # Update Table Data
         self.vehicle_table.setRowCount(len(all_vehicle_data))
@@ -240,45 +304,78 @@ class WelcomeSummary(QWidget):
         # Adjust table size
         self.vehicle_table.resizeRowsToContents()
         self.vehicle_table.setSizeAdjustPolicy(QTableWidget.AdjustToContents)
+        self.update_pagination_buttons_veh()
 
-        self.update_pagination_buttons()
+    def load_data_wep(self):
+        """Loads fresh data from the database and updates the UI."""
+        all_weapon_data = self.db_obj.get_weapon_summary(self.current_page_wpn, self.page_size_wpn)
+        weapon_summary_count = self.db_obj.get_weapon_count()
+        # Update Summary Label
+        self.total_weapon_label.setText(f"🔫 Total Weapons: {weapon_summary_count['total']}")
+        self.total_srv_weapon_label.setText(f"Srv Weapon: {weapon_summary_count['srv_weapon']}")
+        self.total_unsrv_weapon_label.setText(f"Unsrv Weapon: {weapon_summary_count['unsrv_weapon']}")
+        
+        # Update Table Data
+        self.weapon_table.setRowCount(len(all_weapon_data))
+        for row, vehicle in enumerate(all_weapon_data):
+            self.weapon_table.setItem(row, 0, QTableWidgetItem(str(vehicle["Wpn_No"])))
+            self.weapon_table.setItem(row, 1, QTableWidgetItem(str(vehicle["Status"])))
+        
+        # Adjust table size
+        self.vehicle_table.resizeRowsToContents()
+        self.vehicle_table.setSizeAdjustPolicy(QTableWidget.AdjustToContents)
+        self.update_pagination_buttons_wep()
 
-    def prev_page(self):
-        if self.current_page > 0:
-            self.current_page -= 1
-            self.load_data()
+    def prev_page(self, title):
+        if title == "veh":
+            if self.current_page_veh > 0:
+                self.current_page_veh -= 1
+                self.load_data_veh()
+        elif title == "wep":
+            if self.current_page_wpn > 0:
+                self.current_page_wpn -= 1
+                self.load_data_wep()
 
+    def next_page(self, title):
+        if title == "veh":
+            total_count = self.db_obj.get_vehicle_count()
+            total_pages = math.ceil(total_count['total'] / self.page_size_veh)
+            if self.current_page_veh < total_pages - 1:
+                self.current_page_veh += 1
+                self.load_data_veh()
 
-    def next_page(self):
-        total_count = self.db_obj.get_vehicle_count()
-        total_pages = math.ceil(total_count['total'] / self.page_size)
-        if self.current_page < total_pages - 1:
-            self.current_page += 1
-            self.load_data()
+        elif title == "wep":
+            total_count = self.db_obj.get_weapon_count()
+            total_pages = math.ceil(total_count['total'] / self.page_size_wep)
+            if self.current_page_wpn < total_pages - 1:
+                self.current_page_wpn += 1
+                self.load_data_wep()
 
+    def go_to_page(self, page, title):
+        if title == "veh":
+            self.current_page_veh = page
+            self.load_data_veh()
+        elif title == "wep":
+            self.current_page_wpn = page
+            self.load_data_wep()
 
-    def go_to_page(self, page):
-        self.current_page = page
-        self.load_data()
-
-
-    def update_pagination_buttons(self):
+    def update_pagination_buttons_veh(self):
         # Get the total count from the database.
         total_count = self.db_obj.get_vehicle_count()
-        total_pages = math.ceil(total_count['total'] / self.page_size) if self.page_size else 1
+        total_pages = math.ceil(total_count['total'] / self.page_size_veh) if self.page_size_veh else 1
         
         # Calculate the current entries range.
-        start_entry = self.current_page * self.page_size + 1
-        end_entry = min((self.current_page + 1) * self.page_size, total_count['total'])
+        start_entry = self.current_page_veh * self.page_size_veh + 1
+        end_entry = min((self.current_page_veh + 1) * self.page_size_veh, total_count['total'])
         
         # Update the entries label.
-        self.entries_label.setText(f"Showing {start_entry} to {end_entry} of {total_count['total']} entries")
+        self.entries_label_veh.setText(f"Showing {start_entry} to {end_entry} of {total_count['total']} entries")
         
         # Clear existing page number buttons.
-        for i in reversed(range(self.page_buttons_layout.count())):
-            widget = self.page_buttons_layout.itemAt(i).widget()
+        for i in reversed(range(self.page_buttons_layout_veh.count())):
+            widget = self.page_buttons_layout_veh.itemAt(i).widget()
             if widget:
-                self.page_buttons_layout.removeWidget(widget)
+                self.page_buttons_layout_veh.removeWidget(widget)
                 widget.deleteLater()
         
         # Create page number buttons.
@@ -291,26 +388,78 @@ class WelcomeSummary(QWidget):
                 QPushButton:checked { background-color: #007bff; color: white;font-weight: bold; }
             """)
             # Mark the current page button as checked.
-            if page == self.current_page:
+            if page == self.current_page_veh:
                 btn.setChecked(True)
             # When a button is clicked, jump to that page.
-            btn.clicked.connect(lambda checked, p=page: self.go_to_page(p))
-            self.page_buttons_layout.addWidget(btn)
+            btn.clicked.connect(lambda checked, p=page: self.go_to_page(p, "veh"))
+            self.page_buttons_layout_veh.addWidget(btn)
         
         # Enable/disable previous/next buttons.
-        self.btn_prev.setEnabled(self.current_page > 0)
-        self.btn_next.setEnabled(self.current_page < total_pages - 1)
+        self.btn_prev_veh.setEnabled(self.current_page_veh > 0)
+        self.btn_next_veh.setEnabled(self.current_page_veh < total_pages - 1)
+
+
+    def update_pagination_buttons_wep(self):
+        # Get the total count from the database.
+        total_count = self.db_obj.get_weapon_count()
+        total_pages = math.ceil(total_count['total'] / self.page_size_wpn) if self.page_size_wpn else 1
+        
+        # Calculate the current entries range.
+        start_entry = self.current_page_wpn * self.page_size_wpn + 1
+        end_entry = min((self.current_page_wpn + 1) * self.page_size_wpn, total_count['total'])
+        
+        # Update the entries label.
+        self.entries_label_wep.setText(f"Showing {start_entry} to {end_entry} of {total_count['total']} entries")
+        
+        # Clear existing page number buttons.
+        for i in reversed(range(self.page_buttons_layout_wep.count())):
+            widget = self.page_buttons_layout_wep.itemAt(i).widget()
+            if widget:
+                self.page_buttons_layout_wep.removeWidget(widget)
+                widget.deleteLater()
+        
+        # Create page number buttons.
+        for page in range(total_pages):
+            btn = QPushButton(str(page + 1))
+            btn.setCheckable(True)
+            btn.setStyleSheet("""
+                QPushButton { background-color: #f0f0f0; color: black; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; }
+                QPushButton:hover { background-color: #e0e0e0; }
+                QPushButton:checked { background-color: #007bff; color: white;font-weight: bold; }
+            """)
+            # Mark the current page button as checked.
+            if page == self.current_page_wpn:
+                btn.setChecked(True)
+            # When a button is clicked, jump to that page.
+            btn.clicked.connect(lambda checked, p=page: self.go_to_page(p, "wep"))
+            self.page_buttons_layout_wep.addWidget(btn)
+        
+        # Enable/disable previous/next buttons.
+        self.btn_prev_wep.setEnabled(self.current_page_wpn > 0)
+        self.btn_next_wep.setEnabled(self.current_page_wpn < total_pages - 1)
 
 
 
-    def filter_wep_table(self):
+    def filter_veh_table(self):
         """Filter table rows based on the search box input."""
         filter_text = self.search_box_vhl.text().lower()
         for row in range(self.vehicle_table.rowCount()):
             row_visible = False
-            for col in range(len(self.summary_columns)):
+            for col in range(len(self.summary_columns_veh)):
                 item = self.vehicle_table.item(row, col)
                 if item and filter_text in item.text().lower():
                     row_visible = True
                     break
             self.vehicle_table.setRowHidden(row, not row_visible)
+
+    def filter_wep_table(self):
+        """Filter table rows based on the search box input."""
+        filter_text = self.search_box_wpn.text().lower()
+        for row in range(self.weapon_table.rowCount()):
+            row_visible = False
+            for col in range(len(self.summary_columns_wep)):
+                item = self.weapon_table.item(row, col)
+                if item and filter_text in item.text().lower():
+                    row_visible = True
+                    break
+            self.weapon_table.setRowHidden(row, not row_visible)

@@ -9,6 +9,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
 from controllers.report_all_vehicles import Report
+from templates.import_vehicles import ImportVehiclesFE
 import math
 
 class MultiLevelHeaderView(QHeaderView):
@@ -114,6 +115,7 @@ class ViewALLVehicles(QWidget):
         self.page_size = 10
         
         self.vr_obj = VehicleReport()
+        self.imp_vehfe_obj = ImportVehiclesFE()
         self.db_obj = VMS_DB() 
         self.rpt_obj = Report()
         self.columns = []
@@ -207,6 +209,10 @@ class ViewALLVehicles(QWidget):
         export_button.setIconSize(QSize(20, 20))
         export_button.clicked.connect(self.report_all_vehicle)
         header_layout.addWidget(export_button)
+
+        #Import Button
+        import_button = self.imp_vehfe_obj.import_button() 
+        header_layout.addWidget(import_button)
 
         header_layout.addStretch()
 

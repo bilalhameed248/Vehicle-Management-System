@@ -383,7 +383,8 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: get_all_vehicle {e}")
             return []
-        
+
+
     def get_vehicle_summary(self, page=0, page_size=10):
         try:
             all_vehicles = []
@@ -403,9 +404,10 @@ class VMS_DB:
             return all_vehicles
         except Exception as e:
             traceback.print_exc()
-            print(f"Exception: get_all_vehicle {e}")
+            print(f"Exception: get_vehicle_summary {e}")
             return []
-        
+
+
     def delete_vehicle(self, vehicle_id):
         try:
             conn, cursor = self.db_connect()
@@ -421,7 +423,8 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: delete_vehicle {e}")
             return False
-        
+
+
     def get_vehicle_count(self):
         try:
             conn, cursor = self.db_connect()
@@ -450,6 +453,7 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: get_vehicle_count {e}")
             return 0
+
 
     def insert_vehicle(self, data):
         try:
@@ -481,7 +485,8 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: insert_vehicle {e}")
             return False
-        
+
+
     def update_vehicle(self, data, vehicle_id):
         try:
             """ Updates vehicle data in SQLite Database """
@@ -635,7 +640,8 @@ class VMS_DB:
                 DMGS_Meter_indicator_AZ_Elev = ?, DMGS_Sockets = ?, DMGS_MGS_DMGS_case = ?, DMGS_Protective_cover = ?, DMGS_Cable = ?, DMGS_Bty_connector = ?, DMGS_Self_test = ?,
                 L_Tube_Body_Condition = ?,
                 TVPC_Body_Condition = ?, TVPC_Fly_Net = ?, TVPC_On_Off_Switch = ?, TVPC_Indicator_It = ?, TVPC_Connector = ?, TVPC_Voltage = ?,
-                Bty_BB_287_Bty_connector = ?, Bty_BB_287_Voltage_24V_sec = ?, Bty_BB_287_Voltage_50V = ?, Bty_BB_287_Voltage_50V_sec = ?, Bty_BB_287_Bty_condition = ?, Bty_BB_287_Power_cable_condition = ?,
+                Bty_BB_287_Bty_connector = ?, Bty_BB_287_Voltage_24V_sec = ?, Bty_BB_287_Voltage_50V = ?, Bty_BB_287_Voltage_50V_sec = ?, Bty_BB_287_Bty_condition = ?, 
+                Bty_BB_287_Bty_Tvpc = ?, Bty_BB_287_Power_cable_condition = ?,
                 NVS_Coolant_unit = ?, NVS_Eye_piece = ?, NVS_Cable_connector = ?, NVS_Lens_assy = ?, NVS_Power_cable_condition = ?,
                 BPC_Body = ?, BPC_Cables = ?, BPC_On_Off_Switch = ?,
                 VPC_Body = ?, VPC_Switch = ?, VPC_VPC_Power_Cable = ?,
@@ -656,7 +662,8 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: update_weapon {e}")
             return False
-        
+
+
     def get_weapon_count(self):
         try:
             conn, cursor = self.db_connect()
@@ -672,8 +679,8 @@ class VMS_DB:
             result = cursor.fetchone()
             counts = {
                 "total": result[0],
-                "fit_weapon": result[1],
-                "unfit_weapon": result[2],
+                "srv_weapon": result[1],
+                "unsrv_weapon": result[2],
             }
             self.db_disconnect(conn, cursor)
             return counts
@@ -682,6 +689,29 @@ class VMS_DB:
             print(f"Exception: get_weapon_count {e}")
             return 0
         
+    
+    def get_weapon_summary(self, page=0, page_size=10):
+        try:
+            all_weapons = []
+            conn, cursor = self.db_connect()
+            offset = page * page_size
+            sql = """SELECT 
+                    av.id, av.Wpn_No, av.Status
+                FROM all_weapons av
+                WHERE av.is_deleted = 0 
+                ORDER BY av.created_at DESC
+                LIMIT ? OFFSET ?;"""
+            cursor.execute(sql, (page_size, offset))
+            columns = [desc[0] for desc in cursor.description]  # Get column names
+            rows = cursor.fetchall()
+            all_weapons = [dict(zip(columns, row)) for row in rows]
+            self.db_disconnect(conn, cursor)
+            return all_weapons
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_weapon_summary {e}")
+            return []
+
 
     def delete_weapon(self, weapon_id):
         try:

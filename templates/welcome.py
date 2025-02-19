@@ -198,7 +198,8 @@ class WelcomePage(QWidget):
         
         self.update_menu_button_style(clicked_button)
         # self.content_area.addWidget(self.welcome_summary_obj)  # Add to stacked widget
-        self.welcome_summary_obj.load_data()  # Reload fresh data
+        self.welcome_summary_obj.load_data_veh()  # Reload fresh data
+        self.welcome_summary_obj.load_data_wep()  # Reload fresh data
         self.content_area.setCurrentWidget(self.welcome_summary_obj)  # Switch view
 
         """Switch to the 'Add New Vehicle' page."""
