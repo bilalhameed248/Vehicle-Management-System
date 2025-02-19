@@ -13,6 +13,8 @@ from templates.add_vehicle import AddVehicle
 from templates.view_all_vehicles import ViewALLVehicles
 from templates.add_weapon import AddWeapon
 from templates.view_all_weapons import ViewALLWeapons
+from templates.view_all_a_vehicles_fit import ViewALLAVehiclesFit
+from templates.add_a_vehicle_fit import AddAVehicleFit
 from templates.users import Users
 
 class WelcomePage(QWidget):
@@ -64,6 +66,9 @@ class WelcomePage(QWidget):
         self.home.clicked.connect(lambda: self.show_home_page(self.home))
         self.add_vehicle_button.clicked.connect(lambda: self.show_add_vehicle_page(self.add_vehicle_button))
         self.view_all_vehicle_button.clicked.connect(lambda: self.show_all_vehicle_page(self.view_all_vehicle_button))
+
+        self.add_A_vehicle_fit_button.clicked.connect(lambda: self.show_add_A_vehicle_Fit_page(self.add_vehicle_button))
+        self.view_A_vehicle_fit_button.clicked.connect(lambda: self.show_all_A_vehicle_Fit_page(self.view_all_vehicle_button))
 
         self.add_weapon_button.clicked.connect(lambda: self.show_add_weapon_page(self.add_weapon_button))
         self.view_all_weapon_button.clicked.connect(lambda: self.show_all_weapon_page(self.view_all_weapon_button))
@@ -128,19 +133,31 @@ class WelcomePage(QWidget):
         self.add_vehicle_button = self.create_menu_button("Add New Vehicle", "assets/icons/vehicle_add.png")
         self.view_all_vehicle_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
 
+        self.add_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness", "assets/icons/vehicle_add.png")
+        self.view_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness Check", "assets/icons/vehicle_view.png")
+
         self.add_weapon_button = self.create_menu_button("Add New Weapon", "assets/icons/add_weapon.png")
         self.view_all_weapon_button = self.create_menu_button("View All Weapon", "assets/icons/view_all_weapons.png")
         
         self.users_management_button = self.create_menu_button("Users", "assets/icons/users.png")
 
-        for button in [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.add_weapon_button, self.view_all_weapon_button, self.users_management_button]:
+        for button in [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.add_A_vehicle_fit_button, self.view_A_vehicle_fit_button, self.add_weapon_button, self.view_all_weapon_button, self.users_management_button]:
             menu_layout.addWidget(button)
+            if button in [self.view_all_vehicle_button, self.view_A_vehicle_fit_button, self.view_all_weapon_button]:
+                menu_layout.addWidget(self.menu_separator())
 
         menu_frame = QFrame(self)
         menu_frame.setLayout(menu_layout)
         menu_frame.setStyleSheet("background-color: #34495E; color: white; padding: 10px;")
         menu_frame.setFixedWidth(310)
         return menu_frame
+    
+    def menu_separator(self):
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setStyleSheet("background-color: #BDC3C7; height: 1px;")
+        return separator
 
 
     def toggle_menu(self):
@@ -184,7 +201,7 @@ class WelcomePage(QWidget):
 
     def update_menu_button_style(self, clicked_button):
         # Reset the style of all buttons
-        buttons = [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.add_weapon_button, self.view_all_weapon_button, self.users_management_button]
+        buttons = [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.add_A_vehicle_fit_button, self.view_A_vehicle_fit_button,  self.add_weapon_button, self.view_all_weapon_button, self.users_management_button]
         for button in buttons:
             button.setStyleSheet("""
                 QPushButton {background-color: #34495E; color: white; border-radius: 5px; padding: 10px 20px; text-align: left; }
@@ -224,6 +241,26 @@ class WelcomePage(QWidget):
         self.all_vehicle_obj = ViewALLVehicles(user_session=self.user_session, parent=self)
         self.content_area.addWidget(self.all_vehicle_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.all_vehicle_obj)  # Switch view
+
+
+    def show_add_A_vehicle_Fit_page(self, clicked_button):
+        """Switch to the 'Add New Vehicle' page."""
+        self.update_menu_button_style(clicked_button)
+        self.add_vehicle_obj = AddVehicle(user_session=self.user_session, parent=self)
+        self.content_area.addWidget(self.add_vehicle_obj)  # Add to stacked widget
+        self.content_area.setCurrentWidget(self.add_vehicle_obj)  # Switch view
+    
+    def show_all_A_vehicle_Fit_page(self, clicked_button):
+        """Switch to the 'Add New Vehicle' page."""
+        if hasattr(self, "all_a_vehicle_fit_obj"):
+            self.content_area.removeWidget(self.all_a_vehicle_fit_obj)
+            self.all_a_vehicle_fit_obj.deleteLater()
+            
+        self.update_menu_button_style(clicked_button)
+        self.all_a_vehicle_fit_obj = ViewALLAVehiclesFit(user_session=self.user_session, parent=self)
+        self.content_area.addWidget(self.all_a_vehicle_fit_obj)  # Add to stacked widget
+        self.content_area.setCurrentWidget(self.all_a_vehicle_fit_obj)  # Switch view
+
 
 
     def show_add_weapon_page(self, clicked_button):

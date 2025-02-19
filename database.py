@@ -521,6 +521,138 @@ class VMS_DB:
         
     #******************************************************************************************************************************************************
     
+    def get_all_a_vehicle_fit(self, page=0, page_size=10):
+        try:
+            all_vehicles = []
+            conn, cursor = self.db_connect()
+            if page_size:
+                offset = page * page_size
+                
+                sql = """SELECT 
+                        av.ba_no_input, av.make_input, av.type_input, av.CI_input, av.In_Svc_input,
+                        av.Cooling_Fins, av.Cooling_Rad_Paint, av.Cooling_Coolant, av.Cooling_Leakage, av.Cooling_Rad_Cap, av.Cooling_Fan_Belt,
+                        av.HydRamp_Hyd_Oil_Lvl, av.HydRamp_TGS_Oil_Lvl, av.HydRamp_Tx_Oil, av.HydRamp_Tx_Filter, av.HydRamp_Fan_Mech_Oil,
+                        av.LubSys_Eng_Oil, av.LubSys_EO_Cond, av.LubSys_Oil_Sump, av.LubSys_Leakage, av.LubSys_Oil_Grade, av.LubSys_Lub,
+                        av.TrSys_Tr_Chain_Adj, av.TrSys_Tr_Chain_Play, av.TrSys_Tr_Pin_Adj, av.TrSys_Tr_Pad_Thickness, av.TrSys_Sproket_Wh_Life, av.TrSys_Tr_Tensioner,
+                        av.BtyAssys_Cradle_Fitting, av.BtyAssys_Electrolyte_Lvl, av.BtyAssys_Terminals, av.BtyAssys_Mineral_Jelly, av.BtyAssys_Vent_Plug, av.BtyAssys_Bty_Ser_LB,
+                        av.BoggyWh_Rubber_Cond, av.BoggyWh_Lub_Pts, av.BoggyWh_Inner_Outer_Bearing,
+                        av.BrkSys_Brk_Fluid, av.BrkSys_Brk_Lever,
+                        av.ElecSys_Ign_Sw, av.ElecSys_Water_Temp_Guage, av.ElecSys_Fuse_Box, av.ElecSys_Fuse_Svc, av.ElecSys_Oil_Pressure_Guage, av.ElecSys_RPM_Guage, av.ElecSys_Oil_Temp_Guage, av.ElecSys_Self_Starter_Motor, av.ElecSys_Alternator_Func, av.ElecSys_Fuel_Guage, av.ElecSys_Electric_Harness, av.ElecSys_Alternator_Fan_Belt, av.ElecSys_Alternator_Noise, av.ElecSys_Horn, av.ElecSys_Blower_Heater,
+                        av.AirIntakeSys_Air_Cleaner_Cond, av.AirIntakeSys_Air_Cleaner_Seal,av.AirIntakeSys_Hoses_Valves,av.AirIntakeSys_Bluge_Pump,av.AirIntakeSys_BP_Dust_Cover,av.AirIntakeSys_Hyd_Oil_Lvl_Check,av.AirIntakeSys_TGC_Lvl_Check,av.AirIntakeSys_TGC_Oil_Cond,
+                        av.TxSys_Stall_Test,av.TxSys_Steering_Planetary_Gear,av.TxSys_Final_Drive_Func,av.TxSys_Tx_Oil_Lvl,av.TxSys_Tx_Oil_Cond,
+                        av.SteeringCon_Stick_Lever_Shift,av.SteeringCon_Stick_Play,av.SteeringCon_Connect_Rod_Adj,av.SteeringCon_Steering_Linkages,av.SteeringCon_Steering_Pump,
+                        av.FuelSys_Fuel_Filter_Cond,av.FuelSys_Fuel_Lines_Leakage,av.FuelSys_Fuel_Filter_Body,av.FuelSys_Fuel_Tk_Strainer,av.FuelSys_Fuel_Guage,av.FuelSys_Fuel_Distr_Cork,av.FuelSys_Fuel_Tk_Cap,av.FuelSys_Tk_Inner_Cond,
+                        u.name AS created_by, av.created_at
+                    FROM A_VEH_FITNESS_CHECK av
+                    LEFT JOIN users u ON av.created_by = u.id
+                    WHERE av.is_deleted = 0 
+                    ORDER BY av.created_at DESC
+                    LIMIT ? OFFSET ?;"""
+                cursor.execute(sql, (page_size, offset))
+            else:
+                sql = """SELECT 
+                        av.ba_no_input, av.make_input, av.type_input, av.CI_input, av.In_Svc_input,
+                        av.Cooling_Fins, av.Cooling_Rad_Paint, av.Cooling_Coolant, av.Cooling_Leakage, av.Cooling_Rad_Cap, av.Cooling_Fan_Belt,
+                        av.HydRamp_Hyd_Oil_Lvl, av.HydRamp_TGS_Oil_Lvl, av.HydRamp_Tx_Oil, av.HydRamp_Tx_Filter, av.HydRamp_Fan_Mech_Oil,
+                        av.LubSys_Eng_Oil, av.LubSys_EO_Cond, av.LubSys_Oil_Sump, av.LubSys_Leakage, av.LubSys_Oil_Grade, av.LubSys_Lub,
+                        av.TrSys_Tr_Chain_Adj, av.TrSys_Tr_Chain_Play, av.TrSys_Tr_Pin_Adj, av.TrSys_Tr_Pad_Thickness, av.TrSys_Sproket_Wh_Life, av.TrSys_Tr_Tensioner,
+                        av.BtyAssys_Cradle_Fitting, av.BtyAssys_Electrolyte_Lvl, av.BtyAssys_Terminals, av.BtyAssys_Mineral_Jelly, av.BtyAssys_Vent_Plug, av.BtyAssys_Bty_Ser_LB,
+                        av.BoggyWh_Rubber_Cond, av.BoggyWh_Lub_Pts, av.BoggyWh_Inner_Outer_Bearing,
+                        av.BrkSys_Brk_Fluid, av.BrkSys_Brk_Lever,
+                        av.ElecSys_Ign_Sw, av.ElecSys_Water_Temp_Guage, av.ElecSys_Fuse_Box, av.ElecSys_Fuse_Svc, av.ElecSys_Oil_Pressure_Guage, av.ElecSys_RPM_Guage, av.ElecSys_Oil_Temp_Guage, av.ElecSys_Self_Starter_Motor, av.ElecSys_Alternator_Func, av.ElecSys_Fuel_Guage, av.ElecSys_Electric_Harness, av.ElecSys_Alternator_Fan_Belt, av.ElecSys_Alternator_Noise, av.ElecSys_Horn, av.ElecSys_Blower_Heater,
+                        av.AirIntakeSys_Air_Cleaner_Cond, av.AirIntakeSys_Air_Cleaner_Seal,av.AirIntakeSys_Hoses_Valves,av.AirIntakeSys_Bluge_Pump,av.AirIntakeSys_BP_Dust_Cover,av.AirIntakeSys_Hyd_Oil_Lvl_Check,av.AirIntakeSys_TGC_Lvl_Check,av.AirIntakeSys_TGC_Oil_Cond,
+                        av.TxSys_Stall_Test,av.TxSys_Steering_Planetary_Gear,av.TxSys_Final_Drive_Func,av.TxSys_Tx_Oil_Lvl,av.TxSys_Tx_Oil_Cond,
+                        av.SteeringCon_Stick_Lever_Shift,av.SteeringCon_Stick_Play,av.SteeringCon_Connect_Rod_Adj,av.SteeringCon_Steering_Linkages,av.SteeringCon_Steering_Pump,
+                        av.FuelSys_Fuel_Filter_Cond,av.FuelSys_Fuel_Lines_Leakage,av.FuelSys_Fuel_Filter_Body,av.FuelSys_Fuel_Tk_Strainer,av.FuelSys_Fuel_Guage,av.FuelSys_Fuel_Distr_Cork,av.FuelSys_Fuel_Tk_Cap,av.FuelSys_Tk_Inner_Cond,
+                        u.name AS created_by, av.created_at
+                    FROM A_VEH_FITNESS_CHECK av
+                    LEFT JOIN users u ON av.created_by = u.id
+                    WHERE av.is_deleted = 0 
+                    ORDER BY av.created_at DESC"""
+                cursor.execute(sql)
+            columns = [desc[0] for desc in cursor.description]  # Get column names
+            rows = cursor.fetchall()
+            all_vehicles = [dict(zip(columns, row)) for row in rows]
+            self.db_disconnect(conn, cursor)
+            return all_vehicles
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_A_vehicle_fit {e}")
+            return []
+        
+    def get_a_vehicle_fit_count(self):
+        try:
+            conn, cursor = self.db_connect()
+            sql = """
+                SELECT 
+                    COUNT(*) AS total_count
+                FROM A_VEH_FITNESS_CHECK 
+                WHERE is_deleted = 0;
+            """
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            counts = {
+                "total": result[0]
+            }
+            self.db_disconnect(conn, cursor)
+            return counts
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: get_a_vehicle_fit_count {e}")
+            return 0
+        
+    
+    def insert_vehicle(self, data):
+        try:
+            """ Inserts vehicle data into SQLite Database """
+            conn, cursor = self.db_connect()
+            data = {k: (v if v != "" else None) for k, v in data.items()}
+            sql = """
+                INSERT INTO A_VEH_FITNESS_CHECK (
+                ba_no_input, make_input, type_input, CI_input, In_Svc_input,
+                Cooling_Fins, Cooling_Rad_Paint, Cooling_Coolant, Cooling_Leakage, Cooling_Rad_Cap, Cooling_Fan_Belt,
+                HydRamp_Hyd_Oil_Lvl, HydRamp_TGS_Oil_Lvl, HydRamp_Tx_Oil, HydRamp_Tx_Filter, HydRamp_Fan_Mech_Oil,
+                LubSys_Eng_Oil, LubSys_EO_Cond, LubSys_Oil_Sump, LubSys_Leakage, LubSys_Oil_Grade, LubSys_Lub,
+                TrSys_Tr_Chain_Adj, TrSys_Tr_Chain_Play, TrSys_Tr_Pin_Adj, TrSys_Tr_Pad_Thickness, TrSys_Sproket_Wh_Life, TrSys_Tr_Tensioner,
+                BtyAssys_Cradle_Fitting, BtyAssys_Electrolyte_Lvl, BtyAssys_Terminals, BtyAssys_Mineral_Jelly, BtyAssys_Vent_Plug, BtyAssys_Bty_Ser_LB,
+                BoggyWh_Rubber_Cond, BoggyWh_Lub_Pts, BoggyWh_Inner_Outer_Bearing,
+                BrkSys_Brk_Fluid, BrkSys_Brk_Lever,
+                ElecSys_Ign_Sw, ElecSys_Water_Temp_Guage, ElecSys_Fuse_Box, ElecSys_Fuse_Svc, ElecSys_Oil_Pressure_Guage, ElecSys_RPM_Guage, ElecSys_Oil_Temp_Guage, ElecSys_Self_Starter_Motor, ElecSys_Alternator_Func, ElecSys_Fuel_Guage, ElecSys_Electric_Harness, ElecSys_Alternator_Fan_Belt, ElecSys_Alternator_Noise, ElecSys_Horn, ElecSys_Blower_Heater,
+                AirIntakeSys_Air_Cleaner_Cond, AirIntakeSys_Air_Cleaner_Seal, AirIntakeSys_Hoses_Valves, AirIntakeSys_Bluge_Pump, AirIntakeSys_BP_Dust_Cover, AirIntakeSys_Hyd_Oil_Lvl_Check, AirIntakeSys_TGC_Lvl_Check, AirIntakeSys_TGC_Oil_Cond,
+                TxSys_Stall_Test, TxSys_Steering_Planetary_Gear, TxSys_Final_Drive_Func, TxSys_Tx_Oil_Lvl, TxSys_Tx_Oil_Cond,
+                SteeringCon_Stick_Lever_Shift, SteeringCon_Stick_Play, SteeringCon_Connect_Rod_Adj, SteeringCon_Steering_Linkages, SteeringCon_Steering_Pump,
+                FuelSys_Fuel_Filter_Cond, FuelSys_Fuel_Lines_Leakage, FuelSys_Fuel_Filter_Body, FuelSys_Fuel_Tk_Strainer, FuelSys_Fuel_Guage, FuelSys_Fuel_Distr_Cork, FuelSys_Fuel_Tk_Cap, FuelSys_Tk_Inner_Cond,
+                created_by
+            ) VALUES (
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?,
+                ?, ?, ?,
+                ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?,
+                ?
+            );
+            """
+            values = tuple(data.values())
+            cursor.execute(sql, values)
+            conn.commit()
+            self.db_disconnect(conn, cursor)
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: insert_vehicle {e}")
+            return False
+
+
+    #******************************************************************************************************************************************************
+
     def get_all_weapons(self, page=0, page_size=10):
         try:
             all_vehicles = []
