@@ -13,24 +13,17 @@ import math
 
 class ImportVehiclesFE(QDialog):
 
-    def __init__(self):
-        self.imp_veh_obj = ImportVehicles()
-
-    def import_button(self):
-        import_button = QPushButton("Export")
-        import_button.setFixedSize(100, 45)  # Set button size
-        import_button.setStyleSheet("""
-            QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
-            QPushButton:hover { background-color: #218838; }
-        """)
-        import_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
-        import_button.setIconSize(QSize(20, 20))
-        import_button.clicked.connect(self.import_vehicle)
-        return import_button
+    def __init__(self, user_session=None, parent=None, db_to_display = None):
+        super().__init__(parent)       
+        self.user_session = user_session if user_session else {}
+        self.user_id = self.user_session.get('user_id')
+        self.username = self.user_session.get('username') 
+        self.db_to_display = db_to_display
+        self.import_dialogbox()
     
     def import_dialogbox(self):
         self.setWindowTitle("Import Vehicles")
-        self.setFixedSize(500, 400)  # Adjusted size for better spacing
+        self.setFixedSize(450, 300)  # Adjusted size for better spacing
         self.setStyleSheet("background-color: #f4f4f4; border-radius: 10px;")
         self.setWindowIcon(QIcon(get_asset_path("assets/icons/vehicle_add.png")))
         
@@ -50,9 +43,13 @@ class ImportVehiclesFE(QDialog):
 
         # File Input Field
         self.file_input = QPushButton("Select File")
+        self.file_input.setStyleSheet("background-color: #3498db; color: white; padding: 4px; border-radius: 5px;")
         self.file_input.clicked.connect(self.select_file)
-        form_layout.addWidget(QLabel("Select File:"), 2, 0)
+        form_layout.addWidget(QLabel("Choose File:"), 2, 0)
+        file_label = QLabel("No file selected")
+        file_label.setStyleSheet("color: #7f8c8d; font-style: italic;")
         form_layout.addWidget(self.file_input, 2, 1)
+        form_layout.addWidget(file_label, 3, 1)
 
         layout.addLayout(form_layout)
 
@@ -68,7 +65,7 @@ class ImportVehiclesFE(QDialog):
         self.style_button(self.save_button, "#28a745")
         self.style_button(self.cancel_button, "#dc3545")
 
-        self.save_button.clicked.connect(self.import_vehicles)
+        self.save_button.clicked.connect(self.import_vehicles_fun)
         self.cancel_button.clicked.connect(self.reject)
 
         button_layout.addWidget(self.save_button)
@@ -78,18 +75,32 @@ class ImportVehiclesFE(QDialog):
         self.setLayout(layout)
 
         # Load user data from the database
-        self.load_vehicles_data()
+        # self.load_vehicles_data()
 
     def select_file(self):
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Select File", "", "CSV Files (*.csv);;All Files (*)", options=options)
+        file_path, _ = QFileDialog.getOpenFileName(self, "Select File", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
         if file_path:
+            self.selected_file = file_path
             self.file_input.setText(file_path)
 
     def style_button(self, button, color):
         button.setStyleSheet(f"""background-color: {color}; color: white; border-radius: 5px; padding: 8px;font-weight: bold;""")
 
 
-    def import_vehicles(self):
-        excel_path = ""
-        self.imp_veh_obj.read_and_insert_excel(excel_path)
+    def import_vehicles_fun(self):
+        if hasattr(self, 'selected_file') and self.selected_file:
+            excel_path = self.selected_file  # Get the selected file path
+            try:
+                self.imp_veh_obj = ImportVehicles(user_session=self.user_session, db_to_display=self.db_to_display)
+                is_successfully_import = self.imp_veh_obj.read_and_insert_excel(excel_path)
+                if is_successfully_import:
+                    QMessageBox.information(self, "Success", "Vehicles imported successfully!")
+                    self.accept()
+                else:
+                    QMessageBox.critical(self, "Error", f"Failed to import Vehicles")
+
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Failed to import file: {str(e)}")
+        else:
+            QMessageBox.warning(self, "No File", "Please select a file before importing.")

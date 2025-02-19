@@ -9,7 +9,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
 from controllers.report_all_vehicles import Report
-from templates.import_vehicles import ImportVehiclesFE
+from templates.import_vehicles_fe import ImportVehiclesFE
 import math
 
 class MultiLevelHeaderView(QHeaderView):
@@ -115,7 +115,6 @@ class ViewALLVehicles(QWidget):
         self.page_size = 10
         
         self.vr_obj = VehicleReport()
-        self.imp_vehfe_obj = ImportVehiclesFE()
         self.db_obj = VMS_DB() 
         self.rpt_obj = Report()
         self.columns = []
@@ -153,6 +152,7 @@ class ViewALLVehicles(QWidget):
             'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
             'Status & Creation Details': ["Status", "Created By", "Created At"]
         }
+
         self.tbL_data_font = QFont("Arial", 12)
         self.initUI()
 
@@ -211,7 +211,15 @@ class ViewALLVehicles(QWidget):
         header_layout.addWidget(export_button)
 
         #Import Button
-        import_button = self.imp_vehfe_obj.import_button() 
+        import_button = QPushButton("Import")
+        import_button.setFixedSize(100, 45)  # Set button size
+        import_button.setStyleSheet("""
+            QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
+            QPushButton:hover { background-color: #218838; }
+        """)
+        import_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
+        import_button.setIconSize(QSize(20, 20))
+        import_button.clicked.connect(self.show_import_vehicle_dialog)
         header_layout.addWidget(import_button)
 
         header_layout.addStretch()
@@ -336,6 +344,17 @@ class ViewALLVehicles(QWidget):
                         # print(f"After Conversion: {type(cell_value)} {cell_value}")
                     except Exception:
                         pass
+                
+                issue_due_mapping = {
+                    'Issue Date (Oil Filter)': 6,
+                    'Issue Date (Fuel Filter)': 12,
+                    'Issue Date (Air Filter)': 18,
+                    'Issue Date (Transmission Filter)': 18,
+                    'Issue Date (Differential Oil)': 18,
+                    'Issue Date (Battery)': 42,
+                    'Issue Date (Flushing)': 4,
+                    'Issue Date (Greasing)': 3,
+                }
                     
                 if col_name == 'Issue Date (Oil Filter)':
                     self.date_rules(cell_value, row_index, col_index, 6 , 20)
@@ -354,7 +373,7 @@ class ViewALLVehicles(QWidget):
 
                 elif col_name == 'Issue Date (Greasing)':
                     self.date_rules(cell_value, row_index, col_index, 3 , 20)
-
+        
                 else:
                     item = QTableWidgetItem(str(cell_value))
                     item.setFont(self.tbL_data_font)
@@ -536,3 +555,8 @@ class ViewALLVehicles(QWidget):
         msg.setText(message)
         msg.setWindowTitle("Report Generated")
         msg.exec_()
+
+    def show_import_vehicle_dialog(self):
+        dialog = ImportVehiclesFE(user_session=self.user_session, db_to_display = self.db_to_display)
+        if dialog.exec_():  # If user clicks Save
+            self.populate_table()  # Refresh user table

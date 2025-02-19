@@ -234,7 +234,7 @@ class VMS_DB:
             # When frozen, the bundled database is located in sys._MEIPASS.
             bundled_db_path = os.path.join(sys._MEIPASS, db_filename)
             # Define a permanent (writable) directory for the database.
-            permanent_dir = self.get_writable_directory("44_AK_VMS")  # change "MyApp" to your app name
+            permanent_dir = self.get_writable_directory("44_AK_VMS_AND_WMS")  # change "MyApp" to your app name
             permanent_db_path = os.path.join(permanent_dir, db_filename)
             # If the permanent copy doesn't exist, copy it from the bundled location.
             if not os.path.exists(permanent_db_path):

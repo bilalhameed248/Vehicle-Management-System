@@ -139,7 +139,7 @@ class WelcomeSummary(QWidget):
 
         self.total_weapon_label = QLabel("", self)
         self.total_weapon_label.setFont(QFont("Arial", 16, QFont.Bold))
-        self.total_weapon_label.setStyleSheet("color: #2C3E50; padding-bottom: 10px;")
+        self.total_weapon_label.setStyleSheet("color: white; padding-bottom: 10px;")
         search_layout_wpn.addWidget(self.total_weapon_label)
 
         self.search_box_wpn = QLineEdit(self)
@@ -346,7 +346,7 @@ class WelcomeSummary(QWidget):
 
         elif title == "wep":
             total_count = self.db_obj.get_weapon_count()
-            total_pages = math.ceil(total_count['total'] / self.page_size_wep)
+            total_pages = math.ceil(total_count['total'] / self.page_size_wpn)
             if self.current_page_wpn < total_pages - 1:
                 self.current_page_wpn += 1
                 self.load_data_wep()

@@ -50,7 +50,7 @@ class MultiLevelHeaderView(QHeaderView):
 
     def sectionSizeFromContents(self, logicalIndex):
         size = super(MultiLevelHeaderView, self).sectionSizeFromContents(logicalIndex)
-        padding = 120
+        padding = 140
         size.setWidth(size.width() + padding)
         return size
 
@@ -360,23 +360,8 @@ class ViewALLWeapons(QWidget):
                     except Exception:
                         pass
                     
-                if col_name == 'Issue Date (Oil Filter)':
-                    self.date_rules(cell_value, row_index, col_index, 6 , 20)
-
-                elif col_name == 'Issue Date (Fuel Filter)':
-                    self.date_rules(cell_value, row_index, col_index, 12 , 20)
-
-                elif col_name in ['Issue Date (Air Filter)', 'Issue Date (Transmission Filter)', 'Issue Date (Differential Oil)']:
-                    self.date_rules(cell_value, row_index, col_index, 18 , 20)
-
-                elif col_name == 'Issue Date (Battery)':
-                    self.date_rules(cell_value, row_index, col_index, 42 , 20)
-                
-                elif col_name == 'Issue Date (Flushing)':
-                    self.date_rules(cell_value, row_index, col_index, 4 , 20)
-
-                elif col_name == 'Issue Date (Greasing)':
-                    self.date_rules(cell_value, row_index, col_index, 3 , 20)
+                if col_name not in  ['Wpn No', "Created By", "Created At"]:
+                    self.date_rules(cell_value, row_index, col_index)
 
                 else:
                     item = QTableWidgetItem(str(cell_value))
@@ -480,21 +465,13 @@ class ViewALLWeapons(QWidget):
         self.btn_next.setEnabled(self.current_page < total_pages - 1)
 
 
-    def date_rules(self, cell_value, row_index, col_index, no_of_month, no_of_days):
-        # print(f"IN Rule: {type(cell_value)}, {cell_value},  {date.today()}")
-        difference = relativedelta(date.today(), cell_value)
-        months_diff = difference.years * 12 + difference.months
-        days_diff = difference.days
-        # print(f"{months_diff} : {days_diff}")
+    def date_rules(self, cell_value, row_index, col_index):
         item = QTableWidgetItem(str(cell_value))
         item.setTextAlignment(Qt.AlignCenter)
 
-        if months_diff >= no_of_month:
+        if cell_value in ["Unsvc", "Incomplete"]:
             item.setBackground(QColor(255, 0, 0)) 
             item.setForeground(QColor(255, 255, 255))
-        elif months_diff >= (no_of_month-1) and days_diff >= no_of_days and days_diff <= (no_of_days+10):
-            item.setBackground(QColor(255, 255, 0))
-            item.setForeground(QColor(0, 0, 0))
         item.setFont(self.tbL_data_font)
         self.table_widget.setItem(row_index, col_index, item)
 
