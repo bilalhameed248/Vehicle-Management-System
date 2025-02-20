@@ -234,7 +234,7 @@ class VMS_DB:
             # When frozen, the bundled database is located in sys._MEIPASS.
             bundled_db_path = os.path.join(sys._MEIPASS, db_filename)
             # Define a permanent (writable) directory for the database.
-            permanent_dir = self.get_writable_directory("44_AK_VMS_AND_WMS")  # change "MyApp" to your app name
+            permanent_dir = self.get_writable_directory("44_AK_VMS_AND_WMS_v3")  # change "MyApp" to your app name
             permanent_db_path = os.path.join(permanent_dir, db_filename)
             # If the permanent copy doesn't exist, copy it from the bundled location.
             if not os.path.exists(permanent_db_path):
@@ -650,6 +650,21 @@ class VMS_DB:
             print(f"Exception: insert_vehicle {e}")
             return False
 
+    def delete_a_vehicle_fit(self, vehicle_id):
+        try:
+            conn, cursor = self.db_connect()
+            cursor.execute("""
+                UPDATE A_VEH_FITNESS_CHECK
+                SET is_deleted = ?
+                WHERE id = ?
+            """, (1, vehicle_id))
+            conn.commit()
+            self.db_disconnect(conn, cursor)
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: delete_a_vehicle_fit {e}")
+            return False
 
     #******************************************************************************************************************************************************
 

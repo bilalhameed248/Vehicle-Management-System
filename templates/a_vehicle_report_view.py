@@ -19,6 +19,7 @@ class AVehicleReportView(QWidget):
         # print("self.user_id:",self.user_id)
         # print("self.username:",self.username)
         self.data = data if data else {}
+        print(self.data, len(self.data))
         self.db_to_display = db_to_display
         self.main_header = main_heading if main_heading else {}
         self.main_parent_welcome = parent
@@ -67,6 +68,37 @@ class AVehicleReportView(QWidget):
             QPushButton { background-color: #4CAF50; color: white; font-weight: bold; border-radius: 5px; padding: 5px; }
             QPushButton:hover { background-color: #45a049; }
         """)
+
+    def calculate_score(self):
+        print("\n\n,self.data", len(self.data))
+        keys_to_remove = {'BA NO', 'Make', 'Type', 'CI', 'In Svc', 'Created By', 'Created At', 'id'}
+        filtered_data = {key: value for key, value in self.data.items() if key not in keys_to_remove}
+
+
+        
+        print("\n\nfiltered_data,",filtered_data)
+        print("\n\nlen(filtered_data)",len(filtered_data))
+        print("\n\nlen(keys)",len(filtered_data.keys()))
+
+        total_score = 75
+        complete_score = 0
+        incomplete_score = 0
+
+        complete_values = {"Svc", "Ok", "Up", "Complete"}
+        incomplete_values = {"Unsvc", "Unsatisfactory", "Down", "Incomplete"}
+
+        for value in filtered_data.values():
+            if value in complete_values:
+                complete_score += 1
+            elif value in incomplete_values:
+                incomplete_score += 1
+        complete_score_percentage = (complete_score / total_score) * 100
+
+        return {
+            "complete_score": complete_score,
+            "incomplete_score": incomplete_score,
+            "complete_score_percentage": round(complete_score_percentage, 2)
+        }
 
     def create_title_header(self):
         title_label = QLabel("A VEH FITNESS CHECK MODULE")
@@ -174,7 +206,7 @@ class AVehicleReportView(QWidget):
         lbl.setFixedWidth(80)
 
         # Color-code based on value
-        if value == "Svc":
+        if value in ["Svc", "Ok", "Up", "Complete"]:
             lbl.setStyleSheet("background-color: #ABEBC6; color: black; border: 1px solid #58D68D;")
         elif value in ["Unsvc", "Unsatisfactory", "Down", "Incomplete"]:
             lbl.setStyleSheet("background-color: #F5B7B1; color: black; border: 1px solid #EC7063;")
@@ -198,12 +230,14 @@ class AVehicleReportView(QWidget):
         layout.setSpacing(20)
         layout.setContentsMargins(10, 10, 10, 10)
 
+        score_result = self.calculate_score()
+
         # Dummy data: "Overall Score: 120 / 166", "Total Tests: 13", etc.
         # You can style these similarly as needed
         dummy_labels = [
-            "Overall Score: 120 / 166",
-            "Total Tests: 13",
-            "Fitness %: 72%",
+            f"Overall Score: {score_result['complete_score']} / 75",
+            f"Total Faults: {score_result['incomplete_score']}",
+            f"Fitness: {score_result['complete_score_percentage']}%",
             "Download: PDF | Excel",
             "Edit/Update: Veh Summary"
         ]

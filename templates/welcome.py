@@ -133,8 +133,8 @@ class WelcomePage(QWidget):
         self.add_vehicle_button = self.create_menu_button("Add New Vehicle", "assets/icons/vehicle_add.png")
         self.view_all_vehicle_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
 
-        self.add_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness", "assets/icons/vehicle_add.png")
-        self.view_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness Check", "assets/icons/vehicle_view.png")
+        self.add_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness", "assets/icons/a_veh.png")
+        self.view_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness Check", "assets/icons/a_veh_view.png")
 
         self.add_weapon_button = self.create_menu_button("Add New Weapon", "assets/icons/add_weapon.png")
         self.view_all_weapon_button = self.create_menu_button("View All Weapon", "assets/icons/view_all_weapons.png")

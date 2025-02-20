@@ -112,7 +112,7 @@ class ViewALLVehicles(QWidget):
         # print("VIew All Vehicle: self.main_parent:",self.main_parent, "\n")
 
         self.current_page = 0
-        self.page_size = 10
+        self.page_size = 20
         
         self.vr_obj = VehicleReport()
         self.db_obj = VMS_DB() 

@@ -8,8 +8,8 @@ from templates.update_vehicle import UpdateVehicle
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
-from controllers.report_all_vehicles import Report
-from templates.import_vehicles_fe import ImportVehiclesFE
+from controllers.report_all_a_vehicles_fit import Report
+from templates.import_a_vehicles_fit_fe import ImportAVehiclesFitFE
 from templates.a_vehicle_report_view import AVehicleReportView
 import math
 
@@ -117,19 +117,18 @@ class ViewALLAVehiclesFit(QWidget):
         # print("VIew All Vehicle: self.main_parent:",self.main_parent, "\n")
 
         self.current_page = 0
-        self.page_size = 10
+        self.page_size = 20
         
         self.vr_obj = VehicleReport()
-        self.db_obj = VMS_DB() 
-        self.rpt_obj = Report()
+        self.db_obj = VMS_DB()
         self.columns = []
 
         # Mapping from DB keys to header names – not used for ordering now.
         self.db_to_display = {
             "ba_no_input": "BA NO","make_input": "Make","type_input": "Type","CI_input": "CI", "In_Svc_input": "In Svc",
-            "Cooling_Fins": "Fins","Cooling_Rad_Paint": "Rad Paint", "Cooling_Coolant": "Coolant", "Cooling_Leakage": "Leakage", "Cooling_Rad_Cap": "Rad Cap", "Cooling_Fan_Belt": "Fan Belt",
+            "Cooling_Fins": "Fins","Cooling_Rad_Paint": "Rad Paint", "Cooling_Coolant": "Coolant", "Cooling_Leakage": "CS Leakage", "Cooling_Rad_Cap": "Rad Cap", "Cooling_Fan_Belt": "Fan Belt",
             "HydRamp_Hyd_Oil_Lvl": "Hyd Oil Lvl", "HydRamp_TGS_Oil_Lvl": "TGS Oil Lvl", "HydRamp_Tx_Oil": "Tx Oil", "HydRamp_Tx_Filter": "Tx Filter", "HydRamp_Fan_Mech_Oil": "Fan Mech Oil",
-            "LubSys_Eng_Oil": "Eng Oil","LubSys_EO_Cond": "EO Cond","LubSys_Oil_Sump": "Oil Sump", "LubSys_Leakage": "Leakage", "LubSys_Oil_Grade": "Oil Grade","LubSys_Lub": "Lub",
+            "LubSys_Eng_Oil": "Eng Oil","LubSys_EO_Cond": "EO Cond","LubSys_Oil_Sump": "Oil Sump", "LubSys_Leakage": "LS Leakage", "LubSys_Oil_Grade": "Oil Grade","LubSys_Lub": "Lub",
             "TrSys_Tr_Chain_Adj": "Tr Chain Adj", "TrSys_Tr_Chain_Play": "Tr Chain Play", "TrSys_Tr_Pin_Adj": "Tr Pin Adj","TrSys_Tr_Pad_Thickness": "Tr Pad Thickness",
             "TrSys_Sproket_Wh_Life": "Sproket Wh Life",
             "TrSys_Tr_Tensioner": "Tr Tensioner",
@@ -141,7 +140,7 @@ class ViewALLAVehiclesFit(QWidget):
             "ElecSys_Fuse_Svc": "Fuse Svc", "ElecSys_Oil_Pressure_Guage": "Oil Pressure Guage",
             "ElecSys_RPM_Guage": "RPM Guage", "ElecSys_Oil_Temp_Guage": "Oil Temp Guage",
             "ElecSys_Self_Starter_Motor": "Self-Starter Motor", "ElecSys_Alternator_Func": "Alternator Func",
-            "ElecSys_Fuel_Guage": "Fuel Guage", "ElecSys_Electric_Harness": "Electric Harness",
+            "ElecSys_Fuel_Guage": "ES Fuel Guage", "ElecSys_Electric_Harness": "Electric Harness",
             "ElecSys_Alternator_Fan_Belt": "Alternator Fan Belt", "ElecSys_Alternator_Noise": "Alternator Noise",
             "ElecSys_Horn": "Horn", "ElecSys_Blower_Heater": "Blower Heater",
             "AirIntakeSys_Air_Cleaner_Cond": "Air Cleaner Cond", "AirIntakeSys_Air_Cleaner_Seal": "Air Cleaner Seal",
@@ -151,7 +150,7 @@ class ViewALLAVehiclesFit(QWidget):
             "TxSys_Stall_Test": "Stall Test","TxSys_Steering_Planetary_Gear": "Steering Planetary Gear", "TxSys_Final_Drive_Func": "Final Drive Func","TxSys_Tx_Oil_Lvl": "Tx Oil Lvl", "TxSys_Tx_Oil_Cond": "Tx Oil Cond",
             "SteeringCon_Stick_Lever_Shift": "Stick Lever Shift", "SteeringCon_Stick_Play": "Stick Play", "SteeringCon_Connect_Rod_Adj": "Connect Rod Adj", "SteeringCon_Steering_Linkages": "Steering Linkages", "SteeringCon_Steering_Pump": "Steering Pump",
             "FuelSys_Fuel_Filter_Cond": "Fuel Filter Cond", "FuelSys_Fuel_Lines_Leakage": "Fuel Lines Leakage", "FuelSys_Fuel_Filter_Body": "Fuel Filter Body", "FuelSys_Fuel_Tk_Strainer": "Fuel Tk Strainer",
-            "FuelSys_Fuel_Guage": "Fuel Guage", "FuelSys_Fuel_Distr_Cork": "Fuel Distr Cork",  "FuelSys_Fuel_Tk_Cap": "Fuel Tk Cap", "FuelSys_Tk_Inner_Cond": "Tk Inner Cond",
+            "FuelSys_Fuel_Guage": "FS Fuel Guage", "FuelSys_Fuel_Distr_Cork": "Fuel Distr Cork",  "FuelSys_Fuel_Tk_Cap": "Fuel Tk Cap", "FuelSys_Tk_Inner_Cond": "Tk Inner Cond",
             "created_by": "Created By", "created_at": "Created At"
         }
 
@@ -159,23 +158,23 @@ class ViewALLAVehiclesFit(QWidget):
         # Define your main header grouping in the order you want:
         self.main_header = {
             "Basic Details" : ["BA NO", "Make","Type","CI","In Svc"],
-            "Cooling Sys": ["Fins","Rad Paint","Coolant",	"Leakage",	"Rad Cap",	"Fan Belt"],
+            "Cooling Sys": ["Fins","Rad Paint","Coolant", "CS Leakage", "Rad Cap",	"Fan Belt"],
             "Hyd Ramp": ["Hyd Oil Lvl","TGS Oil Lvl","Tx Oil","Tx Filter","Fan Mech Oil"],
-            "Lub Sys": ["Eng Oil","EO Cond","Oil Sump","Leakage","Oil Grade","Lub"],
+            "Lub Sys": ["Eng Oil","EO Cond","Oil Sump", "LS Leakage", "Oil Grade","Lub"],
             "Tr Sys": [	"Tr Chain Adj","Tr Chain Play","Tr Pin Adj","Tr Pad Thickness","Sproket Wh Life","Tr Tensioner"],
             "Bty & Assys":["Cradle Fitting","Electolyte Lvl","Terminals","Mineral Jelly","Vent Plug","Bty Ser (LB)"],
             "Boggy Wh": ["Rubber Cond","Lub Pts","Inner / Outer Bearing"],
             "Brk Sys": ["Brk Fluid","Brk Lever"],
             "Elec Sys":	["Ign Sw","Water Temp Guage","Fuse Box","Fuse Svc","Oil Pressure Guage","RPM Guage","Oil Temp Guage","Self-Starter Motor",
-                        "Alternator Func","Fuel Guage","Electric Harness","Alternator Fan Belt","Alternator Noise","Horn","Blower Heater"],
+                        "Alternator Func","ES Fuel Guage","Electric Harness","Alternator Fan Belt","Alternator Noise","Horn","Blower Heater"],
             "Air Intake Sys":["Air Cleaner Cond",	"Air Cleaner Seal",	"Hoses & Valves","Bluge Pump","BP Dust Cover","Hyd Oil Lvl Check", 
                          "TGC Lvl Check","TGC Oil Cond"],
             "Tx Sys": ["Stall Test", "Steering Planetary Gear","Final Drive Func", "Tx Oil Lvl", "Tx Oil Cond" ],
             "Steering Con": ["Stick Lever Shift","Stick Play","Connect Rod Adj","Steering Linkages","Steering Pump"],
-            "Fuel Sys": ["Fuel Filter Cond","Fuel Lines Leakage","Fuel Filter Body","Fuel Tk Strainer","Fuel Guage","Fuel Distr Cork","Fuel Tk Cap","Tk Inner Cond"],
+            "Fuel Sys": ["Fuel Filter Cond","Fuel Lines Leakage","Fuel Filter Body","Fuel Tk Strainer","FS Fuel Guage","Fuel Distr Cork","Fuel Tk Cap","Tk Inner Cond"],
             "Creation Details": ["Created By", "Created At"]
             }
-
+        self.rpt_obj = Report(db_to_display=self.db_to_display, main_heading=self.main_header)
         self.tbL_data_font = QFont("Arial", 12)
         self.initUI()
 
@@ -230,10 +229,10 @@ class ViewALLAVehiclesFit(QWidget):
         """)
         export_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
         export_button.setIconSize(QSize(20, 20))
-        export_button.clicked.connect(self.report_all_vehicle)
+        export_button.clicked.connect(self.report_all_a_vehicle_fit)
         header_layout.addWidget(export_button)
 
-        #Import Button
+        # Import Button
         import_button = QPushButton("Import")
         import_button.setFixedSize(100, 45)  # Set button size
         import_button.setStyleSheet("""
@@ -477,7 +476,7 @@ class ViewALLAVehiclesFit(QWidget):
         item = QTableWidgetItem(str(cell_value))
         item.setTextAlignment(Qt.AlignCenter)
 
-        if cell_value in ["Unsvc", "Incomplete", "Down"]:
+        if cell_value in ["Unsvc", "Incomplete",  "Unsatisfactory", "Down"]:
             item.setBackground(QColor(255, 0, 0)) 
             item.setForeground(QColor(255, 255, 255))
         item.setFont(self.tbL_data_font)
@@ -499,21 +498,22 @@ class ViewALLAVehiclesFit(QWidget):
 
 
     def edit_row(self, row):
-        # print("edit_row parent:",self.main_parent, "\n\n")
-        if hasattr(self.main_parent, "update_vehicle_obj") and self.main_parent.update_vehicle_obj is not None:
-            self.main_parent.content_area.removeWidget(self.main_parent.update_vehicle_obj)
-            self.main_parent.update_vehicle_obj.deleteLater()
-            self.main_parent.update_vehicle_obj = None  # Reset the reference
+        pass
+        # # print("edit_row parent:",self.main_parent, "\n\n")
+        # if hasattr(self.main_parent, "update_vehicle_obj") and self.main_parent.update_vehicle_obj is not None:
+        #     self.main_parent.content_area.removeWidget(self.main_parent.update_vehicle_obj)
+        #     self.main_parent.update_vehicle_obj.deleteLater()
+        #     self.main_parent.update_vehicle_obj = None  # Reset the reference
 
-        # Create new instance and switch view
-        self.main_parent.update_vehicle_obj = UpdateVehicle(user_session = self.user_session, data = row, parent = self.main_parent)
-        self.main_parent.content_area.addWidget(self.main_parent.update_vehicle_obj)
-        self.main_parent.content_area.setCurrentWidget(self.main_parent.update_vehicle_obj)
+        # # Create new instance and switch view
+        # self.main_parent.update_vehicle_obj = UpdateVehicle(user_session = self.user_session, data = row, parent = self.main_parent)
+        # self.main_parent.content_area.addWidget(self.main_parent.update_vehicle_obj)
+        # self.main_parent.content_area.setCurrentWidget(self.main_parent.update_vehicle_obj)
 
 
     def delete_row(self, row):
         vehicle_id = row['id']
-        vehicle_ba_no = row['BA No.']
+        vehicle_ba_no = row['BA NO']
         confirm = QMessageBox(self)
         confirm.setWindowTitle("Delete Vehicle")
         confirm.setWindowIcon(QIcon(get_asset_path("assets/icons/delete.png")))  # Replace with your actual icon path
@@ -522,7 +522,7 @@ class ViewALLAVehiclesFit(QWidget):
         confirm.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = confirm.exec_()
         if result == QMessageBox.Yes:
-            is_deleted_result  = self.db_obj.delete_vehicle(vehicle_id)
+            is_deleted_result  = self.db_obj.delete_a_vehicle_fit(vehicle_id)
             if is_deleted_result:
                 self.populate_table()  # Refresh table after deletion
             else:
@@ -530,6 +530,7 @@ class ViewALLAVehiclesFit(QWidget):
 
 
     def report_row(self, row):
+        print("Len in button:", len(row))
         # print("edit_row parent:",self.main_parent, "\n\n")
         if hasattr(self.main_parent, "a_veh_rpt_view_obj") and self.main_parent.a_veh_rpt_view_obj is not None:
             self.main_parent.content_area.removeWidget(self.main_parent.a_veh_rpt_view_obj)
@@ -543,7 +544,7 @@ class ViewALLAVehiclesFit(QWidget):
         # self.vr_obj.generate_vehicle_pdf_report_updated(row)
 
 
-    def report_all_vehicle(self):
+    def report_all_a_vehicle_fit(self):
         is_generated = self.rpt_obj.generate_report()
         if is_generated:
             message = "Report saved successfully to Downloads"
@@ -556,6 +557,6 @@ class ViewALLAVehiclesFit(QWidget):
         msg.exec_()
 
     def show_import_vehicle_dialog(self):
-        dialog = ImportVehiclesFE(user_session=self.user_session, db_to_display = self.db_to_display)
+        dialog = ImportAVehiclesFitFE(user_session=self.user_session, db_to_display = self.db_to_display)
         if dialog.exec_():  # If user clicks Save
             self.populate_table()  # Refresh user table
