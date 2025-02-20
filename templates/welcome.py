@@ -67,8 +67,8 @@ class WelcomePage(QWidget):
         self.add_vehicle_button.clicked.connect(lambda: self.show_add_vehicle_page(self.add_vehicle_button))
         self.view_all_vehicle_button.clicked.connect(lambda: self.show_all_vehicle_page(self.view_all_vehicle_button))
 
-        self.add_A_vehicle_fit_button.clicked.connect(lambda: self.show_add_A_vehicle_Fit_page(self.add_vehicle_button))
-        self.view_A_vehicle_fit_button.clicked.connect(lambda: self.show_all_A_vehicle_Fit_page(self.view_all_vehicle_button))
+        self.add_A_vehicle_fit_button.clicked.connect(lambda: self.show_add_A_vehicle_Fit_page(self.add_A_vehicle_fit_button.clicked))
+        self.view_A_vehicle_fit_button.clicked.connect(lambda: self.show_all_A_vehicle_Fit_page(self.view_A_vehicle_fit_button))
 
         self.add_weapon_button.clicked.connect(lambda: self.show_add_weapon_page(self.add_weapon_button))
         self.view_all_weapon_button.clicked.connect(lambda: self.show_all_weapon_page(self.view_all_weapon_button))
@@ -242,13 +242,14 @@ class WelcomePage(QWidget):
         self.content_area.addWidget(self.all_vehicle_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.all_vehicle_obj)  # Switch view
 
+    #***********************************************************************************************************************
 
     def show_add_A_vehicle_Fit_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
         self.update_menu_button_style(clicked_button)
-        self.add_vehicle_obj = AddVehicle(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.add_vehicle_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.add_vehicle_obj)  # Switch view
+        self.add_a_vehicle_fit_obj = AddAVehicleFit(user_session=self.user_session, parent=self)
+        self.content_area.addWidget(self.add_a_vehicle_fit_obj)  # Add to stacked widget
+        self.content_area.setCurrentWidget(self.add_a_vehicle_fit_obj)  # Switch view
     
     def show_all_A_vehicle_Fit_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""
@@ -261,7 +262,7 @@ class WelcomePage(QWidget):
         self.content_area.addWidget(self.all_a_vehicle_fit_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.all_a_vehicle_fit_obj)  # Switch view
 
-
+    #***********************************************************************************************************************
 
     def show_add_weapon_page(self, clicked_button):
         """Switch to the 'Add New Vehicle' page."""

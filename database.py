@@ -529,7 +529,7 @@ class VMS_DB:
                 offset = page * page_size
                 
                 sql = """SELECT 
-                        av.ba_no_input, av.make_input, av.type_input, av.CI_input, av.In_Svc_input,
+                        av.id, av.ba_no_input, av.make_input, av.type_input, av.CI_input, av.In_Svc_input,
                         av.Cooling_Fins, av.Cooling_Rad_Paint, av.Cooling_Coolant, av.Cooling_Leakage, av.Cooling_Rad_Cap, av.Cooling_Fan_Belt,
                         av.HydRamp_Hyd_Oil_Lvl, av.HydRamp_TGS_Oil_Lvl, av.HydRamp_Tx_Oil, av.HydRamp_Tx_Filter, av.HydRamp_Fan_Mech_Oil,
                         av.LubSys_Eng_Oil, av.LubSys_EO_Cond, av.LubSys_Oil_Sump, av.LubSys_Leakage, av.LubSys_Oil_Grade, av.LubSys_Lub,
@@ -551,7 +551,7 @@ class VMS_DB:
                 cursor.execute(sql, (page_size, offset))
             else:
                 sql = """SELECT 
-                        av.ba_no_input, av.make_input, av.type_input, av.CI_input, av.In_Svc_input,
+                        av.id, av.ba_no_input, av.make_input, av.type_input, av.CI_input, av.In_Svc_input,
                         av.Cooling_Fins, av.Cooling_Rad_Paint, av.Cooling_Coolant, av.Cooling_Leakage, av.Cooling_Rad_Cap, av.Cooling_Fan_Belt,
                         av.HydRamp_Hyd_Oil_Lvl, av.HydRamp_TGS_Oil_Lvl, av.HydRamp_Tx_Oil, av.HydRamp_Tx_Filter, av.HydRamp_Fan_Mech_Oil,
                         av.LubSys_Eng_Oil, av.LubSys_EO_Cond, av.LubSys_Oil_Sump, av.LubSys_Leakage, av.LubSys_Oil_Grade, av.LubSys_Lub,
@@ -602,7 +602,7 @@ class VMS_DB:
             return 0
         
     
-    def insert_vehicle(self, data):
+    def insert_a_vehicle_fit(self, data):
         try:
             """ Inserts vehicle data into SQLite Database """
             conn, cursor = self.db_connect()

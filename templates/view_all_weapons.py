@@ -9,6 +9,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
 from controllers.report_all_weapons import Report
+from templates.import_weapons_fe import ImportWeaponsFE
 import math
 
 class MultiLevelHeaderView(QHeaderView):
@@ -236,6 +237,18 @@ class ViewALLWeapons(QWidget):
         export_button.setIconSize(QSize(20, 20))
         export_button.clicked.connect(self.report_all_weapons)
         header_layout.addWidget(export_button)
+
+        #Import Button
+        # import_button = QPushButton("Import")
+        # import_button.setFixedSize(100, 45)  # Set button size
+        # import_button.setStyleSheet("""
+        #     QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
+        #     QPushButton:hover { background-color: #218838; }
+        # """)
+        # import_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
+        # import_button.setIconSize(QSize(20, 20))
+        # import_button.clicked.connect(self.show_import_weapon_dialog)
+        # header_layout.addWidget(import_button)
 
         header_layout.addStretch()
 
@@ -536,3 +549,8 @@ class ViewALLWeapons(QWidget):
         msg.setText(message)
         msg.setWindowTitle("Report Generated")
         msg.exec_()
+
+    def show_import_weapon_dialog(self):
+        dialog = ImportWeaponsFE(user_session=self.user_session, db_to_display = self.db_to_display)
+        if dialog.exec_():  # If user clicks Save
+            self.populate_table()  # Refresh user table

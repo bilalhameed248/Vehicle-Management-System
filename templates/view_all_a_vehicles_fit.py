@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
 from controllers.report_all_vehicles import Report
 from templates.import_vehicles_fe import ImportVehiclesFE
+from templates.a_vehicle_report_view import AVehicleReportView
 import math
 
 class MultiLevelHeaderView(QHeaderView):
@@ -529,7 +530,17 @@ class ViewALLAVehiclesFit(QWidget):
 
 
     def report_row(self, row):
-        self.vr_obj.generate_vehicle_pdf_report_updated(row)
+        # print("edit_row parent:",self.main_parent, "\n\n")
+        if hasattr(self.main_parent, "a_veh_rpt_view_obj") and self.main_parent.a_veh_rpt_view_obj is not None:
+            self.main_parent.content_area.removeWidget(self.main_parent.a_veh_rpt_view_obj)
+            self.main_parent.a_veh_rpt_view_obj.deleteLater()
+            self.main_parent.a_veh_rpt_view_obj = None  # Reset the reference
+
+        # Create new instance and switch view
+        self.main_parent.a_veh_rpt_view_obj = AVehicleReportView(user_session=self.user_session, parent=self.main_parent, data = row, db_to_display = self.db_to_display, main_heading = self.main_header)
+        self.main_parent.content_area.addWidget(self.main_parent.a_veh_rpt_view_obj)
+        self.main_parent.content_area.setCurrentWidget(self.main_parent.a_veh_rpt_view_obj)
+        # self.vr_obj.generate_vehicle_pdf_report_updated(row)
 
 
     def report_all_vehicle(self):

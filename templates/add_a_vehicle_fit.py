@@ -87,28 +87,49 @@ class AddAVehicleFit(QWidget):
             self.blocked_combo.setCurrentIndex(0)
             combo_layout.addWidget(self.blocked_combo)
             return combo_layout, self.blocked_combo
+        
+        def text_input_fun(title):
+            text_input_layout = QVBoxLayout()
+            text_input_layout.addWidget(QLabel(title))
+            self.text_input = QLineEdit()
+            text_input_layout.addWidget(self.text_input)
+            return text_input_layout, self.text_input
 
 
         def add_basic_section(title, row, col):
             group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()    
-
-            Wpn_No_layout = QVBoxLayout()
-            Wpn_No_layout.addWidget(QLabel("Wpn No."))
-            self.Wpn_No_input = QLineEdit()
-            Wpn_No_layout.addWidget(self.Wpn_No_input)
+            group_layout = QVBoxLayout()
+            self.ba_no_input_layout, self.ba_no_input = text_input_fun("BA NO")
+            self.make_input_layout, self.make_input = text_input_fun("Make")
+            self.type_input_layout, self.type_input = text_input_fun("Type")
+            self.CI_input_layout, self.CI_input = text_input_fun("CI")
+            self.In_Svc_input_layout, self.In_Svc_input = text_input_fun("In Svc")
 
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(Wpn_No_layout)
+            row1_layout.addLayout(self.ba_no_input_layout)
+            row1_layout.addLayout(self.make_input_layout)
 
+            row2_layout = QHBoxLayout()
+            row2_layout.addLayout(self.type_input_layout)
+            row2_layout.addLayout(self.CI_input_layout)
+
+            row3_layout = QHBoxLayout()
+            row3_layout.addLayout(self.In_Svc_input_layout)
+            
             group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+            group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
 
             # # Store references to input fields
-            self.basic_details[title] = {
-                f"Wpn_No_input": self.Wpn_No_input
+            self.add_basic_section_fields[title] = {
+                f"ba_no_input": self.ba_no_input,
+                f"make_input": self.make_input,
+                f"type_input": self.type_input,
+                f"CI_input": self.CI_input,
+                f"In_Svc_input": self.In_Svc_input
             }
 
 
@@ -116,102 +137,85 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout() 
 
-            combo_items = ["Svc", "Unsvc"]
-            self.T_Pod_Leg_lock_handle_layout, self.T_Pod_Leg_lock_handle = combo_input("Leg lock handle", combo_items)
-            self.T_Pod_Anchor_claw_layout, self.T_Pod_Anchor_claw = combo_input("Anchor claw", combo_items)
-            self.T_Pod_Leveling_Bubbles_layout, self.T_Pod_Leveling_Bubbles = combo_input("Leveling Bubbles", combo_items)
-            self.T_Pod_Lubrication_layout, self.T_Pod_Lubrication = combo_input("Lubrication", combo_items)
-            self.T_Pod_Pull_tube_layout, self.T_Pod_Pull_tube = combo_input("Pull tube", combo_items)
-            self.T_Pod_Detent_stop_lever_layout, self.T_Pod_Detent_stop_lever = combo_input("Detent stop lever", combo_items)
-            self.T_Pod_Foot_pad_legs_body_condition_layout, self.T_Pod_Foot_pad_legs_body_condition = combo_input("Foot pad/ legs body condition", combo_items)
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            
 
+            self.Cooling_Fins_layout, self.Cooling_Fins = combo_input("Fins", combo_items)
+            self.Cooling_Rad_Paint_layout, self.Cooling_Rad_Paint = combo_input("Rad Paint", combo_items)
+            self.Cooling_Coolant_layout, self.Cooling_Coolant = combo_input("Coolant", combo_items)
+            self.Cooling_Leakage_layout, self.Cooling_Leakage = combo_input("Leakage", combo_items)
+            self.Cooling_Rad_Cap_layout, self.Cooling_Rad_Cap = combo_input("Rad Cap", combo_items)
+            self.Cooling_Fan_Belt_layout, self.Cooling_Fan_Belt = combo_input("Fan Belt", combo_items)
+            
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.T_Pod_Leg_lock_handle_layout)
-            row1_layout.addLayout(self.T_Pod_Anchor_claw_layout)
+            row1_layout.addLayout(self.Cooling_Fins_layout)
+            row1_layout.addLayout(self.Cooling_Rad_Paint_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.T_Pod_Leveling_Bubbles_layout)
-            row2_layout.addLayout(self.T_Pod_Lubrication_layout)
+            row2_layout.addLayout(self.Cooling_Coolant_layout)
+            row2_layout.addLayout(self.Cooling_Leakage_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.T_Pod_Pull_tube_layout)
-            row3_layout.addLayout(self.T_Pod_Detent_stop_lever_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.T_Pod_Foot_pad_legs_body_condition_layout)
+            row3_layout.addLayout(self.Cooling_Rad_Cap_layout)
+            row3_layout.addLayout(self.Cooling_Fan_Belt_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
-            self.T_Pod_fields[title] = {
-                f"T_Pod_Leg_lock_handle": self.T_Pod_Leg_lock_handle,
-                f"T_Pod_Anchor_claw": self.T_Pod_Anchor_claw,
-                f"T_Pod_Leveling_Bubbles": self.T_Pod_Leveling_Bubbles,
-                f"T_Pod_Lubrication": self.T_Pod_Lubrication,
-                f"T_Pod_Pull_tube": self.T_Pod_Pull_tube,
-                f"T_Pod_Detent_stop_lever": self.T_Pod_Detent_stop_lever,
-                f"T_Pod_Foot_pad_legs_body_condition": self.T_Pod_Foot_pad_legs_body_condition,
+            self.Cooling_Section_fields[title] = {
+                f"Cooling_Fins": self.Cooling_Fins,
+                f"Cooling_Rad_Paint": self.Cooling_Rad_Paint,
+                f"Cooling_Coolant": self.Cooling_Coolant,
+                f"Cooling_Leakage": self.Cooling_Leakage,
+                f"Cooling_Rad_Cap": self.Cooling_Rad_Cap,
+                f"Cooling_Fan_Belt": self.Cooling_Fan_Belt
             }
     
     
         def HydRamp_Section(title, row, col):
             group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()  
+            group_layout = QVBoxLayout()
 
-            combo_items = ["Svc", "Unsvc"]
-            self.T_Unit_Traversing_Lock_layout, self.T_Unit_Traversing_Lock = combo_input("Traversing Lock", combo_items)
-            self.T_Unit_Elevation_lock_check_layout, self.T_Unit_Elevation_lock_check = combo_input("Elevation lock check", combo_items)
-            self.T_Unit_Elevation_lock_handle_layout, self.T_Unit_Elevation_lock_handle = combo_input("Elevation lock handle", combo_items)
-            self.T_Unit_Viscosity_of_Viscos_damper_layout, self.T_Unit_Viscosity_of_Viscos_damper = combo_input("Viscosity of Viscos damper", combo_items)
-            self.T_Unit_Azimuth_lock_check_layout, self.T_Unit_Azimuth_lock_check = combo_input("Azimuth lock check", combo_items)
-            self.T_Unit_Lubrication_layout, self.T_Unit_Lubrication = combo_input("Lubrication", combo_items)
-            self.T_Unit_Protective_cover_layout, self.T_Unit_Protective_cover = combo_input("Protective cover", combo_items)
-            self.T_Unit_Coil_Card_layout, self.T_Unit_Coil_Card = combo_input("Coil Card", combo_items)
-
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.HydRamp_Hyd_Oil_Lvl_layout, self.HydRamp_Hyd_Oil_Lvl = combo_input("Hyd Oil Lvl", combo_items)
+            self.HydRamp_TGS_Oil_Lvl_layout, self.HydRamp_TGS_Oil_Lvl = combo_input("TGS Oil Lvl", combo_items)
+            self.HydRamp_Tx_Oil_layout, self.HydRamp_Tx_Oil = combo_input("Tx Oil", combo_items)
+            self.HydRamp_Tx_Filter_layout, self.HydRamp_Tx_Filter = combo_input("Tx Filter", combo_items)
+            self.HydRamp_Fan_Mech_Oil_layout, self.HydRamp_Fan_Mech_Oil = combo_input("Fan Mech Oil", combo_items)
+            
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.T_Unit_Traversing_Lock_layout)
-            row1_layout.addLayout(self.T_Unit_Elevation_lock_check_layout)
+            row1_layout.addLayout(self.HydRamp_Hyd_Oil_Lvl_layout)
+            row1_layout.addLayout(self.HydRamp_TGS_Oil_Lvl_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.T_Unit_Elevation_lock_handle_layout)
-            row2_layout.addLayout(self.T_Unit_Viscosity_of_Viscos_damper_layout)
+            row2_layout.addLayout(self.HydRamp_Tx_Oil_layout)
+            row2_layout.addLayout(self.HydRamp_Tx_Filter_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.T_Unit_Azimuth_lock_check_layout)
-            row3_layout.addLayout(self.T_Unit_Lubrication_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.T_Unit_Protective_cover_layout)
-            row4_layout.addLayout(self.T_Unit_Coil_Card_layout)
+            row3_layout.addLayout(self.HydRamp_Fan_Mech_Oil_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
-            self.T_Unit_fields[title] = {
-                f"T_Unit_Traversing_Lock": self.T_Unit_Traversing_Lock,
-                f"T_Unit_Elevation_lock_check": self.T_Unit_Elevation_lock_check,
-                f"T_Unit_Elevation_lock_handle": self.T_Unit_Elevation_lock_handle,
-                f"T_Unit_Viscosity_of_Viscos_damper": self.T_Unit_Viscosity_of_Viscos_damper,
-                f"T_Unit_Azimuth_lock_check": self.T_Unit_Azimuth_lock_check,
-                f"T_Unit_Lubrication": self.T_Unit_Lubrication,
-                f"T_Unit_Protective_cover": self.T_Unit_Protective_cover,
-                f"T_Unit_Coil_Card": self.T_Unit_Coil_Card
+            self.HydRamp_Section_fields[title] = {
+                f"HydRamp_Hyd_Oil_Lvl": self.HydRamp_Hyd_Oil_Lvl,
+                f"HydRamp_TGS_Oil_Lvl": self.HydRamp_TGS_Oil_Lvl,
+                f"HydRamp_Tx_Oil": self.HydRamp_Tx_Oil,
+                f"HydRamp_Tx_Filter": self.HydRamp_Tx_Filter,
+                f"HydRamp_Fan_Mech_Oil": self.HydRamp_Fan_Mech_Oil
             }
 
         
@@ -219,67 +223,44 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
 
-            combo_items = ["Svc", "Unsvc"]
-            self.OS_Eye_Shield_layout, self.OS_Eye_Shield = combo_input("Eye Shield",combo_items)
-            self.OS_Focusing_knob_layout, self.OS_Focusing_knob = combo_input("Focusing knob",combo_items)
-            self.OS_Sillica_gel_condition_layout, self.OS_Sillica_gel_condition = combo_input("Sillica gel condition",combo_items)
-            self.OS_Reticle_lamp_layout, self.OS_Reticle_lamp = combo_input("Reticle lamp",combo_items)
-            self.OS_Body_condition_layout, self.OS_Body_condition = combo_input("Body condition",combo_items)
-            self.OS_N2_purg_filling_connection_layout, self.OS_N2_purg_filling_connection = combo_input("N2 purg / filling connection",combo_items)
-            self.OS_Reticle_switch_layout, self.OS_Reticle_switch = combo_input("Reticle switch",combo_items)
-            self.OS_Cable_connector_layout, self.OS_Cable_connector = combo_input("Cable connector",combo_items)
-            self.OS_Locking_device_layout, self.OS_Locking_device = combo_input("Locking device",combo_items)
-            self.OS_Lens_cover_layout, self.OS_Lens_cover = combo_input("Lens cover",combo_items)
-            self.OS_Objective_lens_layout, self.OS_Objective_lens = combo_input("Objective lens",combo_items)
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.LubSys_Eng_Oil_layout, self.LubSys_Eng_Oil = combo_input("Eng Oil",combo_items)
+            self.LubSys_EO_Cond_layout, self.LubSys_EO_Cond = combo_input("EO Cond",combo_items)
+            self.LubSys_Oil_Sump_layout, self.LubSys_Oil_Sump = combo_input("Oil Sump",combo_items)
+            self.LubSys_Leakage_layout, self.LubSys_Leakage = combo_input("Leakage",combo_items)
+            self.LubSys_Oil_Grade_layout, self.LubSys_Oil_Grade = combo_input("Oil Grade",combo_items)
+            self.LubSys_Lub_layout, self.LubSys_Lub = combo_input("Lub",combo_items)
+            
 
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.OS_Eye_Shield_layout)
-            row1_layout.addLayout(self.OS_Focusing_knob_layout)
+            row1_layout.addLayout(self.LubSys_Eng_Oil_layout)
+            row1_layout.addLayout(self.LubSys_EO_Cond_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.OS_Sillica_gel_condition_layout)
-            row2_layout.addLayout(self.OS_Reticle_lamp_layout)
+            row2_layout.addLayout(self.LubSys_Oil_Sump_layout)
+            row2_layout.addLayout(self.LubSys_Leakage_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.OS_Body_condition_layout)
-            row3_layout.addLayout(self.OS_N2_purg_filling_connection_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.OS_Reticle_switch_layout)
-            row4_layout.addLayout(self.OS_Cable_connector_layout)
-
-            row5_layout = QHBoxLayout()
-            row5_layout.addLayout(self.OS_Locking_device_layout)
-            row5_layout.addLayout(self.OS_Lens_cover_layout)
-
-            row6_layout = QHBoxLayout()
-            row6_layout.addLayout(self.OS_Objective_lens_layout)
+            row3_layout.addLayout(self.LubSys_Oil_Grade_layout)
+            row3_layout.addLayout(self.LubSys_Lub_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
-            group_layout.addLayout(row5_layout)
-            group_layout.addLayout(row6_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
-            self.OS_fields[title] = {
-                f"OS_Eye_Shield": self.OS_Eye_Shield,
-                f"OS_Focusing_knob": self.OS_Focusing_knob,
-                f"OS_Sillica_gel_condition": self.OS_Sillica_gel_condition,
-                f"OS_Reticle_lamp": self.OS_Reticle_lamp,
-                f"OS_Body_condition": self.OS_Body_condition,
-                f"OS_N2_purg_filling_connection": self.OS_N2_purg_filling_connection,
-                f"OS_Reticle_switch": self.OS_Reticle_switch,
-                f"OS_Cable_connector": self.OS_Cable_connector,
-                f"OS_Locking_device": self.OS_Locking_device,
-                f"OS_Lens_cover": self.OS_Lens_cover,
-                f"OS_Objective_lens": self.OS_Objective_lens
+            self.LubSys_Section_fields[title] = {
+                f"LubSys_Eng_Oil": self.LubSys_Eng_Oil,
+                f"LubSys_EO_Cond": self.LubSys_EO_Cond,
+                f"LubSys_Oil_Sump": self.LubSys_Oil_Sump,
+                f"LubSys_Leakage": self.LubSys_Leakage,
+                f"LubSys_Oil_Grade": self.LubSys_Oil_Grade,
+                f"LubSys_Lub": self.LubSys_Lub
             }
 
 
@@ -287,49 +268,43 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout() 
 
-            combo_items = ["Svc", "Unsvc"]
-            self.DMGS_Meter_indicator_AZ_Elev_layout, self.DMGS_Meter_indicator_AZ_Elev = combo_input("Meter indicator (AZ & Elev)", combo_items)
-            self.DMGS_Sockets_layout, self.DMGS_Sockets = combo_input("Sockets", combo_items)
-            self.DMGS_MGS_DMGS_case_layout, self.DMGS_MGS_DMGS_case = combo_input("MGS/ DMGS case", combo_items)
-            self.DMGS_Protective_cover_layout, self.DMGS_Protective_cover = combo_input("Protective cover", combo_items)
-            self.DMGS_Cable_layout, self.DMGS_Cable = combo_input("Cable", combo_items)
-            self.DMGS_Bty_connector_layout, self.DMGS_Bty_connector = combo_input("Bty connector", combo_items)
-            self.DMGS_Self_test_layout, self.DMGS_Self_test = combo_input("Self/ test", combo_items)
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+
+            self.TrSys_Tr_Chain_Adj_layout, self.TrSys_Tr_Chain_Adj = combo_input("Tr Chain Adj", combo_items)
+            self.TrSys_Tr_Chain_Play_layout, self.TrSys_Tr_Chain_Play = combo_input("Tr Chain Play", combo_items)
+            self.TrSys_Tr_Pin_Adj_layout, self.TrSys_Tr_Pin_Adj = combo_input("Tr Pin Adj", combo_items)
+            self.TrSys_Tr_Pad_Thickness_layout, self.TrSys_Tr_Pad_Thickness = combo_input("Tr Pad Thickness", combo_items)
+            self.TrSys_Sproket_Wh_Life_layout, self.TrSys_Sproket_Wh_Life = combo_input("Sproket Wh Life", combo_items)
+            self.TrSys_Tr_Tensioner_layout, self.TrSys_Tr_Tensioner = combo_input("Tr Tensioner", combo_items)
 
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.DMGS_Meter_indicator_AZ_Elev_layout)
-            row1_layout.addLayout(self.DMGS_Sockets_layout)
+            row1_layout.addLayout(self.TrSys_Tr_Chain_Adj_layout)
+            row1_layout.addLayout(self.TrSys_Tr_Chain_Play_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.DMGS_MGS_DMGS_case_layout)
-            row2_layout.addLayout(self.DMGS_Protective_cover_layout)
+            row2_layout.addLayout(self.TrSys_Tr_Pin_Adj_layout)
+            row2_layout.addLayout(self.TrSys_Tr_Pad_Thickness_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.DMGS_Cable_layout)
-            row3_layout.addLayout(self.DMGS_Bty_connector_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.DMGS_Self_test_layout)
+            row3_layout.addLayout(self.TrSys_Sproket_Wh_Life_layout)
+            row3_layout.addLayout(self.TrSys_Tr_Tensioner_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
-            self.DMGS_fields[title] = {
-                f"DMGS_Meter_indicator_AZ_Elev": self.DMGS_Meter_indicator_AZ_Elev,
-                f"DMGS_Sockets": self.DMGS_Sockets,
-                f"DMGS_MGS_DMGS_case": self.DMGS_MGS_DMGS_case,
-                f"DMGS_Protective_cover": self.DMGS_Protective_cover,
-                f"DMGS_Cable": self.DMGS_Cable,
-                f"DMGS_Bty_connector": self.DMGS_Bty_connector,
-                f"DMGS_Self_test": self.DMGS_Self_test
+            self.TrSys_Section_fields[title] = {
+                f"TrSys_Tr_Chain_Adj": self.TrSys_Tr_Chain_Adj,
+                f"TrSys_Tr_Chain_Play": self.TrSys_Tr_Chain_Play,
+                f"TrSys_Tr_Pin_Adj": self.TrSys_Tr_Pin_Adj,
+                f"TrSys_Tr_Pad_Thickness": self.TrSys_Tr_Pad_Thickness,
+                f"TrSys_Sproket_Wh_Life": self.TrSys_Sproket_Wh_Life,
+                f"TrSys_Tr_Tensioner": self.TrSys_Tr_Tensioner
             }
 
 
@@ -337,20 +312,41 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()    
 
-            combo_items = ["Svc", "Unsvc"]
-            self.L_Tube_Body_Condition_layout, self.L_Tube_Body_Condition = combo_input("Body Condition", combo_items)
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.BtyAssys_Cradle_Fitting_layout, self.BtyAssys_Cradle_Fitting = combo_input("Cradle Fitting", combo_items)
+            self.BtyAssys_Electrolyte_Lvl_layout, self.BtyAssys_Electrolyte_Lvl = combo_input("Electolyte Lvl", combo_items)
+            self.BtyAssys_Terminals_layout, self.BtyAssys_Terminals = combo_input("Terminals", combo_items)
+            self.BtyAssys_Mineral_Jelly_layout, self.BtyAssys_Mineral_Jelly = combo_input("Mineral Jelly", combo_items)
+            self.BtyAssys_Vent_Plug_layout, self.BtyAssys_Vent_Plug = combo_input("Vent Plug", combo_items)
+            self.BtyAssys_Bty_Ser_LB_layout, self.BtyAssys_Bty_Ser_LB = combo_input("Bty Ser (LB)", combo_items)
 
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.L_Tube_Body_Condition_layout)
+            row1_layout.addLayout(self.BtyAssys_Cradle_Fitting_layout)
+            row1_layout.addLayout(self.BtyAssys_Electrolyte_Lvl_layout)
+
+            row2_layout = QHBoxLayout()
+            row2_layout.addLayout(self.BtyAssys_Terminals_layout)
+            row2_layout.addLayout(self.BtyAssys_Mineral_Jelly_layout)
+
+            row3_layout = QHBoxLayout()
+            row3_layout.addLayout(self.BtyAssys_Vent_Plug_layout)
+            row3_layout.addLayout(self.BtyAssys_Bty_Ser_LB_layout)
 
             group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+            group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
 
             # # Store references to input fields
-            self.L_Tube_fields[title] = {
-                f"L_Tube_Body_Condition": self.L_Tube_Body_Condition
+            self.BtyAssys_section_fields[title] = {
+                f"BtyAssys_Cradle_Fitting": self.BtyAssys_Cradle_Fitting,
+                f"BtyAssys_Electrolyte_Lvl": self.BtyAssys_Electrolyte_Lvl,
+                f"BtyAssys_Terminals": self.BtyAssys_Terminals,
+                f"BtyAssys_Mineral_Jelly": self.BtyAssys_Mineral_Jelly,
+                f"BtyAssys_Vent_Plug": self.BtyAssys_Vent_Plug,
+                f"BtyAssys_Bty_Ser_LB": self.BtyAssys_Bty_Ser_LB
             }
 
         
@@ -358,43 +354,31 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout() 
 
-            combo_items = ["Svc", "Unsvc"]
-            self.TVPC_Body_Condition_layout, self.TVPC_Body_Condition = combo_input("Body Condition", combo_items)
-            self.TVPC_Fly_Net_layout, self.TVPC_Fly_Net = combo_input("Fly Net", combo_items)
-            self.TVPC_On_Off_Switch_layout, self.TVPC_On_Off_Switch = combo_input("On/Off Switch", combo_items)
-            self.TVPC_Indicator_It_layout, self.TVPC_Indicator_It = combo_input("Indicator It", combo_items)
-            self.TVPC_Connector_layout, self.TVPC_Connector = combo_input("Connector", combo_items)
-            self.TVPC_Voltage_layout, self.TVPC_Voltage = combo_input("Voltage", combo_items)
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+
+            self.BoggyWh_Rubber_Cond_layout, self.BoggyWh_Rubber_Cond = combo_input("Rubber Cond", combo_items)
+            self.BoggyWh_Lub_Pts_layout, self.BoggyWh_Lub_Pts = combo_input("Lub Pts", combo_items)
+            self.BoggyWh_Inner_Outer_Bearing_layout, self.BoggyWh_Inner_Outer_Bearing = combo_input("Inner / Outer Bearing", combo_items)
 
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.TVPC_Body_Condition_layout)
-            row1_layout.addLayout(self.TVPC_Fly_Net_layout)
+            row1_layout.addLayout(self.BoggyWh_Rubber_Cond_layout)
+            row1_layout.addLayout(self.BoggyWh_Lub_Pts_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.TVPC_On_Off_Switch_layout)
-            row2_layout.addLayout(self.TVPC_Indicator_It_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.TVPC_Connector_layout)
-            row3_layout.addLayout(self.TVPC_Voltage_layout)
+            row2_layout.addLayout(self.BoggyWh_Inner_Outer_Bearing_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
-            self.TVPC_fields[title] = {
-                f"TVPC_Body_Condition": self.TVPC_Body_Condition,
-                f"TVPC_Fly_Net": self.TVPC_Fly_Net,
-                f"TVPC_On_Off_Switch": self.TVPC_On_Off_Switch,
-                f"TVPC_Indicator_It": self.TVPC_Indicator_It,
-                f"TVPC_Connector": self.TVPC_Connector,
-                f"TVPC_Voltage": self.TVPC_Voltage
+            self.BoggyWh_Section_fields[title] = {
+                f"BoggyWh_Rubber_Cond": self.BoggyWh_Rubber_Cond,
+                f"BoggyWh_Lub_Pts": self.BoggyWh_Lub_Pts,
+                f"BoggyWh_Inner_Outer_Bearing": self.BoggyWh_Inner_Outer_Bearing
             }
 
 
@@ -402,49 +386,23 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout() 
 
-            combo_items = ["Svc", "Unsvc"]
-            self.Bty_BB_287_Bty_connector_layout, self.Bty_BB_287_Bty_connector = combo_input("Bty connector", combo_items)
-            self.Bty_BB_287_Voltage_24V_sec_layout, self.Bty_BB_287_Voltage_24V_sec = combo_input("Voltage +24 V sec", combo_items)
-            self.Bty_BB_287_Voltage_50V_layout, self.Bty_BB_287_Voltage_50V = combo_input("Voltage +50 V", combo_items)
-            self.Bty_BB_287_Voltage_50V_sec_layout, self.Bty_BB_287_Voltage_50V_sec = combo_input("Voltage +50 V sec", combo_items)
-            self.Bty_BB_287_Bty_condition_layout, self.Bty_BB_287_Bty_condition = combo_input("Bty condition", combo_items)
-            self.Bty_BB_287_Bty_Tvpc_layout, self.Bty_BB_287_Bty_Tvpc = combo_input("TVPC", combo_items)
-            self.Bty_BB_287_Power_cable_condition_layout, self.Bty_BB_287_Power_cable_condition = combo_input("Power cable condition", combo_items)
-
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.BrkSys_Brk_Fluid_layout, self.BrkSys_Brk_Fluid = combo_input("Brk Fluid", combo_items)
+            self.BrkSys_Brk_Lever_layout, self.BrkSys_Brk_Lever = combo_input("Brk Lever", combo_items)
+            
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.Bty_BB_287_Bty_connector_layout)
-            row1_layout.addLayout(self.Bty_BB_287_Voltage_24V_sec_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.Bty_BB_287_Voltage_50V_layout)
-            row2_layout.addLayout(self.Bty_BB_287_Voltage_50V_sec_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.Bty_BB_287_Bty_condition_layout)
-            row3_layout.addLayout(self.Bty_BB_287_Bty_Tvpc_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.Bty_BB_287_Power_cable_condition_layout)
+            row1_layout.addLayout(self.BrkSys_Brk_Fluid_layout)
+            row1_layout.addLayout(self.BrkSys_Brk_Lever_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
-
             # Store references to input fields
-            self.Bty_BB_287_fields[title] = {
-                f"Bty_BB_287_Bty_connector": self.Bty_BB_287_Bty_connector,
-                f"Bty_BB_287_Voltage_24V_sec": self.Bty_BB_287_Voltage_24V_sec,
-                f"Bty_BB_287_Voltage_50V": self.Bty_BB_287_Voltage_50V,
-                f"Bty_BB_287_Voltage_50V_sec": self.Bty_BB_287_Voltage_50V_sec,
-                f"Bty_BB_287_Bty_condition": self.Bty_BB_287_Bty_condition,
-                f"Bty_BB_287_Bty_Tvpc": self.Bty_BB_287_Bty_Tvpc,
-                f"Bty_BB_287_Power_cable_condition": self.Bty_BB_287_Power_cable_condition
+            self.BrkSys_Section_fields[title] = {
+                f"BrkSys_Brk_Fluid": self.BrkSys_Brk_Fluid,
+                f"BrkSys_Brk_Lever": self.BrkSys_Brk_Lever
             }
 
 
@@ -452,167 +410,53 @@ class AddAVehicleFit(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout() 
 
-            combo_items = ["Svc", "Unsvc"]
-            self.NVS_Coolant_unit_layout, self.NVS_Coolant_unit = combo_input("Coolant unit", combo_items)
-            self.NVS_Eye_piece_layout, self.NVS_Eye_piece = combo_input("Eye piece", combo_items)
-            self.NVS_Cable_connector_layout, self.NVS_Cable_connector = combo_input("Cable connector", combo_items)
-            self.NVS_Lens_assy_layout, self.NVS_Lens_assy = combo_input("Lens assy", combo_items)
-            self.NVS_Power_cable_condition_layout, self.NVS_Power_cable_condition = combo_input("Power cable condition", combo_items)
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.ElecSys_Ign_Sw_layout, self.ElecSys_Ign_Sw = combo_input("Ign Sw", combo_items)
+            self.ElecSys_Water_Temp_Guage_layout, self.ElecSys_Water_Temp_Guage = combo_input("Water Temp Guage", combo_items)
+            self.ElecSys_Fuse_Box_layout, self.ElecSys_Fuse_Box = combo_input("Fuse Box", combo_items)
+            self.ElecSys_Fuse_Svc_layout, self.ElecSys_Fuse_Svc = combo_input("Fuse Svc", combo_items)
+            self.ElecSys_Oil_Pressure_Guage_layout, self.ElecSys_Oil_Pressure_Guage = combo_input("Oil Pressure Guage", combo_items)
+            self.ElecSys_RPM_Guage_layout, self.ElecSys_RPM_Guage = combo_input("RPM Guage", combo_items)
+            self.ElecSys_Oil_Temp_Guage_layout, self.ElecSys_Oil_Temp_Guage = combo_input("Oil Temp Guage", combo_items)
+            self.ElecSys_Self_Starter_Motor_layout, self.ElecSys_Self_Starter_Motor = combo_input("Self-Starter Motor", combo_items)
+            self.ElecSys_Alternator_Func_layout, self.ElecSys_Alternator_Func = combo_input("Alternator Func", combo_items)
+            self.ElecSys_Fuel_Guage_layout, self.ElecSys_Fuel_Guage = combo_input("Fuel Guage", combo_items)
+            self.ElecSys_Electric_Harness_layout, self.ElecSys_Electric_Harness = combo_input("Electric Harness", combo_items)
+            self.ElecSys_Alternator_Fan_Belt_layout, self.ElecSys_Alternator_Fan_Belt = combo_input("Alternator Fan Belt", combo_items)
+            self.ElecSys_Alternator_Noise_layout, self.ElecSys_Alternator_Noise = combo_input("Alternator Noise", combo_items)
+            self.ElecSys_Horn_layout, self.ElecSys_Horn = combo_input("Horn", combo_items)
+            self.ElecSys_Blower_Heater_layout, self.ElecSys_Blower_Heater = combo_input("Blower Heater", combo_items)
 
             row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.NVS_Coolant_unit_layout)
-            row1_layout.addLayout(self.NVS_Eye_piece_layout)
+            row1_layout.addLayout(self.ElecSys_Ign_Sw_layout)
+            row1_layout.addLayout(self.ElecSys_Water_Temp_Guage_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.NVS_Cable_connector_layout)
-            row2_layout.addLayout(self.NVS_Lens_assy_layout)
+            row2_layout.addLayout(self.ElecSys_Fuse_Box_layout)
+            row2_layout.addLayout(self.ElecSys_Fuse_Svc_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.NVS_Power_cable_condition_layout)
-
-            # Add rows to the group layout
-            group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-
-            group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
-
-            # Store references to input fields
-            self.NVS_fields[title] = {
-                f"NVS_Coolant_unit": self.NVS_Coolant_unit,
-                f"NVS_Eye_piece": self.NVS_Eye_piece,
-                f"NVS_Cable_connector": self.NVS_Cable_connector,
-                f"NVS_Lens_assy": self.NVS_Lens_assy,
-                f"NVS_Power_cable_condition": self.NVS_Power_cable_condition
-            }
-
-
-        def AirIntakeSys_Section(title, row, col):
-            group_box = QGroupBox(title)
-            group_layout = QVBoxLayout() 
-
-            combo_items = ["Svc", "Unsvc"]
-            self.BPC_Body_layout, self.BPC_Body = combo_input("Body", combo_items)
-            self.BPC_Cables_layout, self.BPC_Cables = combo_input("Cables", combo_items)
-            self.BPC_On_Off_Switch_layout, self.BPC_On_Off_Switch = combo_input("On/Off Switch", combo_items)
-
-            row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.BPC_Body_layout)
-            row1_layout.addLayout(self.BPC_Cables_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.BPC_On_Off_Switch_layout)
-
-            # Add rows to the group layout
-            group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-
-            group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
-
-            # Store references to input fields
-            self.BPC_fields[title] = {
-                f"BPC_Body": self.BPC_Body,
-                f"BPC_Cables": self.BPC_Cables,
-                f"BPC_On_Off_Switch": self.BPC_On_Off_Switch
-            }
-
-
-        def TxSys_Section(title, row, col):
-            group_box = QGroupBox(title)
-            group_layout = QVBoxLayout() 
-
-            combo_items = ["Svc", "Unsvc"]
-            self.VPC_Body_layout, self.VPC_Body = combo_input("Body", combo_items)
-            self.VPC_Switch_layout, self.VPC_Switch = combo_input("Switch", combo_items)
-            self.VPC_VPC_Power_Cable_layout, self.VPC_VPC_Power_Cable = combo_input("VPC Power Cable", combo_items)
-
-            row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.VPC_Body_layout)
-            row1_layout.addLayout(self.VPC_Switch_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.VPC_VPC_Power_Cable_layout)
-
-            # Add rows to the group layout
-            group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-
-            group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
-
-            # Store references to input fields
-            self.VPC_fields[title] = {
-                f"VPC_Body": self.VPC_Body,
-                f"VPC_Switch": self.VPC_Switch,
-                f"VPC_VPC_Power_Cable": self.VPC_VPC_Power_Cable
-            } 
-
-
-        def SteeringCon_section(title, row, col):
-            group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()    
-
-            combo_items = ["Svc", "Unsvc"]
-            self.L_Bty_Bty_Voltage_layout, self.L_Bty_Bty_Voltage = combo_input("Bty Voltage", combo_items)
-
-            row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.L_Bty_Bty_Voltage_layout)
-
-            group_layout.addLayout(row1_layout)
-
-            group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-
-            # # Store references to input fields
-            self.L_Bty_fields[title] = {
-                f"L_Bty_Bty_Voltage": self.L_Bty_Bty_Voltage
-            }
-
-
-        def FuelSys_section(title, row, col):
-            group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()
-
-            combo_items = ["Complete", "Incomplete"]
-            self.Doc_6_Monthly_verification_record_layout, self.Doc_6_Monthly_verification_record = combo_input("6 Monthly verification record", combo_items)
-            self.Doc_Last_ATI_pts_has_been_killed_layout, self.Doc_Last_ATI_pts_has_been_killed = combo_input("Last ATI pts has been killed", combo_items)
-            self.Doc_Bty_charging_record_layout, self.Doc_Bty_charging_record = combo_input("Bty charging record", combo_items)
-            self.Doc_Storage_temp_Humidity_record_layout, self.Doc_Storage_temp_Humidity_record = combo_input("Storage temp & Humidity record", combo_items)
-            self.Doc_Firing_record_check_layout, self.Doc_Firing_record_check = combo_input("Firing record check", combo_items)
-            self.Doc_Svc_ability_Completeness_of_tools_accy_layout, self.Doc_Svc_ability_Completeness_of_tools_accy = combo_input("Svc ability & Completeness of tools & accy", combo_items)
-            self.Doc_Self_test_record_check_layout, self.Doc_Self_test_record_check = combo_input("Self test record check", combo_items)
-            self.Doc_Is_eARMS_fully_func_layout, self.Doc_Is_eARMS_fully_func = combo_input("Is eARMS fully func and all the processes involved are being carried out through eARMS", combo_items)
-            self.Doc_Complete_eqpt_inventory_update_on_eARMS_layout, self.Doc_Complete_eqpt_inventory_update_on_eARMS = combo_input("Complete eqpt inventory update on eARMS", combo_items)
-            self.Doc_DRWO_work_order_being_processed_on_eARMS_layout, self.Doc_DRWO_work_order_being_processed_on_eARMS = combo_input("DRWO/ work order being processed on eARMS", combo_items)
-            self.Doc_Are_Log_book_maintain_properly_layout, self.Doc_Are_Log_book_maintain_properly = combo_input("Are Log book maintain properly", combo_items)
-
-            row1_layout = QHBoxLayout()
-            row1_layout.addLayout(self.Doc_6_Monthly_verification_record_layout)
-            row1_layout.addLayout(self.Doc_Last_ATI_pts_has_been_killed_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.Doc_Bty_charging_record_layout)
-            row2_layout.addLayout(self.Doc_Storage_temp_Humidity_record_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.Doc_Firing_record_check_layout)
-            row3_layout.addLayout(self.Doc_Svc_ability_Completeness_of_tools_accy_layout)
+            row3_layout.addLayout(self.ElecSys_Oil_Pressure_Guage_layout)
+            row3_layout.addLayout(self.ElecSys_RPM_Guage_layout)
 
             row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.Doc_Self_test_record_check_layout)
-            row4_layout.addLayout(self.Doc_Is_eARMS_fully_func_layout)
+            row4_layout.addLayout(self.ElecSys_Oil_Temp_Guage_layout)
+            row4_layout.addLayout(self.ElecSys_Self_Starter_Motor_layout)
 
             row5_layout = QHBoxLayout()
-            row5_layout.addLayout(self.Doc_Complete_eqpt_inventory_update_on_eARMS_layout)
-            row5_layout.addLayout(self.Doc_DRWO_work_order_being_processed_on_eARMS_layout)
+            row5_layout.addLayout(self.ElecSys_Alternator_Func_layout)
+            row5_layout.addLayout(self.ElecSys_Fuel_Guage_layout)
 
             row6_layout = QHBoxLayout()
-            row6_layout.addLayout(self.Doc_Are_Log_book_maintain_properly_layout)
+            row6_layout.addLayout(self.ElecSys_Electric_Harness_layout)
+            row6_layout.addLayout(self.ElecSys_Alternator_Fan_Belt_layout)
+
+            row7_layout = QHBoxLayout()
+            row7_layout.addLayout(self.ElecSys_Alternator_Noise_layout)
+            row7_layout.addLayout(self.ElecSys_Horn_layout)
+
+            row8_layout = QHBoxLayout()
+            row8_layout.addLayout(self.ElecSys_Blower_Heater_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -621,49 +465,242 @@ class AddAVehicleFit(QWidget):
             group_layout.addLayout(row4_layout)
             group_layout.addLayout(row5_layout)
             group_layout.addLayout(row6_layout)
+            group_layout.addLayout(row7_layout)
+            group_layout.addLayout(row8_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, col, 1, 1)
+            # form_layout.addWidget(group_box, row, col)
+
+            # Store references to input fields
+            self.ElecSys_Section_fields[title] = {
+                f"ElecSys_Ign_Sw": self.ElecSys_Ign_Sw,
+                f"ElecSys_Water_Temp_Guage": self.ElecSys_Water_Temp_Guage,
+                f"ElecSys_Fuse_Box": self.ElecSys_Fuse_Box,
+                f"ElecSys_Fuse_Svc": self.ElecSys_Fuse_Svc,
+                f"ElecSys_Oil_Pressure_Guage": self.ElecSys_Oil_Pressure_Guage,
+                f"ElecSys_RPM_Guage": self.ElecSys_RPM_Guage,
+                f"ElecSys_Oil_Temp_Guage": self.ElecSys_Oil_Temp_Guage,
+                f"ElecSys_Self_Starter_Motor": self.ElecSys_Self_Starter_Motor,
+                f"ElecSys_Alternator_Func": self.ElecSys_Alternator_Func,
+                f"ElecSys_Fuel_Guage": self.ElecSys_Fuel_Guage,
+                f"ElecSys_Electric_Harness": self.ElecSys_Electric_Harness,
+                f"ElecSys_Alternator_Fan_Belt": self.ElecSys_Alternator_Fan_Belt,
+                f"ElecSys_Alternator_Noise": self.ElecSys_Alternator_Noise,
+                f"ElecSys_Horn": self.ElecSys_Horn,
+                f"ElecSys_Blower_Heater": self.ElecSys_Blower_Heater
+            }
+
+
+        def AirIntakeSys_Section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout() 
+
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.AirIntakeSys_Air_Cleaner_Cond_layout, self.AirIntakeSys_Air_Cleaner_Cond = combo_input("Air Cleaner Cond", combo_items)
+            self.AirIntakeSys_Air_Cleaner_Seal_layout, self.AirIntakeSys_Air_Cleaner_Seal = combo_input("Air Cleaner Seal", combo_items)
+            self.AirIntakeSys_Hoses_Valves_layout, self.AirIntakeSys_Hoses_Valves = combo_input("Hoses & Valves", combo_items)
+            self.AirIntakeSys_Bluge_Pump_layout, self.AirIntakeSys_Bluge_Pump = combo_input("Bluge Pump", combo_items)
+            self.AirIntakeSys_BP_Dust_Cover_layout, self.AirIntakeSys_BP_Dust_Cover = combo_input("BP Dust Cover", combo_items)
+            self.AirIntakeSys_Hyd_Oil_Lvl_Check_layout, self.AirIntakeSys_Hyd_Oil_Lvl_Check = combo_input("Hyd Oil Lvl Check", combo_items)
+            self.AirIntakeSys_TGC_Lvl_Check_layout, self.AirIntakeSys_TGC_Lvl_Check = combo_input("TGC Lvl Check", combo_items)
+            self.AirIntakeSys_TGC_Oil_Cond_layout, self.AirIntakeSys_TGC_Oil_Cond = combo_input("TGC Oil Cond", combo_items)
+
+            row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.AirIntakeSys_Air_Cleaner_Cond_layout)
+            row1_layout.addLayout(self.AirIntakeSys_Air_Cleaner_Seal_layout)
+
+            row2_layout = QHBoxLayout()
+            row2_layout.addLayout(self.AirIntakeSys_Hoses_Valves_layout)
+            row2_layout.addLayout(self.AirIntakeSys_Bluge_Pump_layout)
+
+            row3_layout = QHBoxLayout()
+            row3_layout.addLayout(self.AirIntakeSys_BP_Dust_Cover_layout)
+            row3_layout.addLayout(self.AirIntakeSys_Hyd_Oil_Lvl_Check_layout)
+
+            row4_layout = QHBoxLayout()
+            row4_layout.addLayout(self.AirIntakeSys_TGC_Lvl_Check_layout)
+            row4_layout.addLayout(self.AirIntakeSys_TGC_Oil_Cond_layout)
+
+            # Add rows to the group layout
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+            group_layout.addLayout(row3_layout)
+            group_layout.addLayout(row4_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, col, 1, 1)
+            # form_layout.addWidget(group_box, row, col)
+
+            # Store references to input fields
+            self.AirIntakeSys_Section_fields[title] = {
+                f"AirIntakeSys_Air_Cleaner_Cond": self.AirIntakeSys_Air_Cleaner_Cond,
+                f"AirIntakeSys_Air_Cleaner_Seal": self.AirIntakeSys_Air_Cleaner_Seal,
+                f"AirIntakeSys_Hoses_Valves": self.AirIntakeSys_Hoses_Valves,
+                f"AirIntakeSys_Bluge_Pump": self.AirIntakeSys_Bluge_Pump,
+                f"AirIntakeSys_BP_Dust_Cover": self.AirIntakeSys_BP_Dust_Cover,
+                f"AirIntakeSys_Hyd_Oil_Lvl_Check": self.AirIntakeSys_Hyd_Oil_Lvl_Check,
+                f"AirIntakeSys_TGC_Lvl_Check": self.AirIntakeSys_TGC_Lvl_Check,
+                f"AirIntakeSys_TGC_Oil_Cond": self.AirIntakeSys_TGC_Oil_Cond
+            }
+
+
+        def TxSys_Section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout() 
+
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+
+            self.TxSys_Stall_Test_layout, self.TxSys_Stall_Test = combo_input("Stall Test", combo_items)
+            self.TxSys_Steering_Planetary_Gear_layout, self.TxSys_Steering_Planetary_Gear = combo_input("Steering Planetary Gear", combo_items)
+            self.TxSys_Final_Drive_Func_layout, self.TxSys_Final_Drive_Func = combo_input("Final Drive Func", combo_items)
+            self.TxSys_Tx_Oil_Lvl_layout, self.TxSys_Tx_Oil_Lvl = combo_input("Tx Oil Lvl", combo_items)
+            self.TxSys_Tx_Oil_Cond_layout, self.TxSys_Tx_Oil_Cond = combo_input("Tx Oil Cond", combo_items)
+
+            row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.TxSys_Stall_Test_layout)
+            row1_layout.addLayout(self.TxSys_Steering_Planetary_Gear_layout)
+
+            row2_layout = QHBoxLayout()
+            row2_layout.addLayout(self.TxSys_Final_Drive_Func_layout)
+            row2_layout.addLayout(self.TxSys_Tx_Oil_Lvl_layout)
+
+            row3_layout = QHBoxLayout()
+            row3_layout.addLayout(self.TxSys_Tx_Oil_Cond_layout)
+
+            # Add rows to the group layout
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+            group_layout.addLayout(row3_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, col, 1, 1)
+
+            # Store references to input fields
+            self.TxSys_Section_fields[title] = {
+                f"TxSys_Stall_Test": self.TxSys_Stall_Test,
+                f"TxSys_Steering_Planetary_Gear": self.TxSys_Steering_Planetary_Gear,
+                f"TxSys_Final_Drive_Func": self.TxSys_Final_Drive_Func,
+                f"TxSys_Tx_Oil_Lvl": self.TxSys_Tx_Oil_Lvl,
+                f"TxSys_Tx_Oil_Cond": self.TxSys_Tx_Oil_Cond
+            } 
+
+
+        def SteeringCon_section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()    
+
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+            self.SteeringCon_Stick_Lever_Shift_layout, self.SteeringCon_Stick_Lever_Shift = combo_input("Stick Lever Shift", combo_items)
+            self.SteeringCon_Stick_Play_layout, self.SteeringCon_Stick_Play = combo_input("Stick Play", combo_items)
+            self.SteeringCon_Connect_Rod_Adj_layout, self.SteeringCon_Connect_Rod_Adj = combo_input("Connect Rod Adj", combo_items)
+            self.SteeringCon_Steering_Linkages_layout, self.SteeringCon_Steering_Linkages = combo_input("Steering Linkages", combo_items)
+            self.SteeringCon_Steering_Pump_layout, self.SteeringCon_Steering_Pump = combo_input("Steering Pump", combo_items)
+
+            row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.SteeringCon_Stick_Lever_Shift_layout)
+            row1_layout.addLayout(self.SteeringCon_Stick_Play_layout)
+
+            row2_layout = QHBoxLayout()
+            row2_layout.addLayout(self.SteeringCon_Connect_Rod_Adj_layout)
+            row2_layout.addLayout(self.SteeringCon_Steering_Linkages_layout)
+
+            row3_layout = QHBoxLayout()
+            row3_layout.addLayout(self.SteeringCon_Steering_Pump_layout)
+
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+            group_layout.addLayout(row3_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, col, 1, 1)
+
+            # # Store references to input fields
+            self.SteeringCon_section_fields[title] = {
+                f"SteeringCon_Stick_Lever_Shift": self.SteeringCon_Stick_Lever_Shift,
+                f"SteeringCon_Stick_Play": self.SteeringCon_Stick_Play,
+                f"SteeringCon_Connect_Rod_Adj": self.SteeringCon_Connect_Rod_Adj,
+                f"SteeringCon_Steering_Linkages": self.SteeringCon_Steering_Linkages,
+                f"SteeringCon_Steering_Pump": self.SteeringCon_Steering_Pump
+            }
+
+
+        def FuelSys_section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()
+
+            combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+
+            self.FuelSys_Fuel_Filter_Cond_layout, self.FuelSys_Fuel_Filter_Cond = combo_input("Fuel Filter Cond", combo_items)
+            self.FuelSys_Fuel_Lines_Leakage_layout, self.FuelSys_Fuel_Lines_Leakage = combo_input("Fuel Lines Leakage", combo_items)
+            self.FuelSys_Fuel_Filter_Body_layout, self.FuelSys_Fuel_Filter_Body = combo_input("Fuel Filter Body", combo_items)
+            self.FuelSys_Fuel_Tk_Strainer_layout, self.FuelSys_Fuel_Tk_Strainer = combo_input("Fuel Tk Strainer", combo_items)
+            self.FuelSys_Fuel_Guage_layout, self.FuelSys_Fuel_Guage = combo_input("Fuel Guage", combo_items)
+            self.FuelSys_Fuel_Distr_Cork_layout, self.FuelSys_Fuel_Distr_Cork = combo_input("Fuel Distr Cork", combo_items)
+            self.FuelSys_Fuel_Tk_Cap_layout, self.FuelSys_Fuel_Tk_Cap = combo_input("Fuel Tk Cap", combo_items)
+            self.FuelSys_Tk_Inner_Cond_layout, self.FuelSys_Tk_Inner_Cond = combo_input("Tk Inner Cond", combo_items)
+            
+            row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.FuelSys_Fuel_Filter_Cond_layout)
+            row1_layout.addLayout(self.FuelSys_Fuel_Lines_Leakage_layout)
+
+            row2_layout = QHBoxLayout()
+            row2_layout.addLayout(self.FuelSys_Fuel_Filter_Body_layout)
+            row2_layout.addLayout(self.FuelSys_Fuel_Tk_Strainer_layout)
+
+            row3_layout = QHBoxLayout()
+            row3_layout.addLayout(self.FuelSys_Fuel_Guage_layout)
+            row3_layout.addLayout(self.FuelSys_Fuel_Distr_Cork_layout)
+
+            row4_layout = QHBoxLayout()
+            row4_layout.addLayout(self.FuelSys_Fuel_Tk_Cap_layout)
+            row4_layout.addLayout(self.FuelSys_Tk_Inner_Cond_layout)
+
+            # Add rows to the group layout
+            group_layout.addLayout(row1_layout)
+            group_layout.addLayout(row2_layout)
+            group_layout.addLayout(row3_layout)
+            group_layout.addLayout(row4_layout)
+        
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 4)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
-            self.Doc_fields[title] = {
-                f"Doc_6_Monthly_verification_record": self.Doc_6_Monthly_verification_record,
-                f"Doc_Last_ATI_pts_has_been_killed": self.Doc_Last_ATI_pts_has_been_killed,
-                f"Doc_Bty_charging_record": self.Doc_Bty_charging_record,
-                f"Doc_Storage_temp_Humidity_record": self.Doc_Storage_temp_Humidity_record,
-                f"Doc_Firing_record_check": self.Doc_Firing_record_check,
-                f"Doc_Svc_ability_Completeness_of_tools_accy": self.Doc_Svc_ability_Completeness_of_tools_accy,
-                f"Doc_Self_test_record_check": self.Doc_Self_test_record_check,
-                f"Doc_Is_eARMS_fully_func": self.Doc_Is_eARMS_fully_func,
-                f"Doc_Complete_eqpt_inventory_update_on_eARMS": self.Doc_Complete_eqpt_inventory_update_on_eARMS,
-                f"Doc_DRWO_work_order_being_processed_on_eARMS": self.Doc_DRWO_work_order_being_processed_on_eARMS,
-                f"Doc_Are_Log_book_maintain_properly": self.Doc_Are_Log_book_maintain_properly
+            self.FuelSys_section_fields[title] = {
+                f"FuelSys_Fuel_Filter_Cond": self.FuelSys_Fuel_Filter_Cond,
+                f"FuelSys_Fuel_Lines_Leakage": self.FuelSys_Fuel_Lines_Leakage,
+                f"FuelSys_Fuel_Filter_Body": self.FuelSys_Fuel_Filter_Body,
+                f"FuelSys_Fuel_Tk_Strainer": self.FuelSys_Fuel_Tk_Strainer,
+                f"FuelSys_Fuel_Guage": self.FuelSys_Fuel_Guage,
+                f"FuelSys_Fuel_Distr_Cork": self.FuelSys_Fuel_Distr_Cork,
+                f"FuelSys_Fuel_Tk_Cap": self.FuelSys_Fuel_Tk_Cap,
+                f"FuelSys_Tk_Inner_Cond": self.FuelSys_Tk_Inner_Cond
             }
 
-        
 
         # Maintenance Sections
         add_basic_section("Basic Details", 0, 0)
-        Cooling_Section("Cooling Sys", 2, 0)
-        HydRamp_Section("Hyd Ramp", 2, 1)
-        LubSys_Section("Lub Sys", 2, 2)
-        TrSys_Section("Tr Sys", 4, 0)
-        BtyAssys_section("Bty & Assys", 4, 1)
-        BoggyWh_Section("Boggy Wh", 4, 2)
-        BrkSys_Section("Brk Sys", 6, 0)
-        ElecSys_Section("Elec Sys", 6, 1)
-        AirIntakeSys_Section("Air Intake Sys", 6, 2)
-        TxSys_Section("Tx Sys", 8, 0)
-        SteeringCon_section("Steering Con", 8, 1)
-        FuelSys_section("Fuel Sys", 10, 0)
+        Cooling_Section("Cooling Sys", 0, 1)
+        HydRamp_Section("Hyd Ramp", 0, 2)
+        LubSys_Section("Lub Sys", 2, 0)
+        TrSys_Section("Tr Sys", 2, 1)
+        BtyAssys_section("Bty & Assys", 2, 2)
+        BoggyWh_Section("Boggy Wh", 4, 0)
+        BrkSys_Section("Brk Sys", 4, 1)
+        ElecSys_Section("Elec Sys", 4, 2)
+        AirIntakeSys_Section("Air Intake Sys", 6, 0)
+        TxSys_Section("Tx Sys", 6, 1)
+        SteeringCon_section("Steering Con", 6, 2)
+        FuelSys_section("Fuel Sys", 8, 0)
 
         # Buttons
         button_layout = QHBoxLayout()
         save_button = QPushButton(" Save")
         save_button.setIcon(QIcon(get_asset_path("assets/icons/save.png")))
         save_button.setIconSize(QSize(20, 20))
-        save_button.clicked.connect(self.save_weapon)
+        save_button.clicked.connect(self.save_a_vehicle_fit)
 
         clear_button = QPushButton(" Clear/Reset")
         clear_button.setIcon(QIcon(get_asset_path("assets/icons/clear.png")))
@@ -692,93 +729,91 @@ class AddAVehicleFit(QWidget):
         self.setLayout(layout)
 
 
-    def save_weapon(self):
+    def save_a_vehicle_fit(self):
         """ Inserts user into the database """
-        add_weapon_data = {}
+        add_a_vehicle_fit_data = {}
 
-        if not (self.basic_details['Basic Details']['Wpn_No_input'].text().strip()):
-            QMessageBox.warning(self, "Error", "Wpn No required!")
+        if not (self.add_basic_section_fields['Basic Details']['ba_no_input'].text().strip() and self.add_basic_section_fields['Basic Details']['make_input'].text().strip() and 
+                self.add_basic_section_fields['Basic Details']['type_input'].text().strip() and self.add_basic_section_fields['Basic Details']['CI_input'].text().strip() and self.add_basic_section_fields['Basic Details']['In_Svc_input'].text().strip()):
+            QMessageBox.warning(self, "Error", "Basic Details required!")
             return
 
-        for fields in self.basic_details.values():
+        for fields in self.add_basic_section_fields.values():
             for key, widget in fields.items():
                 if isinstance(widget, QLineEdit):
-                    add_weapon_data[key] = widget.text().strip()
+                    add_a_vehicle_fit_data[key] = widget.text().strip()
 
-        for fields in self.T_Pod_fields.values():
+        for fields in self.Cooling_Section_fields.values():
             for key, widget in fields.items():
                 if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.T_Unit_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.OS_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.DMGS_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.L_Tube_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.TVPC_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.Bty_BB_287_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.NVS_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.BPC_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.VPC_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.L_Bty_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.Doc_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
         
-        for fields in self.Status_fields.values():
+        for fields in self.HydRamp_Section_fields.values():
             for key, widget in fields.items():
                 if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
 
-        add_weapon_data['created_by'] = self.user_id
+        for fields in self.LubSys_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
 
-        is_data_inserted = self.db_obj.insert_weapon(add_weapon_data)
+        for fields in self.TrSys_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.BtyAssys_section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.BoggyWh_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.BrkSys_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.ElecSys_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.AirIntakeSys_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.TxSys_Section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.SteeringCon_section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+
+        for fields in self.FuelSys_section_fields.values():
+            for key, widget in fields.items():
+                if isinstance(widget, QComboBox):
+                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+        
+        
+        add_a_vehicle_fit_data['created_by'] = self.user_id
+
+        is_data_inserted = self.db_obj.insert_a_vehicle_fit(add_a_vehicle_fit_data)
         if not is_data_inserted:
             QMessageBox.warning(self, "Failed", "Error while saving the data..! Please Try Again")
             return
         else:
-            QMessageBox.information(self, "Success", "Weapon added successfully!")
+            QMessageBox.information(self, "Success", "Vehicle added successfully!")
             return
+       
         
     def clear_fields(self):
         pass

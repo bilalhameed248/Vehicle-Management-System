@@ -2,9 +2,9 @@ from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog,
 from PyQt5.QtGui import  QIcon, QFont
 from PyQt5.QtCore import Qt, QSize
 from controllers.load_assets import *
-from controllers.import_vehicles import ImportVehicles
+from controllers.import_weapons import ImportWeapons
 
-class ImportVehiclesFE(QDialog):
+class ImportWeaponsFE(QDialog):
 
     def __init__(self, user_session=None, parent=None, db_to_display = None):
         super().__init__(parent)       
@@ -15,17 +15,17 @@ class ImportVehiclesFE(QDialog):
         self.import_dialogbox()
     
     def import_dialogbox(self):
-        self.setWindowTitle("Import Vehicles")
+        self.setWindowTitle("Import Weapons")
         self.setFixedSize(450, 300)  # Adjusted size for better spacing
         self.setStyleSheet("background-color: #f4f4f4; border-radius: 10px;")
-        self.setWindowIcon(QIcon(get_asset_path("assets/icons/vehicle_add.png")))
+        self.setWindowIcon(QIcon(get_asset_path("assets/icons/add_weapons.png")))
         
         # Main Layout
         layout = QVBoxLayout()
         layout.setContentsMargins(20, 20, 20, 20)
 
         # Title Label
-        title_label = QLabel("Import Vehicles")
+        title_label = QLabel("Import Weapons")
         title_label.setFont(QFont("Arial", 14, QFont.Bold))
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("color: #333;")
@@ -67,9 +67,6 @@ class ImportVehiclesFE(QDialog):
 
         self.setLayout(layout)
 
-        # Load user data from the database
-        # self.load_vehicles_data()
-
     def select_file(self):
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getOpenFileName(self, "Select File", "", "Excel Files (*.xlsx);;All Files (*)", options=options)
@@ -85,13 +82,13 @@ class ImportVehiclesFE(QDialog):
         if hasattr(self, 'selected_file') and self.selected_file:
             excel_path = self.selected_file  # Get the selected file path
             try:
-                self.imp_veh_obj = ImportVehicles(user_session=self.user_session, db_to_display=self.db_to_display)
-                is_successfully_import = self.imp_veh_obj.read_and_insert_excel(excel_path)
+                self.imp_wep_obj = ImportWeapons(user_session=self.user_session, db_to_display=self.db_to_display)
+                is_successfully_import = self.imp_wep_obj.read_and_insert_excel(excel_path)
                 if is_successfully_import:
-                    QMessageBox.information(self, "Success", "Vehicles imported successfully!")
+                    QMessageBox.information(self, "Success", "Weapons imported successfully!")
                     self.accept()
                 else:
-                    QMessageBox.critical(self, "Error", f"Failed to import Vehicles")
+                    QMessageBox.critical(self, "Error", f"Failed to import Weapons")
 
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to import file: {str(e)}")
