@@ -6,11 +6,13 @@ import os, traceback
 from database import VMS_DB
 
 class Report:
-    def __init__(self):
+    def __init__(self, db_to_display=None, main_heading = None):
         self.current_date = datetime.now().strftime('%d-%m-%Y')
         downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.filename = os.path.join(downloads_path, f"all_weapons_report_{timestamp}.xlsx")
+        self.db_to_display = db_to_display
+        self.main_heading = main_heading
 
     def generate_report(self):
         try:
@@ -39,40 +41,6 @@ class Report:
                 return
             
             # Map database columns to display names
-            db_to_display = {
-                "Wpn_No": "Wpn No",
-                "T_Pod_Leg_lock_handle": "Leg lock handle",  "T_Pod_Anchor_claw": "Anchor claw",  "T_Pod_Leveling_Bubbles": "Leveling Bubbles", "T_Pod_Lubrication":"Lubrication",  
-                "T_Pod_Pull_tube":"Pull tube",  "T_Pod_Detent_stop_lever":"Detent stop lever", "T_Pod_Foot_pad_legs_body_condition":"Foot pad/ legs body condition",
-
-                "T_Unit_Traversing_Lock":"Traversing Lock",  "T_Unit_Elevation_lock_check":"Elevation lock check", "T_Unit_Elevation_lock_handle":"Elevation lock handle",  "T_Unit_Viscosity_of_Viscos_damper":"Viscosity of Viscos damper", 
-                "T_Unit_Azimuth_lock_check":"Azimuth lock check", "T_Unit_Lubrication":"Lubrication", "T_Unit_Protective_cover":"Protective cover",  "T_Unit_Coil_Card":"Coil Card",
-
-                "OS_Eye_Shield": "Eye Shield", "OS_Focusing_knob": "Focusing knob",  "OS_Sillica_gel_condition": "Sillica gel condition", "OS_Reticle_lamp": "Reticle lamp",  
-                "OS_Body_condition": "Body condition", "OS_N2_purg_filling_connection": "N2 purg / filling connection", "OS_Reticle_switch": "Reticle switch",  "OS_Cable_connector": "Cable connector", 
-                "OS_Locking_device": "Locking device", "OS_Lens_cover": "Lens cover", "OS_Objective_lens": "Objective lens",
-
-                "DMGS_Meter_indicator_AZ_Elev":" Meter indicator (AZ & Elev)",  "DMGS_Sockets":" Sockets", "DMGS_MGS_DMGS_case":" MGS/ DMGS case",  
-                "DMGS_Protective_cover":" Protective cover", "DMGS_Cable":" Cable", "DMGS_Bty_connector":" Bty connector",  "DMGS_Self_test":" Self/ test", 
-
-                "L_Tube_Body_Condition":"Body Condition",
-                "TVPC_Body_Condition":"Body Condition", "TVPC_Fly_Net":"Fly Net", "TVPC_On_Off_Switch":"On/Off Switch", "TVPC_Indicator_It":"Indicator It", "TVPC_Connector":"Connector", "TVPC_Voltage":"Voltage",
-
-                "Bty_BB_287_Bty_connector": "Bty connector", "Bty_BB_287_Voltage_24V_sec": "Voltage +24 V sec",  "Bty_BB_287_Voltage_50V": "Voltage +50 V", 
-                "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Bty_Tvpc" : "TVPC", "Bty_BB_287_Power_cable_condition": "Power cable condition",
-                
-                "NVS_Coolant_unit": "Coolant unit", "NVS_Eye_piece": "Eye piece", "NVS_Cable_connector": "Cable connector", "NVS_Lens_assy": "Lens assy", "NVS_Power_cable_condition": "Power cable condition",
-                "BPC_Body": "Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "On/Off Switch",
-                "VPC_Body": "Body", "VPC_Switch": "Switch", "VPC_VPC_Power_Cable": "VPC Power Cable",            
-                "L_Bty_Bty_Voltage":"Bty Voltage",
-
-                "Doc_6_Monthly_verification_record":"6 Monthly verification record", "Doc_Last_ATI_pts_has_been_killed":"Last ATI pts has been killed", "Doc_Bty_charging_record":"Bty charging record", 
-                "Doc_Storage_temp_Humidity_record":"Storage temp & Humidity record", "Doc_Firing_record_check":"Firing record check", "Doc_Svc_ability_Completeness_of_tools_accy":"Svc ability & Completeness of tools & accy", 
-                "Doc_Self_test_record_check":"Self test record check", "Doc_Is_eARMS_fully_func":"Is eARMS fully func and all the processes involved are being carried out through eARMS",
-                "Doc_Complete_eqpt_inventory_update_on_eARMS":"Complete eqpt inventory update on eARMS", "Doc_DRWO_work_order_being_processed_on_eARMS":"DRWO/ work order being processed on eARMS", 
-                "Doc_Are_Log_book_maintain_properly":"Are Log book maintain properly",
-
-                "Status": "Status", "created_by": "Created By", "created_at": "Created At"
-            }
 
             main_header = {
                 "Basic Details": ["Wpn_No"],
@@ -134,7 +102,7 @@ class Report:
 
             # Style Column Headers
             for col_num, column_title in enumerate([col for columns in main_header.values() for col in columns], start=1):
-                cell = ws.cell(row=7, column=col_num, value=db_to_display[column_title])
+                cell = ws.cell(row=7, column=col_num, value=self.db_to_display[column_title])
                 cell.font = Font(size=12, bold=True)
                 cell.alignment = Alignment(horizontal="center", vertical="center")
                 cell.border = Border(bottom=Side(style='thin'))

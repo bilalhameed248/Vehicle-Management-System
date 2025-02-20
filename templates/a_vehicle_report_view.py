@@ -118,7 +118,7 @@ class AVehicleReportView(QWidget):
         # for example, 3 columns of sub-group boxes
         row = 0
         col = 0
-        max_columns = 3 
+        max_columns = 4
 
         for cat in categories:
             sub_group = self.create_sub_section(cat, self.main_header[cat])
@@ -176,7 +176,7 @@ class AVehicleReportView(QWidget):
         # Color-code based on value
         if value == "Svc":
             lbl.setStyleSheet("background-color: #ABEBC6; color: black; border: 1px solid #58D68D;")
-        elif value == "Unsvc":
+        elif value in ["Unsvc", "Unsatisfactory", "Down", "Incomplete"]:
             lbl.setStyleSheet("background-color: #F5B7B1; color: black; border: 1px solid #EC7063;")
         else:
             # For None or empty, just gray out

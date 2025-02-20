@@ -67,7 +67,7 @@ class WelcomePage(QWidget):
         self.add_vehicle_button.clicked.connect(lambda: self.show_add_vehicle_page(self.add_vehicle_button))
         self.view_all_vehicle_button.clicked.connect(lambda: self.show_all_vehicle_page(self.view_all_vehicle_button))
 
-        self.add_A_vehicle_fit_button.clicked.connect(lambda: self.show_add_A_vehicle_Fit_page(self.add_A_vehicle_fit_button.clicked))
+        self.add_A_vehicle_fit_button.clicked.connect(lambda: self.show_add_A_vehicle_Fit_page(self.add_A_vehicle_fit_button))
         self.view_A_vehicle_fit_button.clicked.connect(lambda: self.show_all_A_vehicle_Fit_page(self.view_A_vehicle_fit_button))
 
         self.add_weapon_button.clicked.connect(lambda: self.show_add_weapon_page(self.add_weapon_button))
@@ -190,8 +190,8 @@ class WelcomePage(QWidget):
     def create_menu_button(self, text, icon_path):
         button = QPushButton(text)
         button.setIcon(QIcon(get_asset_path(icon_path)))
-        button.setIconSize(QSize(30, 30))
-        button.setFont(QFont("Arial", 14, QFont.Bold))
+        button.setIconSize(QSize(26, 26))
+        button.setFont(QFont("Arial", 12, QFont.Bold))
         button.setStyleSheet(""" 
             QPushButton { background-color: #34495E; color: white; border-radius: 5px; padding: 10px 20px; text-align: left; }
             QPushButton:hover { background-color: #2980B9; }

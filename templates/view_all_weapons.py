@@ -119,35 +119,34 @@ class ViewALLWeapons(QWidget):
         
         self.vr_obj = WeaponReport()
         self.db_obj = VMS_DB() 
-        self.rpt_obj = Report()
         self.columns = []
 
         # Mapping from DB keys to header names – not used for ordering now.
 
         self.db_to_display = {
             "Wpn_No": "Wpn No",
-            "T_Pod_Leg_lock_handle": "Leg lock handle",  "T_Pod_Anchor_claw": "Anchor claw",  "T_Pod_Leveling_Bubbles": "Leveling Bubbles", "T_Pod_Lubrication":"Lubrication",  
+            "T_Pod_Leg_lock_handle": "Leg lock handle",  "T_Pod_Anchor_claw": "Anchor claw",  "T_Pod_Leveling_Bubbles": "Leveling Bubbles", "T_Pod_Lubrication":"T.Pod Lubrication",  
             "T_Pod_Pull_tube":"Pull tube",  "T_Pod_Detent_stop_lever":"Detent stop lever", "T_Pod_Foot_pad_legs_body_condition":"Foot pad/ legs body condition",
 
             "T_Unit_Traversing_Lock":"Traversing Lock",  "T_Unit_Elevation_lock_check":"Elevation lock check", "T_Unit_Elevation_lock_handle":"Elevation lock handle",  "T_Unit_Viscosity_of_Viscos_damper":"Viscosity of Viscos damper", 
-            "T_Unit_Azimuth_lock_check":"Azimuth lock check", "T_Unit_Lubrication":"Lubrication", "T_Unit_Protective_cover":"Protective cover",  "T_Unit_Coil_Card":"Coil Card",
+            "T_Unit_Azimuth_lock_check":"Azimuth lock check", "T_Unit_Lubrication":"T. Unit Lubrication", "T_Unit_Protective_cover":"T. Unit Protective cover",  "T_Unit_Coil_Card":"Coil Card",
 
             "OS_Eye_Shield": "Eye Shield", "OS_Focusing_knob": "Focusing knob",  "OS_Sillica_gel_condition": "Sillica gel condition", "OS_Reticle_lamp": "Reticle lamp",  
-            "OS_Body_condition": "Body condition", "OS_N2_purg_filling_connection": "N2 purg / filling connection", "OS_Reticle_switch": "Reticle switch",  "OS_Cable_connector": "Cable connector", 
+            "OS_Body_condition": "OS Body condition", "OS_N2_purg_filling_connection": "N2 purg / filling connection", "OS_Reticle_switch": "Reticle switch",  "OS_Cable_connector": "OS Cable connector", 
             "OS_Locking_device": "Locking device", "OS_Lens_cover": "Lens cover", "OS_Objective_lens": "Objective lens",
 
             "DMGS_Meter_indicator_AZ_Elev":"Meter indicator (AZ & Elev)",  "DMGS_Sockets":"Sockets", "DMGS_MGS_DMGS_case":"MGS/ DMGS case",  
-            "DMGS_Protective_cover":"Protective cover", "DMGS_Cable":"Cable", "DMGS_Bty_connector":"Bty connector",  "DMGS_Self_test":"Self/ test", 
+            "DMGS_Protective_cover":"DMGS Protective cover", "DMGS_Cable":"DMGS Cable", "DMGS_Bty_connector":"DMGS Bty connector",  "DMGS_Self_test":"Self/ test", 
 
-            "L_Tube_Body_Condition":"Body Condition",
-            "TVPC_Body_Condition":"Body Condition", "TVPC_Fly_Net":"Fly Net", "TVPC_On_Off_Switch":"On/Off Switch", "TVPC_Indicator_It":"Indicator It", "TVPC_Connector":"Connector", "TVPC_Voltage":"Voltage",
+            "L_Tube_Body_Condition":"L-Tube Body Condition",
+            "TVPC_Body_Condition":"TVPC Body Condition", "TVPC_Fly_Net":"Fly Net", "TVPC_On_Off_Switch":"TVPC On/Off Switch", "TVPC_Indicator_It":"Indicator It", "TVPC_Connector":"Connector", "TVPC_Voltage":"Voltage",
 
-            "Bty_BB_287_Bty_connector": "Bty connector", "Bty_BB_287_Voltage_24V_sec": "Voltage +24 V sec",  "Bty_BB_287_Voltage_50V": "Voltage +50 V", 
-            "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Bty_Tvpc" : "TVPC", "Bty_BB_287_Power_cable_condition": "Power cable condition",
+            "Bty_BB_287_Bty_connector": "Bty BB-287 Bty connector", "Bty_BB_287_Voltage_24V_sec": "Voltage +24 V sec",  "Bty_BB_287_Voltage_50V": "Voltage +50 V", 
+            "Bty_BB_287_Voltage_50V_sec": "Voltage +50 V sec", "Bty_BB_287_Bty_condition": "Bty condition", "Bty_BB_287_Bty_Tvpc" : "TVPC", "Bty_BB_287_Power_cable_condition": "Bty BB-287 Power cable condition",
             
-            "NVS_Coolant_unit": "Coolant unit", "NVS_Eye_piece": "Eye piece", "NVS_Cable_connector": "Cable connector", "NVS_Lens_assy": "Lens assy", "NVS_Power_cable_condition": "Power cable condition",
-            "BPC_Body": "Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "On/Off Switch",
-            "VPC_Body": "Body", "VPC_Switch": "Switch", "VPC_VPC_Power_Cable": "VPC Power Cable",            
+            "NVS_Coolant_unit": "Coolant unit", "NVS_Eye_piece": "Eye piece", "NVS_Cable_connector": "NVS Cable connector", "NVS_Lens_assy": "Lens assy", "NVS_Power_cable_condition": "NVS Power cable condition",
+            "BPC_Body": "BPC Body",  "BPC_Cables": "Cables",  "BPC_On_Off_Switch": "BPC On/Off Switch",
+            "VPC_Body": "VPC Body", "VPC_Switch": "Switch", "VPC_VPC_Power_Cable": "VPC Power Cable",            
             "L_Bty_Bty_Voltage":"Bty Voltage",
 
             "Doc_6_Monthly_verification_record":"6 Monthly verification record", "Doc_Last_ATI_pts_has_been_killed":"Last ATI pts has been killed", "Doc_Bty_charging_record":"Bty charging record", 
@@ -161,19 +160,19 @@ class ViewALLWeapons(QWidget):
 
         self.main_header = {
             "Basic Details": ["Wpn No"],
-            "T.Pod": [ "Leg lock handle", "Anchor claw", "Leveling Bubbles", "Lubrication", "Pull tube", "Detent stop lever", "Foot pad/ legs body condition" ],
-            "T. Unit": [ "Traversing Lock", "Elevation lock check", "Elevation lock handle", "Viscosity of Viscos damper", "Azimuth lock check", "Lubrication", "Protective cover", "Coil Card" ],
-            "OS": [ "Eye Shield", "Focusing knob", "Sillica gel condition", "Reticle lamp", "Body condition", "N2 purg / filling connection", "Reticle switch", "Cable connector", "Locking device", 
+            "T.Pod": [ "Leg lock handle", "Anchor claw", "Leveling Bubbles", "T.Pod Lubrication", "Pull tube", "Detent stop lever", "Foot pad/ legs body condition" ],
+            "T. Unit": [ "Traversing Lock", "Elevation lock check", "Elevation lock handle", "Viscosity of Viscos damper", "Azimuth lock check", "T. Unit Lubrication", "T. Unit Protective cover", "Coil Card" ],
+            "OS": [ "Eye Shield", "Focusing knob", "Sillica gel condition", "Reticle lamp", "OS Body condition", "N2 purg / filling connection", "Reticle switch", "OS Cable connector", "Locking device", 
                 "Lens cover", "Objective lens" ],
 
-            "DMGS": [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "Protective cover", "Cable", "Bty connector", "Self/ test" ],
-            "L-Tube": [ "Body Condition" ],
-            "TVPC": [ "Body Condition", "Fly Net", "On/Off Switch", "Indicator It", "Connector", "Voltage"],
-            "Bty BB-287": [ "Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "TVPC", "Power cable condition" ],
-            "NVS": [ "Coolant unit", "Eye piece", "Cable connector", "Lens assy", "Power cable condition"],
+            "DMGS": [ "Meter indicator (AZ & Elev)", "Sockets", "MGS/ DMGS case", "DMGS Protective cover", "DMGS Cable", "DMGS Bty connector", "Self/ test" ],
+            "L-Tube": [ "L-Tube Body Condition" ],
+            "TVPC": [ "TVPC Body Condition", "Fly Net", "TVPC On/Off Switch", "Indicator It", "Connector", "Voltage"],
+            "Bty BB-287": [ "Bty BB-287 Bty connector", "Voltage +24 V sec", "Voltage +50 V", "Voltage +50 V sec", "Bty condition", "TVPC", "Bty BB-287 Power cable condition" ],
+            "NVS": [ "Coolant unit", "Eye piece", "NVS Cable connector", "Lens assy", "NVS Power cable condition"],
             
-            "BPC": ["Body", "Cables", "On/Off Switch"],
-            "VPC": ["Body", "Switch", "VPC Power Cable"],
+            "BPC": ["BPC Body", "Cables", "BPC On/Off Switch"],
+            "VPC": ["VPC Body", "Switch", "VPC Power Cable"],
             "L.Bty": ["Bty Voltage"],
             "Doc": [ "6 Monthly verification record", "Last ATI pts has been killed", "Bty charging record", "Storage temp & Humidity record", "Firing record check",
             "Svc ability & Completeness of tools & accy", "Self test record check", "Is eARMS fully func and all the processes involved are being carried out through eARMS",
@@ -181,6 +180,7 @@ class ViewALLWeapons(QWidget):
             "Status & Creation Details": ["Status", "Created By", "Created At"]
         }
 
+        self.rpt_obj = Report(db_to_display=self.db_to_display, main_heading=self.main_header)
         self.tbL_data_font = QFont("Arial", 12)
         self.initUI()
 
@@ -238,17 +238,17 @@ class ViewALLWeapons(QWidget):
         export_button.clicked.connect(self.report_all_weapons)
         header_layout.addWidget(export_button)
 
-        #Import Button
-        # import_button = QPushButton("Import")
-        # import_button.setFixedSize(100, 45)  # Set button size
-        # import_button.setStyleSheet("""
-        #     QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
-        #     QPushButton:hover { background-color: #218838; }
-        # """)
-        # import_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
-        # import_button.setIconSize(QSize(20, 20))
-        # import_button.clicked.connect(self.show_import_weapon_dialog)
-        # header_layout.addWidget(import_button)
+        # Import Button
+        import_button = QPushButton("Import")
+        import_button.setFixedSize(100, 45)  # Set button size
+        import_button.setStyleSheet("""
+            QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
+            QPushButton:hover { background-color: #218838; }
+        """)
+        import_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
+        import_button.setIconSize(QSize(20, 20))
+        import_button.clicked.connect(self.show_import_weapon_dialog)
+        header_layout.addWidget(import_button)
 
         header_layout.addStretch()
 

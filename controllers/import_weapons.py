@@ -1,4 +1,5 @@
 import pandas as pd
+from collections import defaultdict
 from database import VMS_DB
 
 class ImportWeapons:
@@ -19,17 +20,27 @@ class ImportWeapons:
         # Skip the first 7 rows so that row 8 is treated as header
         is_successfully_import = True
         df = pd.read_excel(file_path, skiprows=6)
-        # Iterate over each row in the dataframe
+        df.columns = df.columns.str.replace(r'\s+', ' ', regex=True)
+        df.columns = df.columns.str.strip()
+
+        # Reverse mapping to handle duplicate column names
+        reverse_mapping = defaultdict(list)
+        for db_col, excel_col in self.db_to_display.items():
+            reverse_mapping[excel_col].append(db_col)
+
         for index, row in df.iterrows():
             data = {}
             # Map Excel columns to database columns using db_to_display dictionary
-            for db_col, excel_col in self.db_to_display.items():
-                if db_col == "created_by":
-                    data[db_col] = self.user_id
-                else:
-                    data[db_col] = row.get(excel_col, None)
+            for excel_col, db_cols in reverse_mapping.items():
+                excel_value = row.get(excel_col, None)
+                for db_col in db_cols:
+                    if db_col == "created_by":
+                        data[db_col] = 1
+                    else:
+                        data[db_col] = excel_value  # Assign the same value to multiple columns
 
-            del data['created_at']
+            if 'created_at' in data:
+                del data['created_at']
 
             # Insert the data into the database
             success = self.db_obj.insert_weapon(data)

@@ -149,7 +149,7 @@ class UpdateWeapon(QWidget):
             self.T_Pod_Leg_lock_handle.setCurrentIndex(combo_index(self.T_Pod_Leg_lock_handle, "Leg lock handle"))
             self.T_Pod_Anchor_claw.setCurrentIndex(combo_index(self.T_Pod_Anchor_claw, "Leg lock handle"))
             self.T_Pod_Leveling_Bubbles.setCurrentIndex(combo_index(self.T_Pod_Leveling_Bubbles, "Leg lock handle"))
-            self.T_Pod_Lubrication.setCurrentIndex(combo_index(self.T_Pod_Lubrication, "Lubrication"))
+            self.T_Pod_Lubrication.setCurrentIndex(combo_index(self.T_Pod_Lubrication, "T.Pod Lubrication"))
             self.T_Pod_Pull_tube.setCurrentIndex(combo_index(self.T_Pod_Pull_tube, "Pull tube"))
             self.T_Pod_Detent_stop_lever.setCurrentIndex(combo_index(self.T_Pod_Detent_stop_lever, "Detent stop lever"))
             self.T_Pod_Foot_pad_legs_body_condition.setCurrentIndex(combo_index(self.T_Pod_Foot_pad_legs_body_condition, "Foot pad/ legs body condition"))
@@ -211,8 +211,8 @@ class UpdateWeapon(QWidget):
             self.T_Unit_Elevation_lock_handle.setCurrentIndex(combo_index(self.T_Unit_Elevation_lock_handle,"Elevation lock handle"))
             self.T_Unit_Viscosity_of_Viscos_damper.setCurrentIndex(combo_index(self.T_Unit_Viscosity_of_Viscos_damper,"Viscosity of Viscos damper"))
             self.T_Unit_Azimuth_lock_check.setCurrentIndex(combo_index(self.T_Unit_Azimuth_lock_check,"Azimuth lock check"))
-            self.T_Unit_Lubrication.setCurrentIndex(combo_index(self.T_Unit_Lubrication,"Lubrication"))
-            self.T_Unit_Protective_cover.setCurrentIndex(combo_index(self.T_Unit_Protective_cover,"Protective cover"))
+            self.T_Unit_Lubrication.setCurrentIndex(combo_index(self.T_Unit_Lubrication,"T. Unit Lubrication"))
+            self.T_Unit_Protective_cover.setCurrentIndex(combo_index(self.T_Unit_Protective_cover,"T. Unit Protective cover"))
             self.T_Unit_Coil_Card.setCurrentIndex(combo_index(self.T_Unit_Coil_Card,"Coil Card"))
 
             # Add rows to the group layout
@@ -282,10 +282,10 @@ class UpdateWeapon(QWidget):
             self.OS_Focusing_knob.setCurrentIndex(combo_index(self.OS_Focusing_knob, "Focusing knob"))
             self.OS_Sillica_gel_condition.setCurrentIndex(combo_index(self.OS_Sillica_gel_condition, "Sillica gel condition"))
             self.OS_Reticle_lamp.setCurrentIndex(combo_index(self.OS_Reticle_lamp, "Reticle lamp"))
-            self.OS_Body_condition.setCurrentIndex(combo_index(self.OS_Body_condition, "Body condition"))
+            self.OS_Body_condition.setCurrentIndex(combo_index(self.OS_Body_condition, "OS Body condition"))
             self.OS_N2_purg_filling_connection.setCurrentIndex(combo_index(self.OS_N2_purg_filling_connection, "N2 purg / filling connection"))
             self.OS_Reticle_switch.setCurrentIndex(combo_index(self.OS_Reticle_switch, "Reticle switch"))
-            self.OS_Cable_connector.setCurrentIndex(combo_index(self.OS_Cable_connector, "Cable connector"))
+            self.OS_Cable_connector.setCurrentIndex(combo_index(self.OS_Cable_connector, "OS Cable connector"))
             self.OS_Locking_device.setCurrentIndex(combo_index(self.OS_Locking_device, "Locking device"))
             self.OS_Lens_cover.setCurrentIndex(combo_index(self.OS_Lens_cover, "Lens cover"))
             self.OS_Objective_lens.setCurrentIndex(combo_index(self.OS_Objective_lens, "Objective lens"))
@@ -349,9 +349,9 @@ class UpdateWeapon(QWidget):
             self.DMGS_Meter_indicator_AZ_Elev.setCurrentIndex(combo_index(self.DMGS_Meter_indicator_AZ_Elev, "Meter indicator (AZ & Elev)"))
             self.DMGS_Sockets.setCurrentIndex(combo_index(self.DMGS_Sockets, "Sockets"))
             self.DMGS_MGS_DMGS_case.setCurrentIndex(combo_index(self.DMGS_MGS_DMGS_case, "MGS/ DMGS case"))
-            self.DMGS_Protective_cover.setCurrentIndex(combo_index(self.DMGS_Protective_cover, "Protective cover"))
-            self.DMGS_Cable.setCurrentIndex(combo_index(self.DMGS_Cable, "Cable"))
-            self.DMGS_Bty_connector.setCurrentIndex(combo_index(self.DMGS_Bty_connector, "Bty connector"))
+            self.DMGS_Protective_cover.setCurrentIndex(combo_index(self.DMGS_Protective_cover, "DMGS Protective cover"))
+            self.DMGS_Cable.setCurrentIndex(combo_index(self.DMGS_Cable, "DMGS Cable"))
+            self.DMGS_Bty_connector.setCurrentIndex(combo_index(self.DMGS_Bty_connector, "DMGS Bty connector"))
             self.DMGS_Self_test.setCurrentIndex(combo_index(self.DMGS_Self_test, "Self/ test"))
 
             # Add rows to the group layout
@@ -388,7 +388,7 @@ class UpdateWeapon(QWidget):
 
             group_layout.addLayout(row1_layout)
 
-            self.L_Tube_Body_Condition.setCurrentIndex(combo_index(self.L_Tube_Body_Condition, "Body Condition"))
+            self.L_Tube_Body_Condition.setCurrentIndex(combo_index(self.L_Tube_Body_Condition, "L-Tube Body Condition"))
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
@@ -423,9 +423,9 @@ class UpdateWeapon(QWidget):
             row3_layout.addLayout(self.TVPC_Connector_layout)
             row3_layout.addLayout(self.TVPC_Voltage_layout)
 
-            self.TVPC_Body_Condition.setCurrentIndex(combo_index(self.TVPC_Body_Condition, "Body Condition"))
+            self.TVPC_Body_Condition.setCurrentIndex(combo_index(self.TVPC_Body_Condition, "TVPC Body Condition"))
             self.TVPC_Fly_Net.setCurrentIndex(combo_index(self.TVPC_Fly_Net, "Fly Net"))
-            self.TVPC_On_Off_Switch.setCurrentIndex(combo_index(self.TVPC_On_Off_Switch, "On/Off Switch"))
+            self.TVPC_On_Off_Switch.setCurrentIndex(combo_index(self.TVPC_On_Off_Switch, "TVPC On/Off Switch"))
             self.TVPC_Indicator_It.setCurrentIndex(combo_index(self.TVPC_Indicator_It, "Indicator It"))
             self.TVPC_Connector.setCurrentIndex(combo_index(self.TVPC_Connector, "Connector"))
             self.TVPC_Voltage.setCurrentIndex(combo_index(self.TVPC_Voltage, "Voltage"))
@@ -478,13 +478,13 @@ class UpdateWeapon(QWidget):
             row4_layout = QHBoxLayout()
             row4_layout.addLayout(self.Bty_BB_287_Power_cable_condition_layout)
 
-            self.Bty_BB_287_Bty_connector.setCurrentIndex(combo_index(self.Bty_BB_287_Bty_connector, "Bty connector"))
+            self.Bty_BB_287_Bty_connector.setCurrentIndex(combo_index(self.Bty_BB_287_Bty_connector, "Bty BB-287 Bty connector"))
             self.Bty_BB_287_Voltage_24V_sec.setCurrentIndex(combo_index(self.Bty_BB_287_Voltage_24V_sec, "Voltage +24 V sec"))
             self.Bty_BB_287_Voltage_50V.setCurrentIndex(combo_index(self.Bty_BB_287_Voltage_50V, "Voltage +50 V"))
             self.Bty_BB_287_Voltage_50V_sec.setCurrentIndex(combo_index(self.Bty_BB_287_Voltage_50V_sec, "Voltage +50 V sec"))
             self.Bty_BB_287_Bty_condition.setCurrentIndex(combo_index(self.Bty_BB_287_Bty_condition, "Bty condition"))
             self.Bty_BB_287_Bty_Tvpc.setCurrentIndex(combo_index(self.Bty_BB_287_Bty_Tvpc, "TVPC"))
-            self.Bty_BB_287_Power_cable_condition.setCurrentIndex(combo_index(self.Bty_BB_287_Power_cable_condition, "Power cable condition"))
+            self.Bty_BB_287_Power_cable_condition.setCurrentIndex(combo_index(self.Bty_BB_287_Power_cable_condition, "Bty BB-287 Power cable condition"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -532,9 +532,9 @@ class UpdateWeapon(QWidget):
 
             self.NVS_Coolant_unit.setCurrentIndex(combo_index(self.NVS_Coolant_unit, "Coolant unit"))
             self.NVS_Eye_piece.setCurrentIndex(combo_index(self.NVS_Eye_piece, "Eye piece"))
-            self.NVS_Cable_connector.setCurrentIndex(combo_index(self.NVS_Cable_connector, "Cable connector"))
+            self.NVS_Cable_connector.setCurrentIndex(combo_index(self.NVS_Cable_connector, "NVS Cable connector"))
             self.NVS_Lens_assy.setCurrentIndex(combo_index(self.NVS_Lens_assy, "Lens assy"))
-            self.NVS_Power_cable_condition.setCurrentIndex(combo_index(self.NVS_Power_cable_condition, "Power cable condition"))
+            self.NVS_Power_cable_condition.setCurrentIndex(combo_index(self.NVS_Power_cable_condition, "NVS Power cable condition"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -571,9 +571,9 @@ class UpdateWeapon(QWidget):
             row2_layout = QHBoxLayout()
             row2_layout.addLayout(self.BPC_On_Off_Switch_layout)
 
-            self.BPC_Body.setCurrentIndex(combo_index(self.BPC_Body, "Body"))
+            self.BPC_Body.setCurrentIndex(combo_index(self.BPC_Body, "BPC Body"))
             self.BPC_Cables.setCurrentIndex(combo_index(self.BPC_Cables, "Cables"))
-            self.BPC_On_Off_Switch.setCurrentIndex(combo_index(self.BPC_On_Off_Switch, "On/Off Switch"))
+            self.BPC_On_Off_Switch.setCurrentIndex(combo_index(self.BPC_On_Off_Switch, "BPC On/Off Switch"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -607,7 +607,7 @@ class UpdateWeapon(QWidget):
             row2_layout = QHBoxLayout()
             row2_layout.addLayout(self.VPC_VPC_Power_Cable_layout)
 
-            self.VPC_Body.setCurrentIndex(combo_index(self.VPC_Body, "Body"))
+            self.VPC_Body.setCurrentIndex(combo_index(self.VPC_Body, "VPC Body"))
             self.VPC_Switch.setCurrentIndex(combo_index(self.VPC_Switch, "Switch"))
             self.VPC_VPC_Power_Cable.setCurrentIndex(combo_index(self.VPC_VPC_Power_Cable, "VPC Power Cable"))
 
