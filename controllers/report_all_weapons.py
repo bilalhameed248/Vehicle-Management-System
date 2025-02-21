@@ -12,7 +12,7 @@ class Report:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.filename = os.path.join(downloads_path, f"all_weapons_report_{timestamp}.xlsx")
         self.db_to_display = db_to_display
-        self.main_heading = main_heading
+        self.main_header = main_heading
 
     def generate_report(self):
         try:
@@ -39,28 +39,6 @@ class Report:
             if not weapons:
                 print("No data found to export.")
                 return
-            
-            # Map database columns to display names
-
-            main_header = {
-                "Basic Details": ["Wpn_No"],
-                "T.Pod": [ "T_Pod_Leg_lock_handle", "T_Pod_Anchor_claw", "T_Pod_Leveling_Bubbles", "T_Pod_Lubrication", "T_Pod_Pull_tube", "T_Pod_Detent_stop_lever", "T_Pod_Foot_pad_legs_body_condition" ],
-                "T. Unit": [ "T_Unit_Traversing_Lock", "T_Unit_Elevation_lock_check", "T_Unit_Elevation_lock_handle", "T_Unit_Viscosity_of_Viscos_damper", "T_Unit_Azimuth_lock_check", "T_Unit_Lubrication", "T_Unit_Protective_cover", "T_Unit_Coil_Card" ],
-                "OS": [ "OS_Eye_Shield", "OS_Focusing_knob", "OS_Sillica_gel_condition","OS_Reticle_lamp","OS_Body_condition","OS_N2_purg_filling_connection","OS_Reticle_switch","OS_Cable_connector","OS_Locking_device","OS_Lens_cover","OS_Objective_lens"],
-
-                "DMGS": [ "DMGS_Meter_indicator_AZ_Elev", "DMGS_Sockets", "DMGS_MGS_DMGS_case", "DMGS_Protective_cover", "DMGS_Cable", "DMGS_Bty_connector", "DMGS_Self_test" ],
-                "L-Tube": [ "L_Tube_Body_Condition" ],
-                "TVPC": [ "TVPC_Body_Condition","TVPC_Fly_Net","TVPC_On_Off_Switch","TVPC_Indicator_It","TVPC_Connector","TVPC_Voltage" ],
-                "Bty BB-287": [ "Bty_BB_287_Bty_connector", "Bty_BB_287_Voltage_24V_sec", "Bty_BB_287_Voltage_50V", "Bty_BB_287_Voltage_50V_sec", "Bty_BB_287_Bty_condition", "Bty_BB_287_Bty_Tvpc", "Bty_BB_287_Power_cable_condition" ],
-                "NVS": [ "NVS_Coolant_unit", "NVS_Eye_piece", "NVS_Cable_connector", "NVS_Lens_assy", "NVS_Power_cable_condition" ],
-                
-                "BPC": [ "BPC_Body", "BPC_Cables", "BPC_On_Off_Switch"],
-                "VPC": [ "VPC_Body", "VPC_Switch", "VPC_VPC_Power_Cable" ],
-                "L.Bty": ["L_Bty_Bty_Voltage"],
-                "Doc": [ "Doc_6_Monthly_verification_record","Doc_Last_ATI_pts_has_been_killed","Doc_Bty_charging_record","Doc_Storage_temp_Humidity_record","Doc_Firing_record_check","Doc_Svc_ability_Completeness_of_tools_accy",
-                        "Doc_Self_test_record_check","Doc_Is_eARMS_fully_func", "Doc_Complete_eqpt_inventory_update_on_eARMS","Doc_DRWO_work_order_being_processed_on_eARMS","Doc_Are_Log_book_maintain_properly",],
-                "Status & Creation Details": ["Status", "created_by", "created_at"]
-            }
 
             wb = openpyxl.Workbook()
             ws = wb.active
@@ -89,32 +67,28 @@ class Report:
             # Column Headers
             # Column Headers with Category Headers
             col_index = 1
-            for category, columns in main_header.items():
-                ws.merge_cells(start_row=6, start_column=col_index, end_row=6, end_column=col_index + len(columns) - 1)
-                cell = ws.cell(row=6, column=col_index, value=category)
+            for main_heading, sub_columns in self.main_header.items():
+                ws.merge_cells(start_row=6, start_column=col_index, end_row=6, end_column=col_index + len(sub_columns) - 1)
+                cell = ws.cell(row=6, column=col_index, value=main_heading)
                 cell.font = Font(size=14, bold=True, color="FFFFFF")
                 cell.alignment = Alignment(horizontal="center", vertical="center")
-                cell.fill = PatternFill(start_color=self.groupColors[category], fill_type="solid")
+                cell.fill = PatternFill(start_color=self.groupColors[main_heading], fill_type="solid")
                 cell.border = Border(top=Side(style='thin'), bottom=Side(style='thin'), left=Side(style='thin'), right=Side(style='thin'))
-                col_index += len(columns)
-            
-            # ws.append([db_to_display[col] for columns in main_header.values() for col in columns])
+                col_index += len(sub_columns)
 
             # Style Column Headers
-            for col_num, column_title in enumerate([col for columns in main_header.values() for col in columns], start=1):
+            all_columns = [db_colum for db_colum, display_col in self.db_to_display.items()]
+            for col_num, column_title in enumerate(all_columns, start=1):
                 cell = ws.cell(row=7, column=col_num, value=self.db_to_display[column_title])
                 cell.font = Font(size=12, bold=True)
                 cell.alignment = Alignment(horizontal="center", vertical="center")
                 cell.border = Border(bottom=Side(style='thin'))
 
-            all_columns = [col for columns in main_header.values() for col in columns]
-
             # Adding data
             for weapon in weapons:
                 row_data = []
-                for columns in main_header.values():
-                    for col in columns:
-                        row_data.append(weapon.get(col, ""))
+                for db_col in all_columns:
+                    row_data.append(weapon.get(db_col, ""))
                 ws.append(row_data)
             
             

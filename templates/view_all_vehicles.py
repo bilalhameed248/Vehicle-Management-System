@@ -116,7 +116,6 @@ class ViewALLVehicles(QWidget):
         
         self.vr_obj = VehicleReport()
         self.db_obj = VMS_DB() 
-        self.rpt_obj = Report()
         self.columns = []
 
         # Mapping from DB keys to header names – not used for ordering now.
@@ -152,7 +151,7 @@ class ViewALLVehicles(QWidget):
             'Overhaul': ["Current Milage (Overhaul)", "Due Milage (Overhaul)"],
             'Status & Creation Details': ["Status", "Created By", "Created At"]
         }
-
+        self.rpt_obj = Report(db_to_display=self.db_to_display, main_heading=self.main_header)
         self.tbL_data_font = QFont("Arial", 12)
         self.initUI()
 

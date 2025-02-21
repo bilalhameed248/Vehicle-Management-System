@@ -6,11 +6,13 @@ import os, traceback
 from database import VMS_DB
 
 class Report:
-    def __init__(self):
+    def __init__(self, db_to_display=None, main_heading = None):
         self.current_date = datetime.now().strftime('%d-%m-%Y')
         downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.filename = os.path.join(downloads_path, f"all_vehicles_report_{timestamp}.xlsx")
+        self.db_to_display = db_to_display
+        self.main_header = main_heading
 
     def generate_report(self):
         try:
@@ -35,39 +37,6 @@ class Report:
             if not vehicles:
                 print("No data found to export.")
                 return
-            
-            # Map database columns to display names
-            db_to_display = {
-                "category": "Category", "ba_no_input": "BA No.", "make_type_input": "Make Type", "engine_no_input": "Engine No.",
-                "issue_date_oil_filter": "Issue Date (Oil Filter)", "due_date_oil_filter": "Due Date (Oil Filter)", "current_mileage_oil_filter": "Current Mileage (Oil Filter)", "due_mileage_oil_filter": "Due Mileage (Oil Filter)",
-                "issue_date_fuel_filter": "Issue Date (Fuel Filter)", "due_date_fuel_filter": "Due Date (Fuel Filter)", "current_mileage_fuel_filter": "Current Mileage (Fuel Filter)", "due_mileage_fuel_filter": "Due Mileage (Fuel Filter)",
-                "issue_date_air_filter": "Issue Date (Air Filter)", "due_date_air_filter": "Due Date (Air Filter)", "current_mileage_air_filter": "Current Mileage (Air Filter)", "due_mileage_air_filter": "Due Mileage (Air Filter)",
-                "issue_date_transmission_filter": "Issue Date (Transmission Filter)", "due_date_transmission_filter": "Due Date (Transmission Filter)", "current_mileage_transmission_filter": "Current Mileage (Transmission Filter)", "due_mileage_transmission_filter": "Due Mileage (Transmission Filter)",
-                "issue_date_differential_oil": "Issue Date (Differential Oil)", "due_date_differential_oil": "Due Date (Differential Oil)", "current_mileage_differential_oil": "Current Mileage (Differential Oil)", "due_mileage_differential_oil": "Due Mileage (Differential Oil)",
-                "battery_issue_date": "Issue Date (Battery)", "battery_due_date": "Due Date (Battery)",
-                "flusing_issue_date": "Issue Date (Flushing)", "flusing_due_date": "Due Date (Flushing)", "fuel_tank_flush": "Fuel Tank Flush", "radiator_flush": "Radiator Flush",
-                "greasing_issue_date": "Issue Date (Greasing)", "greasing_due_date": "Due Date (Greasing)", "trs_and_suspension": "TRS and Suspension","engine_part": "Engine Part", "steering_lever_Pts": "Steering Lever Pts", 
-                "wash": "Wash", "oil_level_check": "Oil Level Check", "lubrication_of_parts": "Lubrication of Parts",
-                "air_cleaner": "Air Cleaner", "fuel_filter": "Fuel Filter", "french_chalk": "French Chalk", "tr_adjustment": "TR Adjustment",
-                "overhaul_current_milage": "Current Milage (Overhaul)", "overhaul_due_milage": "Due Milage (Overhaul)", 
-                "overhaul_remarks_input": "Status",
-                "created_by": "Created By", "created_at": "Created At"
-            }
-
-            main_header = {
-                'Basic Details': ['category', 'ba_no_input', 'make_type_input', 'engine_no_input'], 
-                'Oil Filter' : ["issue_date_oil_filter", "due_date_oil_filter",  "current_mileage_oil_filter", "due_mileage_oil_filter"],
-                'Fuel Filter': ["issue_date_fuel_filter", "due_date_fuel_filter", "current_mileage_fuel_filter", "due_mileage_fuel_filter"],
-                'Air Filter': ["issue_date_air_filter", "due_date_air_filter", "current_mileage_air_filter", "due_mileage_air_filter"],
-                'Transmission Filter': ["issue_date_transmission_filter", "due_date_transmission_filter", "current_mileage_transmission_filter", "due_mileage_transmission_filter"],
-                'Differential Oil': ["issue_date_differential_oil", "due_date_differential_oil", "current_mileage_differential_oil", "due_mileage_differential_oil"],
-                'Battery Info': ["battery_issue_date", "battery_due_date"],
-                'Flushing Info': ["flusing_issue_date", "flusing_due_date", "fuel_tank_flush", "radiator_flush"],
-                'Greasing Info': ["greasing_issue_date", "greasing_due_date", "trs_and_suspension", "engine_part", "steering_lever_Pts"],
-                'General Maint': ["wash", "oil_level_check", "lubrication_of_parts", "air_cleaner", "fuel_filter", "french_chalk", "tr_adjustment"],
-                'Overhaul': ["overhaul_current_milage", "overhaul_due_milage"],
-                'Status & Creation Details' : ["overhaul_remarks_input", "created_by", "created_at"]
-            }
 
             wb = openpyxl.Workbook()
             ws = wb.active
@@ -93,35 +62,31 @@ class Report:
             ws.append([])
             ws.append([])
 
-            # Column Headers
             # Column Headers with Category Headers
             col_index = 1
-            for category, columns in main_header.items():
-                ws.merge_cells(start_row=6, start_column=col_index, end_row=6, end_column=col_index + len(columns) - 1)
-                cell = ws.cell(row=6, column=col_index, value=category)
+            for main_heading, sub_columns in self.main_header.items():
+                ws.merge_cells(start_row=6, start_column=col_index, end_row=6, end_column=col_index + len(sub_columns) - 1)
+                cell = ws.cell(row=6, column=col_index, value=main_heading)
                 cell.font = Font(size=14, bold=True, color="FFFFFF")
                 cell.alignment = Alignment(horizontal="center", vertical="center")
-                cell.fill = PatternFill(start_color=self.groupColors[category], fill_type="solid")
+                cell.fill = PatternFill(start_color=self.groupColors[main_heading], fill_type="solid")
                 cell.border = Border(top=Side(style='thin'), bottom=Side(style='thin'), left=Side(style='thin'), right=Side(style='thin'))
-                col_index += len(columns)
+                col_index += len(sub_columns)
             
-            # ws.append([db_to_display[col] for columns in main_header.values() for col in columns])
 
-            # Style Column Headers
-            for col_num, column_title in enumerate([col for columns in main_header.values() for col in columns], start=1):
-                cell = ws.cell(row=7, column=col_num, value=db_to_display[column_title])
+            # Style Column Headers 
+            all_columns = [db_colum for db_colum, display_col in self.db_to_display.items()]
+            for col_num, column_title in enumerate(all_columns, start=1):
+                cell = ws.cell(row=7, column=col_num, value=self.db_to_display[column_title])
                 cell.font = Font(size=12, bold=True)
                 cell.alignment = Alignment(horizontal="center", vertical="center")
                 cell.border = Border(bottom=Side(style='thin'))
 
-            all_columns = [col for columns in main_header.values() for col in columns]
-
             # Adding data
             for vehicle in vehicles:
                 row_data = []
-                for columns in main_header.values():
-                    for col in columns:
-                        row_data.append(vehicle.get(col, ""))
+                for db_col in all_columns:
+                    row_data.append(vehicle.get(db_col, ""))
                 ws.append(row_data)
             
             
