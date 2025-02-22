@@ -803,77 +803,23 @@ class UpdateWeapon(QWidget):
         if not (self.basic_details['Basic Details']['Wpn_No_input'].text().strip()):
             QMessageBox.warning(self, "Error", "Wpn No required!")
             return
-
-        for fields in self.basic_details.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QLineEdit):
-                    add_weapon_data[key] = widget.text().strip()
-
-        for fields in self.T_Pod_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.T_Unit_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.OS_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.DMGS_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.L_Tube_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.TVPC_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.Bty_BB_287_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.NVS_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.BPC_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.VPC_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.L_Bty_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.Doc_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
         
-        for fields in self.Status_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_weapon_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
+        field_categories = [
+            self.basic_details, self.T_Pod_fields, self.T_Unit_fields, self.OS_fields, 
+            self.DMGS_fields, self.L_Tube_fields, self.TVPC_fields, self.Bty_BB_287_fields, 
+            self.NVS_fields, self.BPC_fields, self.VPC_fields, self.L_Bty_fields, 
+            self.Doc_fields, self.Status_fields
+        ]
+        
+        for category in field_categories:
+            for fields in category.values():
+                for key, widget in fields.items():
+                    if isinstance(widget, QLineEdit):
+                        add_weapon_data[key] = widget.text().strip()
+                    elif isinstance(widget, QComboBox):
+                        selected_text = widget.currentText().strip()
+                        add_weapon_data[key] = None if selected_text == "--Select--" else selected_text
+                        
         add_weapon_data['updated_by'] = self.user_id
         add_weapon_data['updated_at'] = datetime.now()
 

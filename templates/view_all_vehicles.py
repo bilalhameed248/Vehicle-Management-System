@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QWidget, QTableView, QVBoxLayout, QHBoxLayout, QPushButton, QAbstractItemView,
-                             QLineEdit, QLabel, QTableWidgetItem, QHeaderView,QTableWidget, QMessageBox)
+                             QLineEdit, QLabel, QTableWidgetItem, QHeaderView,QTableWidget, QMessageBox, QComboBox)
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainter, QColor, QFontMetrics
 from PyQt5.QtCore import Qt, QTimer, QSize, QRect
 from database import VMS_DB
@@ -112,7 +112,7 @@ class ViewALLVehicles(QWidget):
         # print("VIew All Vehicle: self.main_parent:",self.main_parent, "\n")
 
         self.current_page = 0
-        self.page_size = 20
+        self.page_size = 10
         
         self.vr_obj = VehicleReport()
         self.db_obj = VMS_DB() 
@@ -159,6 +159,7 @@ class ViewALLVehicles(QWidget):
     def initUI(self):
         """Initialize UI and load the data table."""
         self.setup_ui()   # Setup UI elements
+        self.header_setup()
         self.populate_table()  # Load data into the table
 
 
@@ -198,7 +199,7 @@ class ViewALLVehicles(QWidget):
         header_layout.addWidget(header_label)
 
         # Export Button
-        export_button = QPushButton("Export")
+        export_button = QPushButton(" Export")
         export_button.setFixedSize(100, 45)  # Set button size
         export_button.setStyleSheet("""
             QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
@@ -210,13 +211,13 @@ class ViewALLVehicles(QWidget):
         header_layout.addWidget(export_button)
 
         #Import Button
-        import_button = QPushButton("Import")
+        import_button = QPushButton(" Import")
         import_button.setFixedSize(100, 45)  # Set button size
         import_button.setStyleSheet("""
             QPushButton { background-color: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-weight: bold; border: none; }
             QPushButton:hover { background-color: #218838; }
         """)
-        import_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
+        import_button.setIcon(QIcon(get_asset_path("assets/icons/import_excel.png")))
         import_button.setIconSize(QSize(20, 20))
         import_button.clicked.connect(self.show_import_vehicle_dialog)
         header_layout.addWidget(import_button)
@@ -281,42 +282,38 @@ class ViewALLVehicles(QWidget):
 
         self.setLayout(layout)
 
-    def header_setup():
-        pass
 
-    def populate_table(self):
+    def header_setup(self):
         """Fetches and populates the table with vehicle data."""
         # Build the flat list of columns based on the main_header order.
-        columns = []
-        for group, cols in self.main_header.items():
-            columns.extend(cols)
-        self.columns = columns.copy()
-        # Append the Actions column (not part of any group)
-        flat_headers = columns + ["Actions"]
-
-        # Set up the table dimensions.
-        self.table_widget.setColumnCount(len(flat_headers))
-        self.table_widget.setHorizontalHeaderLabels(flat_headers)
-
-        # Compute group header positions.
-        group_headers = []
+        columns, group_headers = [], []
         current_index = 0
         for group, cols in self.main_header.items():
             span = len(cols)
+            columns.extend(cols)
             group_headers.append((current_index, span, group))
             current_index += span
+        self.columns = columns.copy()
+        # Append the Actions column (not part of any group)
+        self.flat_headers = columns + ["Actions"]
+
+        # Set up the table dimensions.
+        self.table_widget.setColumnCount(len(self.flat_headers))
+        self.table_widget.setHorizontalHeaderLabels(self.flat_headers)
 
         # Set the group headers in the custom header.
         header = self.table_widget.horizontalHeader()
         if isinstance(header, MultiLevelHeaderView):
             header.setGroupHeaders(group_headers)
 
+
+    def populate_table(self):
         # Fetch the data from the database.
         all_vehicle_data = self.db_obj.get_all_vehicle(self.current_page, self.page_size)
         self.data = []
         for row in all_vehicle_data:
             # Build the record in the same order as columns.
-            record = {col: row.get(key) for key, col in self.db_to_display.items() if col in columns}
+            record = {display_col: row.get(db_col) for db_col, display_col in self.db_to_display.items() if display_col in self.columns}
             record["id"] = row["id"]  # Keep ID for actions
             self.data.append(record)
 
@@ -326,57 +323,37 @@ class ViewALLVehicles(QWidget):
         for row_index, row_data in enumerate(self.data):
             for col_index, col_name in enumerate(self.columns):
                 cell_value = row_data.get(col_name, "")
-                # Format dates
                 if cell_value and ("Date" in col_name or "Created At" in col_name):
                     try:
-                        # print(f"Before Conversion: {type(cell_value)} {cell_value}")
-
                         if isinstance(cell_value, datetime):
                             cell_value = cell_value.strftime('%d-%m-%Y')
                         else:
-                            # print("Ok here")
                             dt = datetime.strptime(cell_value, '%Y-%m-%d')
                             # cell_value = dt.strftime('%d-%m-%Y') #(in My SQL only)
                             cell_value = dt.date() #(in SQLITE only)
-
                         row_data[col_name] = cell_value #(in SQLITE only)
-                        # print(f"After Conversion: {type(cell_value)} {cell_value}")
                     except Exception:
                         pass
-                
+
                 issue_due_mapping = {
-                    'Issue Date (Oil Filter)': 6,
-                    'Issue Date (Fuel Filter)': 12,
-                    'Issue Date (Air Filter)': 18,
-                    'Issue Date (Transmission Filter)': 18,
-                    'Issue Date (Differential Oil)': 18,
-                    'Issue Date (Battery)': 42,
-                    'Issue Date (Flushing)': 4,
-                    'Issue Date (Greasing)': 3,
+                    'Due Date (Oil Filter)': 6,
+                    'Due Date (Fuel Filter)': 12,
+                    'Due Date (Air Filter)': 18,
+                    'Due Date (Transmission Filter)': 18,
+                    'Due Date (Differential Oil)': 18,
+                    'Due Date (Battery)': 42,
+                    'Due Date (Flushing)': 4,
+                    'Due Date (Greasing)': 3,
                 }
-                    
-                if col_name == 'Issue Date (Oil Filter)':
-                    self.date_rules(cell_value, row_index, col_index, 6 , 20)
 
-                elif col_name == 'Issue Date (Fuel Filter)':
-                    self.date_rules(cell_value, row_index, col_index, 12 , 20)
+                item = QTableWidgetItem(str(cell_value))
+                item.setFont(self.tbL_data_font)
+                item.setTextAlignment(Qt.AlignCenter)
 
-                elif col_name in ['Issue Date (Air Filter)', 'Issue Date (Transmission Filter)', 'Issue Date (Differential Oil)']:
-                    self.date_rules(cell_value, row_index, col_index, 18 , 20)
-
-                elif col_name == 'Issue Date (Battery)':
-                    self.date_rules(cell_value, row_index, col_index, 42 , 20)
-                
-                elif col_name == 'Issue Date (Flushing)':
-                    self.date_rules(cell_value, row_index, col_index, 4 , 20)
-
-                elif col_name == 'Issue Date (Greasing)':
-                    self.date_rules(cell_value, row_index, col_index, 3 , 20)
-        
+                if col_name in issue_due_mapping:
+                    previous_cell_value = row_data.get(self.columns[col_index-1], "")
+                    self.date_rules(previous_cell_value, row_index, col_index, item, issue_due_mapping[col_name], 20)
                 else:
-                    item = QTableWidgetItem(str(cell_value))
-                    item.setFont(self.tbL_data_font)
-                    item.setTextAlignment(Qt.AlignCenter)
                     self.table_widget.setItem(row_index, col_index, item)
 
             # Create Action Buttons (edit, delete, report) – unchanged code.
@@ -406,7 +383,7 @@ class ViewALLVehicles(QWidget):
             action_layout.addWidget(btn_report)
             action_layout.addStretch()
 
-            self.table_widget.setCellWidget(row_index, len(flat_headers) - 1, action_widget)
+            self.table_widget.setCellWidget(row_index, len(self.flat_headers) - 1, action_widget)
 
         # Adjust Column Width for the Actions column.
         action_col_index = self.table_widget.columnCount() - 1
@@ -475,14 +452,10 @@ class ViewALLVehicles(QWidget):
         self.btn_next.setEnabled(self.current_page < total_pages - 1)
 
 
-    def date_rules(self, cell_value, row_index, col_index, no_of_month, no_of_days):
-        # print(f"IN Rule: {type(cell_value)}, {cell_value},  {date.today()}")
-        difference = relativedelta(date.today(), cell_value)
+    def date_rules(self, previous_cell_value, row_index, col_index, item, no_of_month, no_of_days):
+        difference = relativedelta(date.today(), previous_cell_value)
         months_diff = difference.years * 12 + difference.months
         days_diff = difference.days
-        # print(f"{months_diff} : {days_diff}")
-        item = QTableWidgetItem(str(cell_value))
-        item.setTextAlignment(Qt.AlignCenter)
 
         if months_diff >= no_of_month:
             item.setBackground(QColor(255, 0, 0)) 
@@ -490,7 +463,7 @@ class ViewALLVehicles(QWidget):
         elif months_diff >= (no_of_month-1) and days_diff >= no_of_days and days_diff <= (no_of_days+10):
             item.setBackground(QColor(255, 255, 0))
             item.setForeground(QColor(0, 0, 0))
-        item.setFont(self.tbL_data_font)
+
         self.table_widget.setItem(row_index, col_index, item)
 
 
@@ -554,6 +527,7 @@ class ViewALLVehicles(QWidget):
         msg.setText(message)
         msg.setWindowTitle("Report Generated")
         msg.exec_()
+
 
     def show_import_vehicle_dialog(self):
         dialog = ImportVehiclesFE(user_session=self.user_session, db_to_display = self.db_to_display)

@@ -88,27 +88,27 @@ class Report:
                 for db_col in all_columns:
                     row_data.append(vehicle.get(db_col, ""))
                 ws.append(row_data)
-            
-            
+
+            issue_due_mapping = {
+                'due_date_oil_filter': 6,
+                'due_date_fuel_filter': 12,
+                'due_date_air_filter': 18,
+                'due_date_transmission_filter': 18,
+                'due_date_differential_oil': 18,
+                'battery_due_date': 42,
+                'flusing_due_date': 4,
+                'greasing_due_date': 3,
+            }
+
             # Now loop over all data rows (data starts at row 8 in this example because rows 1-7 are header)
             for row in ws.iter_rows(min_row=8, max_row=ws.max_row):
                 for idx, cell in enumerate(row, start=1):
                     col_key = all_columns[idx - 1]
-                    if col_key in ['issue_date_oil_filter', 'issue_date_fuel_filter', 'issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil', 'battery_issue_date', 'flusing_issue_date', 'greasing_issue_date'] and cell.value:
+                    if col_key in issue_due_mapping and cell.value:
                         try:
-                            date_obj = datetime.strptime(str(cell.value), "%Y-%m-%d").date()
-                            if col_key == 'issue_date_oil_filter':
-                                self.date_rules(cell, date_obj, 6, 20)
-                            elif col_key == 'issue_date_fuel_filter':
-                                self.date_rules(cell, date_obj, 12, 20)
-                            elif col_key in ['issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil']:
-                                self.date_rules(cell, date_obj, 18, 20)
-                            elif col_key == 'battery_issue_date':
-                                self.date_rules(cell, date_obj, 42, 20)
-                            elif col_key == 'flusing_issue_date':
-                                self.date_rules(cell, date_obj, 4, 20)
-                            elif col_key == 'greasing_issue_date':
-                                self.date_rules(cell, date_obj, 3, 20)
+                            previous_cell_value = row[idx - 2].value if idx > 1 else None 
+                            date_obj = datetime.strptime(str(previous_cell_value), "%Y-%m-%d").date()
+                            self.date_rules(cell, date_obj, issue_due_mapping[col_key], 20)
                         except ValueError:
                             print(f"Invalid date format for {cell.value} in column {col_key}")
                             continue
@@ -130,11 +130,9 @@ class Report:
             return False
         
     def date_rules(self, cell, cell_value, no_of_month, no_of_days):
-        # print(f"IN Rule: {type(cell_value)}, {cell_value},  {date.today()}")
         difference = relativedelta(date.today(), cell_value)
         months_diff = difference.years * 12 + difference.months
         days_diff = difference.days
-        # print(f"{months_diff} : {days_diff}")
 
         if months_diff >= no_of_month:
             cell.fill = PatternFill(start_color="FF0000", fill_type="solid")  # Red BG

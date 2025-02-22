@@ -139,7 +139,6 @@ class AddAVehicleFit(QWidget):
 
             combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
             
-
             self.Cooling_Fins_layout, self.Cooling_Fins = combo_input("Fins", combo_items)
             self.Cooling_Rad_Paint_layout, self.Cooling_Rad_Paint = combo_input("Rad Paint", combo_items)
             self.Cooling_Coolant_layout, self.Cooling_Coolant = combo_input("Coolant", combo_items)
@@ -363,16 +362,13 @@ class AddAVehicleFit(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.BoggyWh_Rubber_Cond_layout)
             row1_layout.addLayout(self.BoggyWh_Lub_Pts_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.BoggyWh_Inner_Outer_Bearing_layout)
+            row1_layout.addLayout(self.BoggyWh_Inner_Outer_Bearing_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 2)
 
             # Store references to input fields
             self.BoggyWh_Section_fields[title] = {
@@ -430,46 +426,31 @@ class AddAVehicleFit(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.ElecSys_Ign_Sw_layout)
             row1_layout.addLayout(self.ElecSys_Water_Temp_Guage_layout)
+            row1_layout.addLayout(self.ElecSys_Fuse_Box_layout)
+            row1_layout.addLayout(self.ElecSys_Fuse_Svc_layout)
+            row1_layout.addLayout(self.ElecSys_Oil_Pressure_Guage_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.ElecSys_Fuse_Box_layout)
-            row2_layout.addLayout(self.ElecSys_Fuse_Svc_layout)
+            row2_layout.addLayout(self.ElecSys_RPM_Guage_layout)
+            row2_layout.addLayout(self.ElecSys_Oil_Temp_Guage_layout)
+            row2_layout.addLayout(self.ElecSys_Self_Starter_Motor_layout)
+            row2_layout.addLayout(self.ElecSys_Alternator_Func_layout)
+            row2_layout.addLayout(self.ElecSys_Fuel_Guage_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.ElecSys_Oil_Pressure_Guage_layout)
-            row3_layout.addLayout(self.ElecSys_RPM_Guage_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.ElecSys_Oil_Temp_Guage_layout)
-            row4_layout.addLayout(self.ElecSys_Self_Starter_Motor_layout)
-
-            row5_layout = QHBoxLayout()
-            row5_layout.addLayout(self.ElecSys_Alternator_Func_layout)
-            row5_layout.addLayout(self.ElecSys_Fuel_Guage_layout)
-
-            row6_layout = QHBoxLayout()
-            row6_layout.addLayout(self.ElecSys_Electric_Harness_layout)
-            row6_layout.addLayout(self.ElecSys_Alternator_Fan_Belt_layout)
-
-            row7_layout = QHBoxLayout()
-            row7_layout.addLayout(self.ElecSys_Alternator_Noise_layout)
-            row7_layout.addLayout(self.ElecSys_Horn_layout)
-
-            row8_layout = QHBoxLayout()
-            row8_layout.addLayout(self.ElecSys_Blower_Heater_layout)
+            row3_layout.addLayout(self.ElecSys_Electric_Harness_layout)
+            row3_layout.addLayout(self.ElecSys_Alternator_Fan_Belt_layout)
+            row3_layout.addLayout(self.ElecSys_Alternator_Noise_layout)
+            row3_layout.addLayout(self.ElecSys_Horn_layout)
+            row3_layout.addLayout(self.ElecSys_Blower_Heater_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
-            group_layout.addLayout(row5_layout)
-            group_layout.addLayout(row6_layout)
-            group_layout.addLayout(row7_layout)
-            group_layout.addLayout(row8_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 4)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
@@ -643,25 +624,18 @@ class AddAVehicleFit(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.FuelSys_Fuel_Filter_Cond_layout)
             row1_layout.addLayout(self.FuelSys_Fuel_Lines_Leakage_layout)
+            row1_layout.addLayout(self.FuelSys_Fuel_Filter_Body_layout)
+            row1_layout.addLayout(self.FuelSys_Fuel_Tk_Strainer_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.FuelSys_Fuel_Filter_Body_layout)
-            row2_layout.addLayout(self.FuelSys_Fuel_Tk_Strainer_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.FuelSys_Fuel_Guage_layout)
-            row3_layout.addLayout(self.FuelSys_Fuel_Distr_Cork_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.FuelSys_Fuel_Tk_Cap_layout)
-            row4_layout.addLayout(self.FuelSys_Tk_Inner_Cond_layout)
+            row2_layout.addLayout(self.FuelSys_Fuel_Guage_layout)
+            row2_layout.addLayout(self.FuelSys_Fuel_Distr_Cork_layout)
+            row2_layout.addLayout(self.FuelSys_Fuel_Tk_Cap_layout)
+            row2_layout.addLayout(self.FuelSys_Tk_Inner_Cond_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
-        
+            group_layout.addLayout(row2_layout)        
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 4)
@@ -688,12 +662,12 @@ class AddAVehicleFit(QWidget):
         TrSys_Section("Tr Sys", 2, 1)
         BtyAssys_section("Bty & Assys", 2, 2)
         BoggyWh_Section("Boggy Wh", 4, 0)
-        BrkSys_Section("Brk Sys", 4, 1)
-        ElecSys_Section("Elec Sys", 4, 2)
-        AirIntakeSys_Section("Air Intake Sys", 6, 0)
-        TxSys_Section("Tx Sys", 6, 1)
-        SteeringCon_section("Steering Con", 6, 2)
-        FuelSys_section("Fuel Sys", 8, 0)
+        BrkSys_Section("Brk Sys", 4, 2)
+        ElecSys_Section("Elec Sys", 6, 0)
+        AirIntakeSys_Section("Air Intake Sys", 8, 0)
+        TxSys_Section("Tx Sys", 8, 1)
+        SteeringCon_section("Steering Con", 8, 2)
+        FuelSys_section("Fuel Sys", 10, 0)
 
         # Buttons
         button_layout = QHBoxLayout()
@@ -733,76 +707,28 @@ class AddAVehicleFit(QWidget):
         """ Inserts user into the database """
         add_a_vehicle_fit_data = {}
 
-        if not (self.add_basic_section_fields['Basic Details']['ba_no_input'].text().strip() and self.add_basic_section_fields['Basic Details']['make_input'].text().strip() and 
-                self.add_basic_section_fields['Basic Details']['type_input'].text().strip() and self.add_basic_section_fields['Basic Details']['CI_input'].text().strip() and self.add_basic_section_fields['Basic Details']['In_Svc_input'].text().strip()):
+        required_fields = ['ba_no_input', 'make_input', 'type_input','CI_input', 'In_Svc_input']
+        if not all(self.basic_details['Basic Details'][field].text().strip() for field in required_fields):
             QMessageBox.warning(self, "Error", "Basic Details required!")
             return
 
-        for fields in self.add_basic_section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QLineEdit):
-                    add_a_vehicle_fit_data[key] = widget.text().strip()
+        field_categories = [
+            self.add_basic_section_fields, self.Cooling_Section_fields, self.HydRamp_Section_fields,
+            self.LubSys_Section_fields, self.TrSys_Section_fields, self.BtyAssys_section_fields,
+            self.BoggyWh_Section_fields, self.BrkSys_Section_fields, self.ElecSys_Section_fields,
+            self.AirIntakeSys_Section_fields, self.TxSys_Section_fields, self.SteeringCon_section_fields,
+            self.FuelSys_section_fields
+        ]
 
-        for fields in self.Cooling_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-        
-        for fields in self.HydRamp_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+        for category in field_categories:
+            for fields in category.values():
+                for key, widget in fields.items():
+                    if isinstance(widget, QLineEdit):
+                        add_a_vehicle_fit_data[key] = widget.text().strip()
+                    elif isinstance(widget, QComboBox):
+                        selected_text = widget.currentText().strip()
+                        add_a_vehicle_fit_data[key] = None if selected_text == "--Select--" else selected_text
 
-        for fields in self.LubSys_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.TrSys_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.BtyAssys_section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.BoggyWh_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.BrkSys_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.ElecSys_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.AirIntakeSys_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.TxSys_Section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.SteeringCon_section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-
-        for fields in self.FuelSys_section_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_a_vehicle_fit_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
-        
         
         add_a_vehicle_fit_data['created_by'] = self.user_id
 

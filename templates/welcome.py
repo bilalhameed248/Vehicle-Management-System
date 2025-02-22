@@ -130,6 +130,7 @@ class WelcomePage(QWidget):
         menu_layout.addWidget(self.toggle_button)
 
         self.home = self.create_menu_button("Home", "assets/icons/home.png")
+        
         self.add_vehicle_button = self.create_menu_button("Add New Vehicle", "assets/icons/vehicle_add.png")
         self.view_all_vehicle_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
 

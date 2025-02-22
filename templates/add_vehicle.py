@@ -64,48 +64,58 @@ class AddVehicle(QWidget):
         self.greasing_fields = {}
         self.gen_maint_fields = {}
         self.overhaul_fields = {}
+        self.status_fields = {}
 
         layout = QVBoxLayout()
-        
         form_layout = QGridLayout()
         form_layout.setSpacing(6)
 
-        def add_basic_section(title, row, col):
-            group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()    
-            
-            # Row 1: Issue Date & Due Date
-            row1_layout = QHBoxLayout()
-
+        def combo_input(title, items):
             combo_layout = QVBoxLayout()
-            combo_layout.addWidget(QLabel("Category:"))
+            combo_layout.addWidget(QLabel(title))
             self.blocked_combo = QComboBox()
             self.blocked_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            self.blocked_combo.addItems(["A", "B"])
+            self.blocked_combo.addItem("--Select--")
+            self.blocked_combo.setItemData(0, 0, Qt.UserRole - 1)  # Disable the first item
+            self.blocked_combo.addItems(items)
+            self.blocked_combo.setCurrentIndex(0)
             combo_layout.addWidget(self.blocked_combo)
+            return combo_layout, self.blocked_combo
+        
+        def text_input_fun(title):
+            text_input_layout = QVBoxLayout()
+            text_input_layout.addWidget(QLabel(title))
+            self.text_input = QLineEdit()
+            text_input_layout.addWidget(self.text_input)
+            return text_input_layout, self.text_input
+        
+        def date_input(title):
+            date_input_layout = QVBoxLayout()
+            date_input_layout.addWidget(QLabel(title))
+            self.date_input = QDateEdit()
+            self.date_input.setCalendarPopup(True)
+            self.date_input.setDate(QDate.currentDate())
+            self.date_input.setDisplayFormat("dd-MM-yyyy")
+            date_input_layout.addWidget(self.date_input)
+            return date_input_layout, self.date_input
 
-            ba_no_layout = QVBoxLayout()
-            ba_no_layout.addWidget(QLabel("BA No:"))
-            self.ba_no_input = QLineEdit()
-            ba_no_layout.addWidget(self.ba_no_input)
+        def add_basic_section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()
 
-            row1_layout.addLayout(combo_layout)
-            row1_layout.addLayout(ba_no_layout)
+            combo_items = ["A", "B"]
+            self.category_layout, self.category_input = combo_input("Status:", combo_items)
+            self.ba_no_input_layout, self.ba_no_input = text_input_fun("BA No:")
+            self.make_type_layout, self.make_type_input = text_input_fun("Make & Type:")
+            self.engine_no_layout, self.engine_no_input = text_input_fun("Engine No:")
+
+            row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.category_layout)
+            row1_layout.addLayout(self.ba_no_input_layout)
 
             row2_layout = QHBoxLayout()
-
-            make_type_layout = QVBoxLayout()
-            make_type_layout.addWidget(QLabel("Make & Type:"))
-            self.make_type_input = QLineEdit()
-            make_type_layout.addWidget(self.make_type_input)
-
-            engine_no_layout = QVBoxLayout()
-            engine_no_layout.addWidget(QLabel("Engine No:"))
-            self.engine_no_input = QLineEdit()
-            engine_no_layout.addWidget(self.engine_no_input)
-
-            row2_layout.addLayout(make_type_layout)
-            row2_layout.addLayout(engine_no_layout)
+            row2_layout.addLayout(self.make_type_layout)
+            row2_layout.addLayout(self.engine_no_layout)
 
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -115,7 +125,7 @@ class AddVehicle(QWidget):
 
             # # Store references to input fields
             self.basic_details[title] = {
-                f"category": self.blocked_combo,
+                f"category": self.category_input,
                 f"ba_no_input": self.ba_no_input,
                 f"make_type_input": self.make_type_input,
                 f"engine_no_input": self.engine_no_input
@@ -124,43 +134,20 @@ class AddVehicle(QWidget):
 
         def add_maintenance_section(title, row, col):
             group_box = QGroupBox(title)
-            group_layout = QVBoxLayout()    
-            
+            group_layout = QVBoxLayout()
+
+            issue_date_layout, issue_date = date_input("Issue Date:")
+            due_date_layout, due_date = date_input("Due Date:")
+            current_mileage_layout, current_mileage = text_input_fun("Current Mileage:")
+            due_mileage_layout, due_mileage = text_input_fun("Due Mileage:")
+
             # Row 1: Issue Date & Due Date
             row1_layout = QHBoxLayout()
-
-            issue_layout = QVBoxLayout()
-            issue_layout.addWidget(QLabel("Issue Date:"))
-            issue_date = QDateEdit()
-            issue_date.setCalendarPopup(True)
-            issue_date.setDate(QDate.currentDate())
-            issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(issue_date)
-
-            due_layout = QVBoxLayout()
-            due_layout.addWidget(QLabel("Due Date:"))
-            due_date = QDateEdit()
-            due_date.setCalendarPopup(True)
-            due_date.setDate(QDate.currentDate())
-            due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(due_date)
-
-            row1_layout.addLayout(issue_layout)
-            row1_layout.addLayout(due_layout)
+            row1_layout.addLayout(issue_date_layout)
+            row1_layout.addLayout(due_date_layout)
 
             # Row 2: Current Mileage & Due Mileage
             row2_layout = QHBoxLayout()
-
-            current_mileage_layout = QVBoxLayout()
-            current_mileage_layout.addWidget(QLabel("Current Mileage:"))
-            current_mileage = QLineEdit()
-            current_mileage_layout.addWidget(current_mileage)
-
-            due_mileage_layout = QVBoxLayout()
-            due_mileage_layout.addWidget(QLabel("Due Mileage:"))
-            due_mileage = QLineEdit()
-            due_mileage_layout.addWidget(due_mileage)
-
             row2_layout.addLayout(current_mileage_layout)
             row2_layout.addLayout(due_mileage_layout)
 
@@ -185,36 +172,18 @@ class AddVehicle(QWidget):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
             
-            # Create a horizontal layout for the row
+            self.issue_date_layout, self.battery_issue_date = date_input("Issue Date:")
+            self.due_date_layout, self.battery_due_date = date_input("Due Date:")
+
             row_layout = QHBoxLayout()
-
-            # Issue Date
-            issue_layout = QVBoxLayout()
-            issue_layout.addWidget(QLabel("Issue Date:"))
-            self.battery_issue_date = QDateEdit()
-            self.battery_issue_date.setCalendarPopup(True)
-            self.battery_issue_date.setDate(QDate.currentDate())
-            self.battery_issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(self.battery_issue_date)
-
-            # Due Date
-            due_layout = QVBoxLayout()
-            due_layout.addWidget(QLabel("Due Date:"))
-            self.battery_due_date = QDateEdit()
-            self.battery_due_date.setCalendarPopup(True)
-            self.battery_due_date.setDate(QDate.currentDate())
-            self.battery_due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(self.battery_due_date)
-
-            # Add both to the horizontal layout
-            row_layout.addLayout(issue_layout)
-            row_layout.addLayout(due_layout)
+            row_layout.addLayout(self.issue_date_layout)
+            row_layout.addLayout(self.due_date_layout)
 
             # Add the row to the group layout
             group_layout.addLayout(row_layout)
             group_box.setLayout(group_layout)
             # Add the group box to the form
-            form_layout.addWidget(group_box, row, col, 1, 4)
+            form_layout.addWidget(group_box, row, col, 1, 1)
 
             self.battery_fields[title] = {
                 "battery_issue_date": self.battery_issue_date,
@@ -225,51 +194,25 @@ class AddVehicle(QWidget):
         def add_greasing_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
+
+            self.issue_date_layout, self.greasing_issue_date = date_input("Issue Date:")
+            self.due_date_layout, self.greasing_due_date = date_input("Due Date:")
+            self.trs_and_suspension_layout, self.trs_and_suspension = text_input_fun("Trs and suspension:")
+            self.engine_part_layout, self.engine_part = text_input_fun("Engine parts:")
+            self.steering_lever_Pts_layout, self.steering_lever_Pts = text_input_fun("Steering lever Pts:")
+
             # Row 1: Issue Date & Due Date
             row1_layout = QHBoxLayout()
-
-            issue_layout = QVBoxLayout()
-            issue_layout.addWidget(QLabel("Issue Date:"))
-            self.greasing_issue_date = QDateEdit()
-            self.greasing_issue_date.setCalendarPopup(True)
-            self.greasing_issue_date.setDate(QDate.currentDate())
-            self.greasing_issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(self.greasing_issue_date)
-
-            due_layout = QVBoxLayout()
-            due_layout.addWidget(QLabel("Due Date:"))
-            self.greasing_due_date = QDateEdit()
-            self.greasing_due_date.setCalendarPopup(True)
-            self.greasing_due_date.setDate(QDate.currentDate())
-            self.greasing_due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(self.greasing_due_date)
-
-            row1_layout.addLayout(issue_layout)
-            row1_layout.addLayout(due_layout)
+            row1_layout.addLayout(self.issue_date_layout)
+            row1_layout.addLayout(self.due_date_layout)
 
             # Row 2: Current Mileage & Due Mileage
             row2_layout = QHBoxLayout()
-
-            trs_and_suspension_layout = QVBoxLayout()
-            trs_and_suspension_layout.addWidget(QLabel("Trs and suspension:"))
-            self.trs_and_suspension = QLineEdit()
-            trs_and_suspension_layout.addWidget(self.trs_and_suspension)
-
-            engine_part_layout = QVBoxLayout()
-            engine_part_layout.addWidget(QLabel("Engine parts:"))
-            self.engine_part = QLineEdit()
-            engine_part_layout.addWidget(self.engine_part)
-
-            row2_layout.addLayout(trs_and_suspension_layout)
-            row2_layout.addLayout(engine_part_layout)
-
-            steering_lever_Pts_layout = QVBoxLayout()
-            steering_lever_Pts_layout.addWidget(QLabel("Steering lever Pts:"))
-            self.steering_lever_Pts = QLineEdit()
-            steering_lever_Pts_layout.addWidget(self.steering_lever_Pts)
+            row2_layout.addLayout(self.trs_and_suspension_layout)
+            row2_layout.addLayout(self.engine_part_layout)
 
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(steering_lever_Pts_layout)
+            row3_layout.addLayout(self.steering_lever_Pts_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -291,43 +234,21 @@ class AddVehicle(QWidget):
         def add_flusing_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
+
+            self.issue_date_layout, self.flushing_issue_date = date_input("Issue Date:")
+            self.due_date_layout, self.flushing_due_date = date_input("Due Date:")
+            self.fuel_tank_flush_layout, self.fuel_tank_flush = text_input_fun("Fuel Tank Flush:")
+            self.radiator_flush_layout, self.radiator_flush = text_input_fun("Radiator Flush:")
+
             # Row 1: Issue Date & Due Date
             row1_layout = QHBoxLayout()
-
-            issue_layout = QVBoxLayout()
-            issue_layout.addWidget(QLabel("Issue Date:"))
-            self.flushing_issue_date = QDateEdit()
-            self.flushing_issue_date.setCalendarPopup(True)
-            self.flushing_issue_date.setDate(QDate.currentDate())
-            self.flushing_issue_date.setDisplayFormat("dd-MM-yyyy")
-            issue_layout.addWidget(self.flushing_issue_date)
-
-            due_layout = QVBoxLayout()
-            due_layout.addWidget(QLabel("Due Date:"))
-            self.flushing_due_date = QDateEdit()
-            self.flushing_due_date.setCalendarPopup(True)
-            self.flushing_due_date.setDate(QDate.currentDate())
-            self.flushing_due_date.setDisplayFormat("dd-MM-yyyy")
-            due_layout.addWidget(self.flushing_due_date)
-
-            row1_layout.addLayout(issue_layout)
-            row1_layout.addLayout(due_layout)
+            row1_layout.addLayout(self.issue_date_layout)
+            row1_layout.addLayout(self.due_date_layout)
 
             # Row 2: Current Mileage & Due Mileage
             row2_layout = QHBoxLayout()
-
-            fuel_tank_flush_layout = QVBoxLayout()
-            fuel_tank_flush_layout.addWidget(QLabel("Fuel Tank Flush:"))
-            self.fuel_tank_flush = QLineEdit()
-            fuel_tank_flush_layout.addWidget(self.fuel_tank_flush)
-
-            radiator_flush_layout = QVBoxLayout()
-            radiator_flush_layout.addWidget(QLabel("Radiator Flush:"))
-            self.radiator_flush = QLineEdit()
-            radiator_flush_layout.addWidget(self.radiator_flush)
-
-            row2_layout.addLayout(fuel_tank_flush_layout)
-            row2_layout.addLayout(radiator_flush_layout)
+            row2_layout.addLayout(self.fuel_tank_flush_layout)
+            row2_layout.addLayout(self.radiator_flush_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -347,61 +268,29 @@ class AddVehicle(QWidget):
         def add_gen_maint_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()
-            # Row 1: Issue Date & Due Date
+
+            self.wash_layout, self.wash = text_input_fun("Wash:")
+            self.oil_level_check_layout, self.oil_level_check = text_input_fun("Oil Level Check:")
+            self.lubrication_of_parts_layout, self.lubrication_of_parts = text_input_fun("Lubrication of parts:")
+            self.air_cleaner_layout, self.air_cleaner = text_input_fun("Air Cleaner Maint:")
+            self.fuel_filter_layout, self.fuel_filter = text_input_fun("Fuel Filter Maint:")
+            self.french_chalk_layout, self.french_chalk = text_input_fun("French chalk:")
+            self.tr_adjustment_layout, self.tr_adjustment = text_input_fun("Tr Adjustment:")
+
             row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.wash_layout)
+            row1_layout.addLayout(self.oil_level_check_layout)
 
-            wash_layout = QVBoxLayout()
-            wash_layout.addWidget(QLabel("Wash:"))
-            self.wash = QLineEdit()
-            wash_layout.addWidget(self.wash)
-
-            oil_level_check_layout = QVBoxLayout()
-            oil_level_check_layout.addWidget(QLabel("Oil Level Check:"))
-            self.oil_level_check = QLineEdit()
-            oil_level_check_layout.addWidget(self.oil_level_check)
-
-            row1_layout.addLayout(wash_layout)
-            row1_layout.addLayout(oil_level_check_layout)
-
-            # Row 2: Current Mileage & Due Mileage
             row2_layout = QHBoxLayout()
-
-            lubrication_of_parts_layout = QVBoxLayout()
-            lubrication_of_parts_layout.addWidget(QLabel("Lubrication of parts:"))
-            self.lubrication_of_parts = QLineEdit()
-            lubrication_of_parts_layout.addWidget(self.lubrication_of_parts)
-
-            air_cleaner_layout = QVBoxLayout()
-            air_cleaner_layout.addWidget(QLabel("Air Cleaner Maint:"))
-            self.air_cleaner = QLineEdit()
-            air_cleaner_layout.addWidget(self.air_cleaner)
-
-            row2_layout.addLayout(lubrication_of_parts_layout)
-            row2_layout.addLayout(air_cleaner_layout)
+            row2_layout.addLayout(self.lubrication_of_parts_layout)
+            row2_layout.addLayout(self.air_cleaner_layout)
 
             row3_layout = QHBoxLayout()
-
-            fuel_filter_layout = QVBoxLayout()
-            fuel_filter_layout.addWidget(QLabel("Fuel Filter Maint:"))
-            self.fuel_filter = QLineEdit()
-            fuel_filter_layout.addWidget(self.fuel_filter)
-
-            french_chalk_layout = QVBoxLayout()
-            french_chalk_layout.addWidget(QLabel("French chalk:"))
-            self.french_chalk = QLineEdit()
-            french_chalk_layout.addWidget(self.french_chalk)
-
-            row3_layout.addLayout(fuel_filter_layout)
-            row3_layout.addLayout(french_chalk_layout)
+            row3_layout.addLayout(self.fuel_filter_layout)
+            row3_layout.addLayout(self.french_chalk_layout)
 
             row4_layout = QHBoxLayout()
-            
-            tr_adjustment_layout = QVBoxLayout()
-            tr_adjustment_layout.addWidget(QLabel("Tr Adjustment:"))
-            self.tr_adjustment = QLineEdit()
-            tr_adjustment_layout.addWidget(self.tr_adjustment)
-
-            row4_layout.addLayout(tr_adjustment_layout)
+            row4_layout.addLayout(self.tr_adjustment_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -426,36 +315,16 @@ class AddVehicle(QWidget):
         def add_overhaul_section(title, row, col):
             group_box = QGroupBox(title)
             group_layout = QVBoxLayout()    
+
+            self.current_mileage_layout, self.overhaul_current_milage = text_input_fun("Current Mileage:")
+            self.due_mileage_layout, self.overhaul_due_milage = text_input_fun("Due Mileage:")
         
-            # Row 1: Current Mileage & Due Mileage
             row1_layout = QHBoxLayout()
-
-            current_mileage_layout = QVBoxLayout()
-            current_mileage_layout.addWidget(QLabel("Current Mileage:"))
-            self.overhaul_current_milage = QLineEdit()
-            current_mileage_layout.addWidget(self.overhaul_current_milage)
-
-            due_mileage_layout = QVBoxLayout()
-            due_mileage_layout.addWidget(QLabel("Due Mileage:"))
-            self.overhaul_due_milage = QLineEdit()
-            due_mileage_layout.addWidget(self.overhaul_due_milage)
-
-            row1_layout.addLayout(current_mileage_layout)
-            row1_layout.addLayout(due_mileage_layout)
-
-            # Row 2: Remarks/Status
-            row2_layout = QHBoxLayout()
-
-            coverhaul_remarks_layout = QVBoxLayout()
-            coverhaul_remarks_layout.addWidget(QLabel("Remarks/Status:"))
-            self.overhaul_remarks_input = QTextEdit()
-            coverhaul_remarks_layout.addWidget(self.overhaul_remarks_input)
-
-            row2_layout.addLayout(coverhaul_remarks_layout)
+            row1_layout.addLayout(self.current_mileage_layout)
+            row1_layout.addLayout(self.due_mileage_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
@@ -463,23 +332,45 @@ class AddVehicle(QWidget):
             # Store references to input fields
             self.overhaul_fields[title] = {
                 "overhaul_current_milage": self.overhaul_current_milage,
-                "overhaul_due_milage": self.overhaul_due_milage,
-                "overhaul_remarks_input": self.overhaul_remarks_input if self.overhaul_remarks_input else "Nothing Mentioned"
+                "overhaul_due_milage": self.overhaul_due_milage
+            }
+
+
+        def add_status_section(title, row, col):
+            group_box = QGroupBox(title)
+            group_layout = QVBoxLayout()    
+    
+            combo_items = ["Fit", "Unfit"]
+            self.status_layout, self.status_input = combo_input("Status:", combo_items)
+
+            row1_layout = QHBoxLayout()
+            row1_layout.addLayout(self.status_layout)
+
+            # Add rows to the group layout
+            group_layout.addLayout(row1_layout)
+
+            group_box.setLayout(group_layout)
+            form_layout.addWidget(group_box, row, col, 1, 1)
+
+            # Store references to input fields
+            self.status_fields[title] = {
+                "overhaul_remarks_input": self.status_input
             }
 
 
         # Maintenance Sections
         add_basic_section("Basic Details", 0, 0)
         add_maintenance_section("Oil Filter", 0, 1)
-        add_maintenance_section("Fuel Filter", 2, 0)
-        add_maintenance_section("Air Filter", 2, 1)
-        add_maintenance_section("Transmission Filter", 4, 0)
-        add_maintenance_section("Differential Oil", 4, 1)
+        add_maintenance_section("Fuel Filter", 0, 2)
+        add_maintenance_section("Air Filter", 2, 0)
+        add_maintenance_section("Transmission Filter", 2, 1)
+        add_maintenance_section("Differential Oil", 2, 2)
+        add_greasing_section("Greasing", 4, 0)
+        add_flusing_section("Flushing", 4, 1)
+        add_gen_maint_section("Gen Maint (Monthly)", 4, 2)
         add_battery_section("Battery", 6, 0)
-        add_greasing_section("Greasing", 8, 0)
-        add_flusing_section("Flushing", 8, 1)
-        add_gen_maint_section("Gen Maint (Monthly)", 10, 0)
-        add_overhaul_section("Overhaul", 10, 1)
+        add_overhaul_section("Overhaul", 6, 1)
+        add_status_section("Remarks/Status", 6, 2)
 
         # Buttons
         button_layout = QHBoxLayout()
@@ -517,67 +408,30 @@ class AddVehicle(QWidget):
 
     def save_vehicle(self):
         """ Inserts user into the database """
-        add_Vehicle_data = {}
+        add_vehicle_data = {}
 
-        if not (self.basic_details['Basic Details']['ba_no_input'].text().strip() and self.basic_details['Basic Details']['make_type_input'].text().strip() and self.basic_details['Basic Details']['engine_no_input'].text().strip()):
+        required_fields = ['ba_no_input', 'make_type_input', 'engine_no_input']
+        if not all(self.basic_details['Basic Details'][field].text().strip() for field in required_fields):
             QMessageBox.warning(self, "Error", "BA NO, Make Type & Engine Number are required!")
             return
-
-        for fields in self.basic_details.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QComboBox):
-                    add_Vehicle_data[key] = widget.currentText().strip()
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
-
-        for fields in self.maintenance_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QDateEdit):
-                    add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
         
-        for fields in self.battery_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QDateEdit):
-                    add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
+        field_categories = [
+            self.basic_details, self.maintenance_fields, self.battery_fields, self.flusing_fields, self.greasing_fields, 
+            self.gen_maint_fields, self.overhaul_fields, self.status_fields
+        ]
 
-        for fields in self.flusing_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QDateEdit):
-                    add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
+        for category in field_categories:
+            for fields in category.values():
+                for key, widget in fields.items():
+                    if isinstance(widget, QComboBox):
+                        add_vehicle_data[key] = None if widget.currentText().strip() == "--Select--" else  widget.currentText().strip()
+                    elif isinstance(widget, QLineEdit):
+                        add_vehicle_data[key] = widget.text().strip()
+                    elif isinstance(widget, QDateEdit):
+                        add_vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
+        add_vehicle_data['created_by'] = self.user_id
 
-        for fields in self.greasing_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QDateEdit):
-                    add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
-
-        for fields in self.gen_maint_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QDateEdit):
-                    add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
-
-        for fields in self.overhaul_fields.values():
-            for key, widget in fields.items():
-                if isinstance(widget, QDateEdit):
-                    add_Vehicle_data[key] = widget.date().toString("yyyy-MM-dd")
-                elif isinstance(widget, QLineEdit):
-                    add_Vehicle_data[key] = widget.text().strip()
-                elif isinstance(widget, QTextEdit):
-                    add_Vehicle_data[key] = widget.toPlainText().strip()
-
-        add_Vehicle_data['created_by'] = self.user_id
-        # print(add_Vehicle_data)
-
-        is_data_inserted = self.db_obj.insert_vehicle(add_Vehicle_data)
+        is_data_inserted = self.db_obj.insert_vehicle(add_vehicle_data)
         if not is_data_inserted:
             QMessageBox.warning(self, "Failed", "Error while saving the data..! Please Try Again")
             return
@@ -616,7 +470,6 @@ class AddVehicle(QWidget):
 
         self.overhaul_current_milage.setText("")
         self.overhaul_due_milage.setText("")
-        self.overhaul_remarks_input.setText("")
 
     # def cancel_add_vehicle(self):
     #     self.main_parent_welcome.welcome_summary_obj.load_data()  # Reload fresh data

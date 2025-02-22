@@ -115,7 +115,7 @@ class ViewALLWeapons(QWidget):
         # print("VIew All Vehicle: self.main_parent:",self.main_parent, "\n")
 
         self.current_page = 0
-        self.page_size = 20
+        self.page_size = 10
         
         self.vr_obj = WeaponReport()
         self.db_obj = VMS_DB() 
@@ -188,12 +188,8 @@ class ViewALLWeapons(QWidget):
     def initUI(self):
         """Initialize UI and load the data table."""
         self.setup_ui()   # Setup UI elements
+        self.header_setup()
         self.populate_table()  # Load data into the table
-
-
-    def refresh_data(self):
-        """Refresh the vehicle table data."""
-        self.populate_table()  # Reload data from the database
 
 
     def setup_ui(self):
@@ -310,42 +306,39 @@ class ViewALLWeapons(QWidget):
 
         self.setLayout(layout)
 
-    def header_setup():
-        pass
 
-    def populate_table(self):
+    def header_setup(self):
         """Fetches and populates the table with vehicle data."""
         # Build the flat list of columns based on the main_header order.
-        columns = []
-        for group, cols in self.main_header.items():
-            columns.extend(cols)
-        self.columns = columns.copy()
-        # Append the Actions column (not part of any group)
-        flat_headers = columns + ["Actions"]
-
-        # Set up the table dimensions.
-        self.table_widget.setColumnCount(len(flat_headers))
-        self.table_widget.setHorizontalHeaderLabels(flat_headers)
-
-        # Compute group header positions.
-        group_headers = []
+        columns, group_headers = [], []
         current_index = 0
         for group, cols in self.main_header.items():
             span = len(cols)
+            columns.extend(cols)
             group_headers.append((current_index, span, group))
             current_index += span
+        self.columns = columns.copy()
+        # Append the Actions column (not part of any group)
+        self.flat_headers = columns + ["Actions"]
+
+        # Set up the table dimensions.
+        self.table_widget.setColumnCount(len(self.flat_headers))
+        self.table_widget.setHorizontalHeaderLabels(self.flat_headers)
 
         # Set the group headers in the custom header.
         header = self.table_widget.horizontalHeader()
         if isinstance(header, MultiLevelHeaderView):
             header.setGroupHeaders(group_headers)
 
+
+    def populate_table(self):
+        """Fetches and populates the table with vehicle data."""
         # Fetch the data from the database.
         all_vehicle_data = self.db_obj.get_all_weapons(self.current_page, self.page_size)
         self.data = []
         for row in all_vehicle_data:
             # Build the record in the same order as columns.
-            record = {col: row.get(key) for key, col in self.db_to_display.items() if col in columns}
+            record = {col: row.get(key) for key, col in self.db_to_display.items() if col in self.columns}
             record["id"] = row["id"]  # Keep ID for actions
             self.data.append(record)
 
@@ -358,24 +351,18 @@ class ViewALLWeapons(QWidget):
                 # Format dates
                 if cell_value and ("Date" in col_name or "Created At" in col_name):
                     try:
-                        # print(f"Before Conversion: {type(cell_value)} {cell_value}")
-
                         if isinstance(cell_value, datetime):
                             cell_value = cell_value.strftime('%d-%m-%Y')
                         else:
-                            # print("Ok here")
                             dt = datetime.strptime(cell_value, '%Y-%m-%d')
                             # cell_value = dt.strftime('%d-%m-%Y') #(in My SQL only)
                             cell_value = dt.date() #(in SQLITE only)
-
                         row_data[col_name] = cell_value #(in SQLITE only)
-                        # print(f"After Conversion: {type(cell_value)} {cell_value}")
                     except Exception:
                         pass
                     
                 if col_name not in  ['Wpn No', "Created By", "Created At"]:
                     self.date_rules(cell_value, row_index, col_index)
-
                 else:
                     item = QTableWidgetItem(str(cell_value))
                     item.setFont(self.tbL_data_font)
@@ -409,7 +396,7 @@ class ViewALLWeapons(QWidget):
             action_layout.addWidget(btn_report)
             action_layout.addStretch()
 
-            self.table_widget.setCellWidget(row_index, len(flat_headers) - 1, action_widget)
+            self.table_widget.setCellWidget(row_index, len(self.flat_headers) - 1, action_widget)
 
         # Adjust Column Width for the Actions column.
         action_col_index = self.table_widget.columnCount() - 1
@@ -426,7 +413,7 @@ class ViewALLWeapons(QWidget):
 
 
     def next_page(self):
-        total_count = self.db_obj.get_vehicle_count()
+        total_count = self.db_obj.get_weapon_count()
         total_pages = math.ceil(total_count['total'] / self.page_size)
         if self.current_page < total_pages - 1:
             self.current_page += 1
@@ -549,6 +536,7 @@ class ViewALLWeapons(QWidget):
         msg.setText(message)
         msg.setWindowTitle("Report Generated")
         msg.exec_()
+
 
     def show_import_weapon_dialog(self):
         dialog = ImportWeaponsFE(user_session=self.user_session, db_to_display = self.db_to_display)

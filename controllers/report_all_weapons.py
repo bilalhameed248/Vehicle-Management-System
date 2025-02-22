@@ -96,21 +96,11 @@ class Report:
             for row in ws.iter_rows(min_row=8, max_row=ws.max_row):
                 for idx, cell in enumerate(row, start=1):
                     col_key = all_columns[idx - 1]
-                    if col_key in ['issue_date_oil_filter', 'issue_date_fuel_filter', 'issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil', 'battery_issue_date', 'flusing_issue_date', 'greasing_issue_date'] and cell.value:
+                    if col_key not in  ['Wpn_No', "created_by", "created_at"] and cell.value:
                         try:
-                            date_obj = datetime.strptime(str(cell.value), "%Y-%m-%d").date()
-                            if col_key == 'issue_date_oil_filter':
-                                self.date_rules(cell, date_obj, 6, 20)
-                            elif col_key == 'issue_date_fuel_filter':
-                                self.date_rules(cell, date_obj, 12, 20)
-                            elif col_key in ['issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil']:
-                                self.date_rules(cell, date_obj, 18, 20)
-                            elif col_key == 'battery_issue_date':
-                                self.date_rules(cell, date_obj, 42, 20)
-                            elif col_key == 'flusing_issue_date':
-                                self.date_rules(cell, date_obj, 4, 20)
-                            elif col_key == 'greasing_issue_date':
-                                self.date_rules(cell, date_obj, 3, 20)
+                            if cell.value in ["Unsvc", "Incomplete"]:
+                                cell.fill = PatternFill(start_color="FF0000", fill_type="solid")
+                                cell.font = Font(color="FFFFFF", bold=True)
                         except ValueError:
                             print(f"Invalid date format for {cell.value} in column {col_key}")
                             continue
@@ -130,20 +120,6 @@ class Report:
             traceback.print_exc()
             print(f"Exception in generate_report: {e}")
             return False
-        
-    def date_rules(self, cell, cell_value, no_of_month, no_of_days):
-        # print(f"IN Rule: {type(cell_value)}, {cell_value},  {date.today()}")
-        difference = relativedelta(date.today(), cell_value)
-        months_diff = difference.years * 12 + difference.months
-        days_diff = difference.days
-        # print(f"{months_diff} : {days_diff}")
-
-        if months_diff >= no_of_month:
-            cell.fill = PatternFill(start_color="FF0000", fill_type="solid")  # Red BG
-            cell.font = Font(color="FFFFFF", bold=True)  # White text for visibility
-        elif months_diff >= (no_of_month-1) and days_diff >= no_of_days and days_diff <= (no_of_days+10):
-            cell.fill = PatternFill(start_color="FFFF00", fill_type="solid")  # Yellow BG
-            cell.font = Font(color="000000", bold=True)  # Black text for visibility
 
 # Usage Example
 if __name__ == "__main__":

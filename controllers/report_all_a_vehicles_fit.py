@@ -89,29 +89,18 @@ class Report:
             for weapon in weapons:
                 row_data = []
                 for db_col in all_columns:
-                    row_data.append(weapon.get(col, ""))
+                    row_data.append(weapon.get(db_col, ""))
                 ws.append(row_data)
-            
             
             # Now loop over all data rows (data starts at row 8 in this example because rows 1-7 are header)
             for row in ws.iter_rows(min_row=8, max_row=ws.max_row):
                 for idx, cell in enumerate(row, start=1):
                     col_key = all_columns[idx - 1]
-                    if col_key in ['issue_date_oil_filter', 'issue_date_fuel_filter', 'issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil', 'battery_issue_date', 'flusing_issue_date', 'greasing_issue_date'] and cell.value:
+                    if col_key not in  ['ba_no_input', "make_input", "type_input", "CI_input", "In_Svc_input", "created_by", "created_at"] and cell.value:
                         try:
-                            date_obj = datetime.strptime(str(cell.value), "%Y-%m-%d").date()
-                            if col_key == 'issue_date_oil_filter':
-                                self.date_rules(cell, date_obj, 6, 20)
-                            elif col_key == 'issue_date_fuel_filter':
-                                self.date_rules(cell, date_obj, 12, 20)
-                            elif col_key in ['issue_date_air_filter', 'issue_date_transmission_filter', 'issue_date_differential_oil']:
-                                self.date_rules(cell, date_obj, 18, 20)
-                            elif col_key == 'battery_issue_date':
-                                self.date_rules(cell, date_obj, 42, 20)
-                            elif col_key == 'flusing_issue_date':
-                                self.date_rules(cell, date_obj, 4, 20)
-                            elif col_key == 'greasing_issue_date':
-                                self.date_rules(cell, date_obj, 3, 20)
+                            if cell.value in  ["Unsvc", "Incomplete",  "Unsatisfactory", "Down"]:
+                                cell.fill = PatternFill(start_color="FF0000", fill_type="solid")
+                                cell.font = Font(color="FFFFFF", bold=True)
                         except ValueError:
                             print(f"Invalid date format for {cell.value} in column {col_key}")
                             continue
