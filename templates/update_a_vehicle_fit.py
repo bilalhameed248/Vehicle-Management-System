@@ -5,12 +5,13 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIntValidator, QStandardItemModel, QStandardItem, QIcon, QFont
 from PyQt5.QtCore import Qt, QDate, QTimer, QSize
 from database import VMS_DB  
+from datetime import datetime
 from templates.view_all_vehicles import ViewALLVehicles
 from controllers.load_assets import *
 
-class AddAVehicleFit(QWidget):
+class UpdateAVehicleFit(QWidget):
 
-    def __init__(self, user_session=None, parent=None):
+    def __init__(self, user_session=None, data = None, parent=None):
         super().__init__(parent)
         self.user_session = user_session if user_session else {}
         self.user_id = self.user_session.get('user_id')
@@ -18,10 +19,10 @@ class AddAVehicleFit(QWidget):
         # print("self.user_id:",self.user_id)
         # print("self.username:",self.username)
         self.main_parent_welcome = parent
+        self.data = data
         self.db_obj = VMS_DB() 
         self.initUI()
         
-
 
     def initUI(self):
         self.setWindowTitle("Vehicle Maintenance Form")
@@ -95,6 +96,10 @@ class AddAVehicleFit(QWidget):
             self.text_input = QLineEdit()
             text_input_layout.addWidget(self.text_input)
             return text_input_layout, self.text_input
+        
+
+        def combo_index(combo_box, title):
+            return 0 if not self.data[title] else combo_box.findText(self.data[title], Qt.MatchExactly) or 0
 
 
         def add_basic_section(title, row, col):
@@ -116,6 +121,12 @@ class AddAVehicleFit(QWidget):
 
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(self.In_Svc_input_layout)
+
+            self.ba_no_input.setText(self.data["BA NO"])
+            self.make_input.setText(self.data["Make"])
+            self.type_input.setText(self.data["Type"])
+            self.CI_input.setText(self.data["CI"])
+            self.In_Svc_input.setText(self.data["In Svc"])
             
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -159,6 +170,13 @@ class AddAVehicleFit(QWidget):
             row3_layout.addLayout(self.Cooling_Rad_Cap_layout)
             row3_layout.addLayout(self.Cooling_Fan_Belt_layout)
 
+            self.Cooling_Fins.setCurrentIndex(combo_index(self.Cooling_Fins, "Fins"))
+            self.Cooling_Rad_Paint.setCurrentIndex(combo_index(self.Cooling_Rad_Paint, "Rad Paint"))
+            self.Cooling_Coolant.setCurrentIndex(combo_index(self.Cooling_Coolant, "Coolant"))
+            self.Cooling_Leakage.setCurrentIndex(combo_index(self.Cooling_Leakage, "CS Leakage"))
+            self.Cooling_Rad_Cap.setCurrentIndex(combo_index(self.Cooling_Rad_Cap, "Rad Cap"))
+            self.Cooling_Fan_Belt.setCurrentIndex(combo_index(self.Cooling_Fan_Belt, "Fan Belt"))
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -184,6 +202,7 @@ class AddAVehicleFit(QWidget):
             group_layout = QVBoxLayout()
 
             combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+
             self.HydRamp_Hyd_Oil_Lvl_layout, self.HydRamp_Hyd_Oil_Lvl = combo_input("Hyd Oil Lvl", combo_items)
             self.HydRamp_TGS_Oil_Lvl_layout, self.HydRamp_TGS_Oil_Lvl = combo_input("TGS Oil Lvl", combo_items)
             self.HydRamp_Tx_Oil_layout, self.HydRamp_Tx_Oil = combo_input("Tx Oil", combo_items)
@@ -200,6 +219,12 @@ class AddAVehicleFit(QWidget):
 
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(self.HydRamp_Fan_Mech_Oil_layout)
+
+            self.HydRamp_Hyd_Oil_Lvl.setCurrentIndex(combo_index(self.HydRamp_Hyd_Oil_Lvl, "Hyd Oil Lvl"))
+            self.HydRamp_TGS_Oil_Lvl.setCurrentIndex(combo_index(self.HydRamp_TGS_Oil_Lvl, "TGS Oil Lvl"))
+            self.HydRamp_Tx_Oil.setCurrentIndex(combo_index(self.HydRamp_Tx_Oil, "Tx Oil"))
+            self.HydRamp_Tx_Filter.setCurrentIndex(combo_index(self.HydRamp_Tx_Filter, "Tx Filter"))
+            self.HydRamp_Fan_Mech_Oil.setCurrentIndex(combo_index(self.HydRamp_Fan_Mech_Oil, "Fan Mech Oil"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -224,6 +249,7 @@ class AddAVehicleFit(QWidget):
             group_layout = QVBoxLayout()
 
             combo_items = ["Svc", "Unsvc", "Ok", "Unsatisfactory", "Up", "Down", "Complete", "Incomplete"]
+
             self.LubSys_Eng_Oil_layout, self.LubSys_Eng_Oil = combo_input("Eng Oil",combo_items)
             self.LubSys_EO_Cond_layout, self.LubSys_EO_Cond = combo_input("EO Cond",combo_items)
             self.LubSys_Oil_Sump_layout, self.LubSys_Oil_Sump = combo_input("Oil Sump",combo_items)
@@ -243,6 +269,13 @@ class AddAVehicleFit(QWidget):
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(self.LubSys_Oil_Grade_layout)
             row3_layout.addLayout(self.LubSys_Lub_layout)
+
+            self.LubSys_Eng_Oil.setCurrentIndex(combo_index(self.LubSys_Eng_Oil, "Eng Oil"))
+            self.LubSys_EO_Cond.setCurrentIndex(combo_index(self.LubSys_EO_Cond, "EO Cond"))
+            self.LubSys_Oil_Sump.setCurrentIndex(combo_index(self.LubSys_Oil_Sump, "Oil Sump"))
+            self.LubSys_Leakage.setCurrentIndex(combo_index(self.LubSys_Leakage, "LS Leakage"))
+            self.LubSys_Oil_Grade.setCurrentIndex(combo_index(self.LubSys_Oil_Grade, "Oil Grade"))
+            self.LubSys_Lub.setCurrentIndex(combo_index(self.LubSys_Lub, "Lub"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -289,6 +322,13 @@ class AddAVehicleFit(QWidget):
             row3_layout.addLayout(self.TrSys_Sproket_Wh_Life_layout)
             row3_layout.addLayout(self.TrSys_Tr_Tensioner_layout)
 
+            self.TrSys_Tr_Chain_Adj.setCurrentIndex(combo_index(self.TrSys_Tr_Chain_Adj, "Tr Chain Adj"))
+            self.TrSys_Tr_Chain_Play.setCurrentIndex(combo_index(self.TrSys_Tr_Chain_Play, "Tr Chain Play"))
+            self.TrSys_Tr_Pin_Adj.setCurrentIndex(combo_index(self.TrSys_Tr_Pin_Adj, "Tr Pin Adj"))
+            self.TrSys_Tr_Pad_Thickness.setCurrentIndex(combo_index(self.TrSys_Tr_Pad_Thickness, "Tr Pad Thickness"))
+            self.TrSys_Sproket_Wh_Life.setCurrentIndex(combo_index(self.TrSys_Sproket_Wh_Life, "Sproket Wh Life"))
+            self.TrSys_Tr_Tensioner.setCurrentIndex(combo_index(self.TrSys_Tr_Tensioner, "Tr Tensioner"))
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -332,6 +372,13 @@ class AddAVehicleFit(QWidget):
             row3_layout.addLayout(self.BtyAssys_Vent_Plug_layout)
             row3_layout.addLayout(self.BtyAssys_Bty_Ser_LB_layout)
 
+            self.BtyAssys_Cradle_Fitting.setCurrentIndex(combo_index(self.BtyAssys_Cradle_Fitting, "Cradle Fitting"))
+            self.BtyAssys_Electrolyte_Lvl.setCurrentIndex(combo_index(self.BtyAssys_Electrolyte_Lvl, "Electolyte Lvl"))
+            self.BtyAssys_Terminals.setCurrentIndex(combo_index(self.BtyAssys_Terminals, "Terminals"))
+            self.BtyAssys_Mineral_Jelly.setCurrentIndex(combo_index(self.BtyAssys_Mineral_Jelly, "Mineral Jelly"))
+            self.BtyAssys_Vent_Plug.setCurrentIndex(combo_index(self.BtyAssys_Vent_Plug, "Vent Plug"))
+            self.BtyAssys_Bty_Ser_LB.setCurrentIndex(combo_index(self.BtyAssys_Bty_Ser_LB, "Bty Ser (LB)"))
+
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
@@ -365,6 +412,10 @@ class AddAVehicleFit(QWidget):
             row1_layout.addLayout(self.BoggyWh_Lub_Pts_layout)
             row1_layout.addLayout(self.BoggyWh_Inner_Outer_Bearing_layout)
 
+            self.BoggyWh_Rubber_Cond.setCurrentIndex(combo_index(self.BoggyWh_Rubber_Cond, "Rubber Cond"))
+            self.BoggyWh_Lub_Pts.setCurrentIndex(combo_index(self.BoggyWh_Lub_Pts, "Lub Pts"))
+            self.BoggyWh_Inner_Outer_Bearing.setCurrentIndex(combo_index(self.BoggyWh_Inner_Outer_Bearing, "Inner / Outer Bearing"))
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
 
@@ -390,6 +441,9 @@ class AddAVehicleFit(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.BrkSys_Brk_Fluid_layout)
             row1_layout.addLayout(self.BrkSys_Brk_Lever_layout)
+
+            self.BrkSys_Brk_Fluid.setCurrentIndex(combo_index(self.BrkSys_Brk_Fluid, "Brk Fluid"))
+            self.BrkSys_Brk_Lever.setCurrentIndex(combo_index(self.BrkSys_Brk_Lever, "Brk Lever"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -444,6 +498,22 @@ class AddAVehicleFit(QWidget):
             row3_layout.addLayout(self.ElecSys_Alternator_Noise_layout)
             row3_layout.addLayout(self.ElecSys_Horn_layout)
             row3_layout.addLayout(self.ElecSys_Blower_Heater_layout)
+
+            self.ElecSys_Ign_Sw.setCurrentIndex(combo_index(self.ElecSys_Ign_Sw, "Ign Sw"))
+            self.ElecSys_Water_Temp_Guage.setCurrentIndex(combo_index(self.ElecSys_Water_Temp_Guage, "Water Temp Guage"))
+            self.ElecSys_Fuse_Box.setCurrentIndex(combo_index(self.ElecSys_Fuse_Box, "Fuse Box"))
+            self.ElecSys_Fuse_Svc.setCurrentIndex(combo_index(self.ElecSys_Fuse_Svc, "Fuse Svc"))
+            self.ElecSys_Oil_Pressure_Guage.setCurrentIndex(combo_index(self.ElecSys_Oil_Pressure_Guage, "Oil Pressure Guage"))
+            self.ElecSys_RPM_Guage.setCurrentIndex(combo_index(self.ElecSys_RPM_Guage, "RPM Guage"))
+            self.ElecSys_Oil_Temp_Guage.setCurrentIndex(combo_index(self.ElecSys_Oil_Temp_Guage, "Oil Temp Guage"))
+            self.ElecSys_Self_Starter_Motor.setCurrentIndex(combo_index(self.ElecSys_Self_Starter_Motor, "Self-Starter Motor"))
+            self.ElecSys_Alternator_Func.setCurrentIndex(combo_index(self.ElecSys_Alternator_Func, "Alternator Func"))
+            self.ElecSys_Fuel_Guage.setCurrentIndex(combo_index(self.ElecSys_Fuel_Guage, "ES Fuel Guage"))
+            self.ElecSys_Electric_Harness.setCurrentIndex(combo_index(self.ElecSys_Electric_Harness, "Electric Harness"))
+            self.ElecSys_Alternator_Fan_Belt.setCurrentIndex(combo_index(self.ElecSys_Alternator_Fan_Belt, "Alternator Fan Belt"))
+            self.ElecSys_Alternator_Noise.setCurrentIndex(combo_index(self.ElecSys_Alternator_Noise, "Alternator Noise"))
+            self.ElecSys_Horn.setCurrentIndex(combo_index(self.ElecSys_Horn, "Horn"))
+            self.ElecSys_Blower_Heater.setCurrentIndex(combo_index(self.ElecSys_Blower_Heater, "Blower Heater"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -504,6 +574,15 @@ class AddAVehicleFit(QWidget):
             row4_layout.addLayout(self.AirIntakeSys_TGC_Lvl_Check_layout)
             row4_layout.addLayout(self.AirIntakeSys_TGC_Oil_Cond_layout)
 
+            self.AirIntakeSys_Air_Cleaner_Cond.setCurrentIndex(combo_index(self.AirIntakeSys_Air_Cleaner_Cond, "Air Cleaner Cond"))
+            self.AirIntakeSys_Air_Cleaner_Seal.setCurrentIndex(combo_index(self.AirIntakeSys_Air_Cleaner_Seal, "Air Cleaner Seal"))
+            self.AirIntakeSys_Hoses_Valves.setCurrentIndex(combo_index(self.AirIntakeSys_Hoses_Valves, "Hoses & Valves"))
+            self.AirIntakeSys_Bluge_Pump.setCurrentIndex(combo_index(self.AirIntakeSys_Bluge_Pump, "Bluge Pump"))
+            self.AirIntakeSys_BP_Dust_Cover.setCurrentIndex(combo_index(self.AirIntakeSys_BP_Dust_Cover, "BP Dust Cover"))
+            self.AirIntakeSys_Hyd_Oil_Lvl_Check.setCurrentIndex(combo_index(self.AirIntakeSys_Hyd_Oil_Lvl_Check, "Hyd Oil Lvl Check"))
+            self.AirIntakeSys_TGC_Lvl_Check.setCurrentIndex(combo_index(self.AirIntakeSys_TGC_Lvl_Check, "TGC Lvl Check"))
+            self.AirIntakeSys_TGC_Oil_Cond.setCurrentIndex(combo_index(self.AirIntakeSys_TGC_Oil_Cond, "TGC Oil Cond"))
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -550,6 +629,12 @@ class AddAVehicleFit(QWidget):
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(self.TxSys_Tx_Oil_Cond_layout)
 
+            self.TxSys_Stall_Test.setCurrentIndex(combo_index(self.TxSys_Stall_Test, "Stall Test"))
+            self.TxSys_Steering_Planetary_Gear.setCurrentIndex(combo_index(self.TxSys_Steering_Planetary_Gear, "Steering Planetary Gear"))
+            self.TxSys_Final_Drive_Func.setCurrentIndex(combo_index(self.TxSys_Final_Drive_Func, "Final Drive Func"))
+            self.TxSys_Tx_Oil_Lvl.setCurrentIndex(combo_index(self.TxSys_Tx_Oil_Lvl, "Tx Oil Lvl"))
+            self.TxSys_Tx_Oil_Cond.setCurrentIndex(combo_index(self.TxSys_Tx_Oil_Cond, "Tx Oil Cond"))
+
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -589,6 +674,12 @@ class AddAVehicleFit(QWidget):
 
             row3_layout = QHBoxLayout()
             row3_layout.addLayout(self.SteeringCon_Steering_Pump_layout)
+
+            self.SteeringCon_Stick_Lever_Shift.setCurrentIndex(combo_index(self.SteeringCon_Stick_Lever_Shift, "Stick Lever Shift"))
+            self.SteeringCon_Stick_Play.setCurrentIndex(combo_index(self.SteeringCon_Stick_Play, "Stick Play"))
+            self.SteeringCon_Connect_Rod_Adj.setCurrentIndex(combo_index(self.SteeringCon_Connect_Rod_Adj, "Connect Rod Adj"))
+            self.SteeringCon_Steering_Linkages.setCurrentIndex(combo_index(self.SteeringCon_Steering_Linkages, "Steering Linkages"))
+            self.SteeringCon_Steering_Pump.setCurrentIndex(combo_index(self.SteeringCon_Steering_Pump, "Steering Pump"))
 
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
@@ -633,6 +724,15 @@ class AddAVehicleFit(QWidget):
             row2_layout.addLayout(self.FuelSys_Fuel_Distr_Cork_layout)
             row2_layout.addLayout(self.FuelSys_Fuel_Tk_Cap_layout)
             row2_layout.addLayout(self.FuelSys_Tk_Inner_Cond_layout)
+
+            self.FuelSys_Fuel_Filter_Cond.setCurrentIndex(combo_index(self.FuelSys_Fuel_Filter_Cond, "Fuel Filter Cond"))
+            self.FuelSys_Fuel_Lines_Leakage.setCurrentIndex(combo_index(self.FuelSys_Fuel_Lines_Leakage, "Fuel Lines Leakage"))
+            self.FuelSys_Fuel_Filter_Body.setCurrentIndex(combo_index(self.FuelSys_Fuel_Filter_Body, "Fuel Filter Body"))
+            self.FuelSys_Fuel_Tk_Strainer.setCurrentIndex(combo_index(self.FuelSys_Fuel_Tk_Strainer, "Fuel Tk Strainer"))
+            self.FuelSys_Fuel_Guage.setCurrentIndex(combo_index(self.FuelSys_Fuel_Guage, "FS Fuel Guage"))
+            self.FuelSys_Fuel_Distr_Cork.setCurrentIndex(combo_index(self.FuelSys_Fuel_Distr_Cork, "Fuel Distr Cork"))
+            self.FuelSys_Fuel_Tk_Cap.setCurrentIndex(combo_index(self.FuelSys_Fuel_Tk_Cap, "Fuel Tk Cap"))
+            self.FuelSys_Tk_Inner_Cond.setCurrentIndex(combo_index(self.FuelSys_Tk_Inner_Cond, "Tk Inner Cond"))
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
@@ -730,17 +830,26 @@ class AddAVehicleFit(QWidget):
                         selected_text = widget.currentText().strip()
                         add_a_vehicle_fit_data[key] = None if selected_text == "--Select--" else selected_text
 
-        
-        add_a_vehicle_fit_data['created_by'] = self.user_id
+        add_a_vehicle_fit_data['updated_by'] = self.user_id
+        add_a_vehicle_fit_data['updated_at'] = datetime.now()
 
-        is_data_inserted = self.db_obj.insert_a_vehicle_fit(add_a_vehicle_fit_data)
+        is_data_inserted = self.db_obj.update_a_vehicle_fit(add_a_vehicle_fit_data, self.data['id'])
         if not is_data_inserted:
-            QMessageBox.warning(self, "Failed", "Error while saving the data..! Please Try Again")
+            QMessageBox.warning(self, "Failed", "Error while updating the data..! Please Try Again")
             return
         else:
-            QMessageBox.information(self, "Success", "Vehicle added successfully!")
-            return
-       
+            QMessageBox.information(self, "Success", "Vehicle Updated successfully!")
+            self.cancel_button()
+    
+    def cancel_button(self):
+        if hasattr(self.main_parent_welcome, "all_a_vehicle_fit_obj"):
+            self.main_parent_welcome.all_a_vehicle_fit_obj.populate_table()
+        self.main_parent_welcome.content_area.setCurrentWidget(self.main_parent_welcome.all_a_vehicle_fit_obj)
+        self.main_parent_welcome.content_area.removeWidget(self)
+        self.deleteLater()
+
+        # Reset the reference so it does not hold a deleted object
+        self.main_parent_welcome.update_a_vehicle_fit_obj = None
         
     def clear_fields(self):
         pass

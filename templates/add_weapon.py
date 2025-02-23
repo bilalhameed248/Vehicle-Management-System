@@ -129,27 +129,17 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.T_Pod_Leg_lock_handle_layout)
             row1_layout.addLayout(self.T_Pod_Anchor_claw_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.T_Pod_Leveling_Bubbles_layout)
-            row2_layout.addLayout(self.T_Pod_Lubrication_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.T_Pod_Pull_tube_layout)
-            row3_layout.addLayout(self.T_Pod_Detent_stop_lever_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.T_Pod_Foot_pad_legs_body_condition_layout)
+            row1_layout.addLayout(self.T_Pod_Leveling_Bubbles_layout)
+            row1_layout.addLayout(self.T_Pod_Lubrication_layout)
+            row1_layout.addLayout(self.T_Pod_Pull_tube_layout)
+            row1_layout.addLayout(self.T_Pod_Detent_stop_lever_layout)
+            row1_layout.addLayout(self.T_Pod_Foot_pad_legs_body_condition_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
+            form_layout.addWidget(group_box, row, col, 1, 4)
 
             # Store references to input fields
             self.T_Pod_fields[title] = {
@@ -180,28 +170,22 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.T_Unit_Traversing_Lock_layout)
             row1_layout.addLayout(self.T_Unit_Elevation_lock_check_layout)
+            row1_layout.addLayout(self.T_Unit_Elevation_lock_handle_layout)
+            row1_layout.addLayout(self.T_Unit_Viscosity_of_Viscos_damper_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.T_Unit_Elevation_lock_handle_layout)
-            row2_layout.addLayout(self.T_Unit_Viscosity_of_Viscos_damper_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.T_Unit_Azimuth_lock_check_layout)
-            row3_layout.addLayout(self.T_Unit_Lubrication_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.T_Unit_Protective_cover_layout)
-            row4_layout.addLayout(self.T_Unit_Coil_Card_layout)
-
+            row2_layout.addLayout(self.T_Unit_Azimuth_lock_check_layout)
+            row2_layout.addLayout(self.T_Unit_Lubrication_layout)
+            row2_layout.addLayout(self.T_Unit_Protective_cover_layout)
+            row2_layout.addLayout(self.T_Unit_Coil_Card_layout)
+            
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
+            # group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
+            form_layout.addWidget(group_box, row, col, 1, 4)
 
             # Store references to input fields
             self.T_Unit_fields[title] = {
@@ -236,36 +220,25 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.OS_Eye_Shield_layout)
             row1_layout.addLayout(self.OS_Focusing_knob_layout)
+            row1_layout.addLayout(self.OS_Sillica_gel_condition_layout)
+            row1_layout.addLayout(self.OS_Reticle_lamp_layout)
+            row1_layout.addLayout(self.OS_Body_condition_layout)
+            row1_layout.addLayout(self.OS_N2_purg_filling_connection_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.OS_Sillica_gel_condition_layout)
-            row2_layout.addLayout(self.OS_Reticle_lamp_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.OS_Body_condition_layout)
-            row3_layout.addLayout(self.OS_N2_purg_filling_connection_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.OS_Reticle_switch_layout)
-            row4_layout.addLayout(self.OS_Cable_connector_layout)
-
-            row5_layout = QHBoxLayout()
-            row5_layout.addLayout(self.OS_Locking_device_layout)
-            row5_layout.addLayout(self.OS_Lens_cover_layout)
-
-            row6_layout = QHBoxLayout()
-            row6_layout.addLayout(self.OS_Objective_lens_layout)
+            row2_layout.addLayout(self.OS_Reticle_switch_layout)
+            row2_layout.addLayout(self.OS_Cable_connector_layout)
+            row2_layout.addLayout(self.OS_Locking_device_layout)
+            row2_layout.addLayout(self.OS_Lens_cover_layout)
+            row2_layout.addLayout(self.OS_Objective_lens_layout)
+            
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
-            group_layout.addLayout(row5_layout)
-            group_layout.addLayout(row6_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 4)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
@@ -300,27 +273,17 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.DMGS_Meter_indicator_AZ_Elev_layout)
             row1_layout.addLayout(self.DMGS_Sockets_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.DMGS_MGS_DMGS_case_layout)
-            row2_layout.addLayout(self.DMGS_Protective_cover_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.DMGS_Cable_layout)
-            row3_layout.addLayout(self.DMGS_Bty_connector_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.DMGS_Self_test_layout)
+            row1_layout.addLayout(self.DMGS_MGS_DMGS_case_layout)
+            row1_layout.addLayout(self.DMGS_Protective_cover_layout)
+            row1_layout.addLayout(self.DMGS_Cable_layout)
+            row1_layout.addLayout(self.DMGS_Bty_connector_layout)
+            row1_layout.addLayout(self.DMGS_Self_test_layout)            
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
+            form_layout.addWidget(group_box, row, col, 1, 4)
 
             # Store references to input fields
             self.DMGS_fields[title] = {
@@ -370,22 +333,16 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.TVPC_Body_Condition_layout)
             row1_layout.addLayout(self.TVPC_Fly_Net_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.TVPC_On_Off_Switch_layout)
-            row2_layout.addLayout(self.TVPC_Indicator_It_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.TVPC_Connector_layout)
-            row3_layout.addLayout(self.TVPC_Voltage_layout)
+            row1_layout.addLayout(self.TVPC_On_Off_Switch_layout)
+            row1_layout.addLayout(self.TVPC_Indicator_It_layout)
+            row1_layout.addLayout(self.TVPC_Connector_layout)
+            row1_layout.addLayout(self.TVPC_Voltage_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 3)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
@@ -415,26 +372,20 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.Bty_BB_287_Bty_connector_layout)
             row1_layout.addLayout(self.Bty_BB_287_Voltage_24V_sec_layout)
+            row1_layout.addLayout(self.Bty_BB_287_Voltage_50V_layout)
+            row1_layout.addLayout(self.Bty_BB_287_Voltage_50V_sec_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.Bty_BB_287_Voltage_50V_layout)
-            row2_layout.addLayout(self.Bty_BB_287_Voltage_50V_sec_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.Bty_BB_287_Bty_condition_layout)
-            row3_layout.addLayout(self.Bty_BB_287_Bty_Tvpc_layout)
-
-            row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.Bty_BB_287_Power_cable_condition_layout)
+            row2_layout.addLayout(self.Bty_BB_287_Bty_condition_layout)
+            row2_layout.addLayout(self.Bty_BB_287_Bty_Tvpc_layout)
+            row2_layout.addLayout(self.Bty_BB_287_Power_cable_condition_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
-            group_layout.addLayout(row4_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 2)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
@@ -463,21 +414,19 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.NVS_Coolant_unit_layout)
             row1_layout.addLayout(self.NVS_Eye_piece_layout)
+            row1_layout.addLayout(self.NVS_Cable_connector_layout)
 
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.NVS_Cable_connector_layout)
             row2_layout.addLayout(self.NVS_Lens_assy_layout)
-
-            row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.NVS_Power_cable_condition_layout)
+            row2_layout.addLayout(self.NVS_Power_cable_condition_layout)
+            
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
-            group_layout.addLayout(row3_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 2)
             # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
@@ -502,13 +451,10 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.BPC_Body_layout)
             row1_layout.addLayout(self.BPC_Cables_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.BPC_On_Off_Switch_layout)
+            row1_layout.addLayout(self.BPC_On_Off_Switch_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
@@ -534,17 +480,13 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.VPC_Body_layout)
             row1_layout.addLayout(self.VPC_Switch_layout)
-
-            row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.VPC_VPC_Power_Cable_layout)
+            row1_layout.addLayout(self.VPC_VPC_Power_Cable_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
-            group_layout.addLayout(row2_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 1)
-            # form_layout.addWidget(group_box, row, col)
 
             # Store references to input fields
             self.VPC_fields[title] = {
@@ -595,33 +537,27 @@ class AddWeapon(QWidget):
             row1_layout = QHBoxLayout()
             row1_layout.addLayout(self.Doc_6_Monthly_verification_record_layout)
             row1_layout.addLayout(self.Doc_Last_ATI_pts_has_been_killed_layout)
-
+            row1_layout.addLayout(self.Doc_Bty_charging_record_layout)
+            
             row2_layout = QHBoxLayout()
-            row2_layout.addLayout(self.Doc_Bty_charging_record_layout)
             row2_layout.addLayout(self.Doc_Storage_temp_Humidity_record_layout)
-
+            row2_layout.addLayout(self.Doc_Firing_record_check_layout)
+            row2_layout.addLayout(self.Doc_Svc_ability_Completeness_of_tools_accy_layout)
+            
             row3_layout = QHBoxLayout()
-            row3_layout.addLayout(self.Doc_Firing_record_check_layout)
-            row3_layout.addLayout(self.Doc_Svc_ability_Completeness_of_tools_accy_layout)
-
+            row3_layout.addLayout(self.Doc_Self_test_record_check_layout)
+            row3_layout.addLayout(self.Doc_Is_eARMS_fully_func_layout)
+            
             row4_layout = QHBoxLayout()
-            row4_layout.addLayout(self.Doc_Self_test_record_check_layout)
-            row4_layout.addLayout(self.Doc_Is_eARMS_fully_func_layout)
-
-            row5_layout = QHBoxLayout()
-            row5_layout.addLayout(self.Doc_Complete_eqpt_inventory_update_on_eARMS_layout)
-            row5_layout.addLayout(self.Doc_DRWO_work_order_being_processed_on_eARMS_layout)
-
-            row6_layout = QHBoxLayout()
-            row6_layout.addLayout(self.Doc_Are_Log_book_maintain_properly_layout)
+            row4_layout.addLayout(self.Doc_Complete_eqpt_inventory_update_on_eARMS_layout)
+            row4_layout.addLayout(self.Doc_DRWO_work_order_being_processed_on_eARMS_layout)
+            row4_layout.addLayout(self.Doc_Are_Log_book_maintain_properly_layout)
 
             # Add rows to the group layout
             group_layout.addLayout(row1_layout)
             group_layout.addLayout(row2_layout)
             group_layout.addLayout(row3_layout)
             group_layout.addLayout(row4_layout)
-            group_layout.addLayout(row5_layout)
-            group_layout.addLayout(row6_layout)
 
             group_box.setLayout(group_layout)
             form_layout.addWidget(group_box, row, col, 1, 4)
@@ -656,7 +592,7 @@ class AddWeapon(QWidget):
             group_layout.addLayout(row1_layout)
 
             group_box.setLayout(group_layout)
-            form_layout.addWidget(group_box, row, col, 1, 1)
+            form_layout.addWidget(group_box, row, col, 1, 4)
 
             # # Store references to input fields
             self.Status_fields[title] = {
@@ -666,18 +602,18 @@ class AddWeapon(QWidget):
         # Maintenance Sections
         add_basic_section("Basic Details", 0, 0)
         T_Pod_Section("T.Pod", 2, 0)
-        T_Unit_Section("T. Unit", 2, 1)
-        OS_Section("OS", 2, 2)
-        DMGS_Section("DMGS", 4, 0)
-        L_Tube_section("L-Tube", 4, 1)
-        TVPC_Section("TVPC", 4, 2)
-        Bty_BB_287_Section("Bty BB-287", 6, 0)
-        NVS_Section("NVS", 6, 1)
-        BPC_Section("BPC", 6, 2)
-        VPC_Section("VPC", 8, 0)
-        L_Bty_section("L.Bty", 8, 1)
-        Doc_section("Doc", 10, 0)
-        Status_section("Status", 12, 0)
+        T_Unit_Section("T. Unit", 4, 0)
+        OS_Section("OS", 6, 0)
+        DMGS_Section("DMGS", 8, 0)
+        L_Tube_section("L-Tube", 10, 0)
+        TVPC_Section("TVPC", 10, 1)
+        Bty_BB_287_Section("Bty BB-287", 12, 0)
+        NVS_Section("NVS", 12, 2)
+        BPC_Section("BPC", 14, 0)
+        VPC_Section("VPC", 14, 1)
+        L_Bty_section("L.Bty", 14, 2)
+        Doc_section("Doc", 16, 0)
+        Status_section("Status", 18, 0)
 
         # Buttons
         button_layout = QHBoxLayout()

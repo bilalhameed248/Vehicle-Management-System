@@ -19,7 +19,6 @@ class AVehicleReportView(QWidget):
         # print("self.user_id:",self.user_id)
         # print("self.username:",self.username)
         self.data = data if data else {}
-        print(self.data, len(self.data))
         self.db_to_display = db_to_display
         self.main_header = main_heading if main_heading else {}
         self.main_parent_welcome = parent
@@ -70,16 +69,9 @@ class AVehicleReportView(QWidget):
         """)
 
     def calculate_score(self):
-        print("\n\n,self.data", len(self.data))
         keys_to_remove = {'BA NO', 'Make', 'Type', 'CI', 'In Svc', 'Created By', 'Created At', 'id'}
         filtered_data = {key: value for key, value in self.data.items() if key not in keys_to_remove}
-
-
         
-        print("\n\nfiltered_data,",filtered_data)
-        print("\n\nlen(filtered_data)",len(filtered_data))
-        print("\n\nlen(keys)",len(filtered_data.keys()))
-
         total_score = 75
         complete_score = 0
         incomplete_score = 0

@@ -4,7 +4,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QFont, QPainte
 from PyQt5.QtCore import Qt, QTimer, QSize, QRect
 from database import VMS_DB
 from templates.vehicle_report import VehicleReport
-from templates.update_vehicle import UpdateVehicle
+from templates.update_a_vehicle_fit import UpdateAVehicleFit
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from controllers.load_assets import *
@@ -162,12 +162,12 @@ class ViewALLAVehiclesFit(QWidget):
             "Hyd Ramp": ["Hyd Oil Lvl","TGS Oil Lvl","Tx Oil","Tx Filter","Fan Mech Oil"],
             "Lub Sys": ["Eng Oil","EO Cond","Oil Sump", "LS Leakage", "Oil Grade","Lub"],
             "Tr Sys": [	"Tr Chain Adj","Tr Chain Play","Tr Pin Adj","Tr Pad Thickness","Sproket Wh Life","Tr Tensioner"],
-            "Bty & Assys":["Cradle Fitting","Electolyte Lvl","Terminals","Mineral Jelly","Vent Plug","Bty Ser (LB)"],
+            "Bty & Assys": ["Cradle Fitting","Electolyte Lvl","Terminals","Mineral Jelly","Vent Plug","Bty Ser (LB)"],
             "Boggy Wh": ["Rubber Cond","Lub Pts","Inner / Outer Bearing"],
             "Brk Sys": ["Brk Fluid","Brk Lever"],
             "Elec Sys":	["Ign Sw","Water Temp Guage","Fuse Box","Fuse Svc","Oil Pressure Guage","RPM Guage","Oil Temp Guage","Self-Starter Motor",
                         "Alternator Func","ES Fuel Guage","Electric Harness","Alternator Fan Belt","Alternator Noise","Horn","Blower Heater"],
-            "Air Intake Sys":["Air Cleaner Cond",	"Air Cleaner Seal",	"Hoses & Valves","Bluge Pump","BP Dust Cover","Hyd Oil Lvl Check", 
+            "Air Intake Sys": ["Air Cleaner Cond",	"Air Cleaner Seal",	"Hoses & Valves","Bluge Pump","BP Dust Cover","Hyd Oil Lvl Check", 
                          "TGC Lvl Check","TGC Oil Cond"],
             "Tx Sys": ["Stall Test", "Steering Planetary Gear","Final Drive Func", "Tx Oil Lvl", "Tx Oil Cond" ],
             "Steering Con": ["Stick Lever Shift","Stick Play","Connect Rod Adj","Steering Linkages","Steering Pump"],
@@ -498,16 +498,15 @@ class ViewALLAVehiclesFit(QWidget):
 
     def edit_row(self, row):
         pass
-        # # print("edit_row parent:",self.main_parent, "\n\n")
-        # if hasattr(self.main_parent, "update_vehicle_obj") and self.main_parent.update_vehicle_obj is not None:
-        #     self.main_parent.content_area.removeWidget(self.main_parent.update_vehicle_obj)
-        #     self.main_parent.update_vehicle_obj.deleteLater()
-        #     self.main_parent.update_vehicle_obj = None  # Reset the reference
+        if hasattr(self.main_parent, "update_a_vehicle_fit_obj") and self.main_parent.update_a_vehicle_fit_obj is not None:
+            self.main_parent.content_area.removeWidget(self.main_parent.update_a_vehicle_fit_obj)
+            self.main_parent.update_a_vehicle_fit_obj.deleteLater()
+            self.main_parent.update_a_vehicle_fit_obj = None  # Reset the reference
 
-        # # Create new instance and switch view
-        # self.main_parent.update_vehicle_obj = UpdateVehicle(user_session = self.user_session, data = row, parent = self.main_parent)
-        # self.main_parent.content_area.addWidget(self.main_parent.update_vehicle_obj)
-        # self.main_parent.content_area.setCurrentWidget(self.main_parent.update_vehicle_obj)
+        # Create new instance and switch view
+        self.main_parent.update_a_vehicle_fit_obj = UpdateAVehicleFit(user_session = self.user_session, data = row, parent = self.main_parent)
+        self.main_parent.content_area.addWidget(self.main_parent.update_a_vehicle_fit_obj)
+        self.main_parent.content_area.setCurrentWidget(self.main_parent.update_a_vehicle_fit_obj)
 
 
     def delete_row(self, row):
@@ -529,7 +528,6 @@ class ViewALLAVehiclesFit(QWidget):
 
 
     def report_row(self, row):
-        print("Len in button:", len(row))
         # print("edit_row parent:",self.main_parent, "\n\n")
         if hasattr(self.main_parent, "a_veh_rpt_view_obj") and self.main_parent.a_veh_rpt_view_obj is not None:
             self.main_parent.content_area.removeWidget(self.main_parent.a_veh_rpt_view_obj)

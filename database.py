@@ -579,7 +579,8 @@ class VMS_DB:
             traceback.print_exc()
             print(f"Exception: get_A_vehicle_fit {e}")
             return []
-        
+
+
     def get_a_vehicle_fit_count(self):
         try:
             conn, cursor = self.db_connect()
@@ -648,6 +649,44 @@ class VMS_DB:
         except Exception as e:
             traceback.print_exc()
             print(f"Exception: insert_vehicle {e}")
+            return False
+        
+
+    def update_a_vehicle_fit(self, data, vehicle_id):
+        try:
+            conn, cursor = self.db_connect()
+            data = {k: (v if v != "" else None) for k, v in data.items()}
+            sql = """
+                UPDATE A_VEH_FITNESS_CHECK
+                SET 
+                    ba_no_input = ?, make_input = ?, type_input = ?, CI_input = ?, In_Svc_input = ?,
+                    Cooling_Fins = ?, Cooling_Rad_Paint = ?, Cooling_Coolant = ?, Cooling_Leakage = ?, Cooling_Rad_Cap = ?, Cooling_Fan_Belt = ?,
+                    HydRamp_Hyd_Oil_Lvl = ?, HydRamp_TGS_Oil_Lvl = ?, HydRamp_Tx_Oil = ?, HydRamp_Tx_Filter = ?, HydRamp_Fan_Mech_Oil = ?,
+                    LubSys_Eng_Oil = ?, LubSys_EO_Cond = ?, LubSys_Oil_Sump = ?, LubSys_Leakage = ?, LubSys_Oil_Grade = ?, LubSys_Lub = ?,
+                    TrSys_Tr_Chain_Adj = ?, TrSys_Tr_Chain_Play = ?, TrSys_Tr_Pin_Adj = ?, TrSys_Tr_Pad_Thickness = ?, TrSys_Sproket_Wh_Life = ?, TrSys_Tr_Tensioner = ?,                    
+                    BtyAssys_Cradle_Fitting = ?, BtyAssys_Electrolyte_Lvl = ?, BtyAssys_Terminals = ?, BtyAssys_Mineral_Jelly = ?, BtyAssys_Vent_Plug = ?, BtyAssys_Bty_Ser_LB = ?,                    
+                    BoggyWh_Rubber_Cond = ?, BoggyWh_Lub_Pts = ?, BoggyWh_Inner_Outer_Bearing = ?,
+                    BrkSys_Brk_Fluid = ?, BrkSys_Brk_Lever = ?,
+                    ElecSys_Ign_Sw = ?, ElecSys_Water_Temp_Guage = ?, ElecSys_Fuse_Box = ?, ElecSys_Fuse_Svc = ?, ElecSys_Oil_Pressure_Guage = ?, ElecSys_RPM_Guage = ?,
+                    ElecSys_Oil_Temp_Guage = ?, ElecSys_Self_Starter_Motor = ?, ElecSys_Alternator_Func = ?, ElecSys_Fuel_Guage = ?, ElecSys_Electric_Harness = ?,
+                    ElecSys_Alternator_Fan_Belt = ?, ElecSys_Alternator_Noise = ?, ElecSys_Horn = ?, ElecSys_Blower_Heater = ?,
+                    AirIntakeSys_Air_Cleaner_Cond = ?, AirIntakeSys_Air_Cleaner_Seal = ?, AirIntakeSys_Hoses_Valves = ?, AirIntakeSys_Bluge_Pump = ?, AirIntakeSys_BP_Dust_Cover = ?,
+                    AirIntakeSys_Hyd_Oil_Lvl_Check = ?, AirIntakeSys_TGC_Lvl_Check = ?, AirIntakeSys_TGC_Oil_Cond = ?,
+                    TxSys_Stall_Test = ?, TxSys_Steering_Planetary_Gear = ?, TxSys_Final_Drive_Func = ?, TxSys_Tx_Oil_Lvl = ?, TxSys_Tx_Oil_Cond = ?,
+                    SteeringCon_Stick_Lever_Shift = ?, SteeringCon_Stick_Play = ?, SteeringCon_Connect_Rod_Adj = ?, SteeringCon_Steering_Linkages = ?, SteeringCon_Steering_Pump = ?,
+                    FuelSys_Fuel_Filter_Cond = ?, FuelSys_Fuel_Lines_Leakage = ?, FuelSys_Fuel_Filter_Body = ?, FuelSys_Fuel_Tk_Strainer = ?, FuelSys_Fuel_Guage = ?,
+                    FuelSys_Fuel_Distr_Cork = ?, FuelSys_Fuel_Tk_Cap = ?, FuelSys_Tk_Inner_Cond = ?,
+                    updated_by = ?, updated_at = ?
+                WHERE id = ?;
+            """
+            vehicle_data_with_id = tuple(data.values()) + (vehicle_id,)
+            cursor.execute(sql, vehicle_data_with_id)
+            conn.commit()
+            self.db_disconnect(conn, cursor)
+            return True
+        except Exception as e:
+            traceback.print_exc()
+            print(f"Exception: update_a_vehicle_fit {e}")
             return False
 
     def delete_a_vehicle_fit(self, vehicle_id):
