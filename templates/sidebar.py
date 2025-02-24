@@ -4,100 +4,21 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QFormLa
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QColor, QFont, QIcon
 from PyQt5.QtCore import QPropertyAnimation, QRect
-
-import sqlite3
 from controllers.load_assets import *
-from database import VMS_DB
-from templates.welcome_summary import WelcomeSummary
-from templates.add_vehicle import AddVehicle
-from templates.view_all_vehicles import ViewALLVehicles
-from templates.add_weapon import AddWeapon
-from templates.view_all_weapons import ViewALLWeapons
-from templates.view_all_a_vehicles_fit import ViewALLAVehiclesFit
-from templates.add_a_vehicle_fit import AddAVehicleFit
-from templates.users import Users
 
-class WelcomePage(QWidget):
-
-    def __init__(self, session):
-        super().__init__()
-        self.setWindowTitle("Home - ArmourTrack")
-        self.setStyleSheet("background-color: #1E1E1E;")
-        self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
-        self.setWindowState(Qt.WindowMaximized)
-        self.show()
-        self.user_session = session
-        self.db_obj = VMS_DB()
-        self.welcome_summary_obj = WelcomeSummary()
-        self.add_vehicle_obj = AddVehicle(self.user_session)
-        self.initUI()
-
-
-    def initUI(self):
-        self.main_layout = QVBoxLayout()
-        
-        # Top Navigation Bar
-        navbar = self.create_navbar()
-        self.main_layout.addWidget(navbar)
-        
-        # Main Content Area (Horizontal Split: Left Menu & Right Content)
-        self.content_layout = QHBoxLayout()
-        
-        # Left Menu
-        self.menu_frame = self.create_menu()
-        self.content_layout.addWidget(self.menu_frame)
-        
-        # Right Content Area
-        self.content_area = QStackedWidget()
-        self.content_area.addWidget(self.welcome_summary_obj)  # Initial Page
-        self.content_layout.addWidget(self.content_area)
-
-        # Set stretch factors: Menu (index 0) should not stretch, Content area (index 1) should expand
-        self.content_layout.setStretch(0, 0)  # Left menu should not expand
-        self.content_layout.setStretch(1, 5)  # Right content should take up remaining space
-        
-        
-        self.main_layout.addLayout(self.content_layout)
-        self.setLayout(self.main_layout)
-
-        self.sidebar_expanded = True
-
-
-    def create_navbar(self):
-        navbar = QFrame(self)
-        navbar.setStyleSheet(""" background-color: #2C3E50; color: white; padding: 2px; """)
-        navbar_layout = QHBoxLayout()
-        
-        # Title on the left
-        title_label = QLabel("ArmourTrack")
-        title_label.setFont(QFont("Arial", 18, QFont.Bold))
-        title_label.setStyleSheet("color: white;")
-        
-        # Profile & Logout Buttons on the right
-        self.profile_button = QPushButton("Profile")
-        self.logout_button = QPushButton("Logout")
-        
-        for button in [self.profile_button, self.logout_button]:
-            button.setStyleSheet("""
-                QPushButton { background-color: #2980B9; color: white; border-radius: 5px; padding: 8px 15px; font-size: 14px; }
-                QPushButton:hover { background-color: #3498DB; }
-            """)
-        
-        self.profile_button.setIcon(QIcon(get_asset_path("assets/icons/profile.png")))
-        self.profile_button.setIconSize(QSize(20, 20))
-        self.logout_button.setIcon(QIcon(get_asset_path("assets/icons/logout.png")))
-        self.logout_button.setIconSize(QSize(20, 20))
-
-        self.logout_button.clicked.connect(self.logout_function)
-        
-        navbar_layout.addWidget(title_label)
-        navbar_layout.addStretch()
-        navbar_layout.addWidget(self.profile_button)
-        navbar_layout.addWidget(self.logout_button)
-        
-        navbar.setLayout(navbar_layout)
-        return navbar
+class Sidebar:
     
+    def __init__(self):
+        pass
+
+    def menu_separator(self):
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setStyleSheet("background-color: #BDC3C7; height: 1px;")
+        return separator
+    
+
     def create_menu(self):
         menu_layout = QVBoxLayout()
         menu_layout.setSpacing(10)
@@ -162,7 +83,7 @@ class WelcomePage(QWidget):
         self.view_all_weapon_button.clicked.connect(lambda: self.show_all_weapon_page(self.view_all_weapon_button))
 
         self.users_management_button.clicked.connect(lambda: self.show_users_management_button_page(self.users_management_button))
-
+        
         # Initially collapse all categories
         self.toggle_category(vehicle_header, self.vehicle_container)
         self.toggle_category(weapon_header, self.weapon_container)
@@ -217,6 +138,48 @@ class WelcomePage(QWidget):
             header.setArrowType(Qt.RightArrow)
 
 
+    def create_menu1(self):
+        menu_layout = QVBoxLayout()
+        menu_layout.setSpacing(20)
+        menu_layout.setAlignment(Qt.AlignTop)
+
+        # Add toggle button at the bottom of the menu
+        self.toggle_button = QPushButton()
+        self.toggle_button.setCheckable(True)
+        self.toggle_button.setIcon(QIcon(get_asset_path("assets/icons/sidebar.png")))
+        self.toggle_button.setIconSize(QSize(24, 24))  # Adjust size if needed
+        self.toggle_button.setStyleSheet("""
+            QPushButton { background-color: #2C3E50; color: white; border-radius: 5px; padding: 10px; }
+            QPushButton:hover { background-color: #3498DB; }
+        """)
+        self.toggle_button.clicked.connect(self.toggle_menu)
+        menu_layout.addWidget(self.toggle_button)
+
+        self.home = self.create_menu_button("Home", "assets/icons/home.png")
+        
+        self.add_vehicle_button = self.create_menu_button("Add New Vehicle", "assets/icons/vehicle_add.png")
+        self.view_all_vehicle_button = self.create_menu_button("View All Vehicles", "assets/icons/vehicle_view.png")
+
+        self.add_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness", "assets/icons/a_veh.png")
+        self.view_A_vehicle_fit_button = self.create_menu_button("A VEH Fitness Check", "assets/icons/a_veh_view.png")
+
+        self.add_weapon_button = self.create_menu_button("Add New Weapon", "assets/icons/add_weapon.png")
+        self.view_all_weapon_button = self.create_menu_button("View All Weapon", "assets/icons/view_all_weapons.png")
+        
+        self.users_management_button = self.create_menu_button("Users", "assets/icons/users.png")
+
+        for button in [self.home, self.add_vehicle_button, self.view_all_vehicle_button, self.add_A_vehicle_fit_button, self.view_A_vehicle_fit_button, self.add_weapon_button, self.view_all_weapon_button, self.users_management_button]:
+            menu_layout.addWidget(button)
+            if button in [self.view_all_vehicle_button, self.view_A_vehicle_fit_button, self.view_all_weapon_button]:
+                menu_layout.addWidget(self.menu_separator())
+
+        menu_frame = QFrame(self)
+        menu_frame.setLayout(menu_layout)
+        menu_frame.setStyleSheet("background-color: #34495E; color: white; padding: 10px;")
+        menu_frame.setFixedWidth(310)
+        return menu_frame
+    
+
     def toggle_menu(self):
         """Animates and toggles the sidebar width."""
         new_width = 100 if self.sidebar_expanded else 310
@@ -242,7 +205,6 @@ class WelcomePage(QWidget):
         # Adjust stretch factor to expand content when menu collapses
         self.content_layout.setStretch(0, 0 if new_width == 50 else 1)
         self.content_layout.setStretch(1, 6 if new_width == 50 else 5)
-    
 
     def create_menu_button(self, text, icon_path):
         button = QPushButton(text)
@@ -267,92 +229,3 @@ class WelcomePage(QWidget):
         clicked_button.setStyleSheet("""
             QPushButton { background-color: #2980B9; color: white; border-radius: 5px; padding: 10px 20px; text-align: left;}
         """)
-
-    def show_home_page(self, clicked_button):
-        
-        self.update_menu_button_style(clicked_button)
-        # self.content_area.addWidget(self.welcome_summary_obj)  # Add to stacked widget
-        self.welcome_summary_obj.load_data_veh()  # Reload fresh data
-        self.welcome_summary_obj.load_data_wep()  # Reload fresh data
-        self.content_area.setCurrentWidget(self.welcome_summary_obj)  # Switch view
-
-        """Switch to the 'Add New Vehicle' page."""
-        # self.update_menu_button_style(clicked_button)
-        # self.content_area.setCurrentIndex(0)
-
-    def show_add_vehicle_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        self.update_menu_button_style(clicked_button)
-        self.add_vehicle_obj = AddVehicle(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.add_vehicle_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.add_vehicle_obj)  # Switch view
-
-
-    def show_all_vehicle_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        if hasattr(self, "all_vehicle_obj"):
-            self.content_area.removeWidget(self.all_vehicle_obj)
-            self.all_vehicle_obj.deleteLater()
-            
-        self.update_menu_button_style(clicked_button)
-        self.all_vehicle_obj = ViewALLVehicles(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.all_vehicle_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.all_vehicle_obj)  # Switch view
-
-    #***********************************************************************************************************************
-
-    def show_add_A_vehicle_Fit_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        self.update_menu_button_style(clicked_button)
-        self.add_a_vehicle_fit_obj = AddAVehicleFit(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.add_a_vehicle_fit_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.add_a_vehicle_fit_obj)  # Switch view
-    
-    def show_all_A_vehicle_Fit_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        if hasattr(self, "all_a_vehicle_fit_obj"):
-            self.content_area.removeWidget(self.all_a_vehicle_fit_obj)
-            self.all_a_vehicle_fit_obj.deleteLater()
-            
-        self.update_menu_button_style(clicked_button)
-        self.all_a_vehicle_fit_obj = ViewALLAVehiclesFit(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.all_a_vehicle_fit_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.all_a_vehicle_fit_obj)  # Switch view
-
-    #***********************************************************************************************************************
-
-    def show_add_weapon_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        self.update_menu_button_style(clicked_button)
-        self.add_weapon_obj = AddWeapon(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.add_weapon_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.add_weapon_obj)  # Switch view
-
-
-    def show_all_weapon_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        if hasattr(self, "all_weapon_obj"):
-            self.content_area.removeWidget(self.all_weapon_obj)
-            self.all_weapon_obj.deleteLater()
-            
-        self.update_menu_button_style(clicked_button)
-        self.all_weapon_obj = ViewALLWeapons(user_session=self.user_session, parent=self)
-        self.content_area.addWidget(self.all_weapon_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.all_weapon_obj)  # Switch view
-
-    
-    def show_users_management_button_page(self, clicked_button):
-        """Switch to the 'Add New Vehicle' page."""
-        self.update_menu_button_style(clicked_button)
-        self.users_obj = Users(self)
-        self.content_area.addWidget(self.users_obj)  # Add to stacked widget
-        self.content_area.setCurrentWidget(self.users_obj)  # Switch view
-
-
-    def logout_function(self):
-        """Log out the user and redirect to the login page."""
-        self.user_session = None
-        self.close()
-        from templates.login import LoginPage
-        self.login_page = LoginPage()
-        self.login_page.show()
