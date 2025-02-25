@@ -16,6 +16,7 @@ from templates.view_all_weapons import ViewALLWeapons
 from templates.view_all_a_vehicles_fit import ViewALLAVehiclesFit
 from templates.add_a_vehicle_fit import AddAVehicleFit
 from templates.users import Users
+from templates.navbar import ATNavbar
 
 class WelcomePage(QWidget):
 
@@ -30,6 +31,7 @@ class WelcomePage(QWidget):
         self.db_obj = VMS_DB()
         self.welcome_summary_obj = WelcomeSummary()
         self.add_vehicle_obj = AddVehicle(self.user_session)
+        self.nav_obj = ATNavbar(parent=self)
         self.initUI()
 
 
@@ -37,7 +39,7 @@ class WelcomePage(QWidget):
         self.main_layout = QVBoxLayout()
         
         # Top Navigation Bar
-        navbar = self.create_navbar()
+        navbar = self.nav_obj.create_navbar()
         self.main_layout.addWidget(navbar)
         
         # Main Content Area (Horizontal Split: Left Menu & Right Content)
@@ -62,41 +64,6 @@ class WelcomePage(QWidget):
 
         self.sidebar_expanded = True
 
-
-    def create_navbar(self):
-        navbar = QFrame(self)
-        navbar.setStyleSheet(""" background-color: #2C3E50; color: white; padding: 2px; """)
-        navbar_layout = QHBoxLayout()
-        
-        # Title on the left
-        title_label = QLabel("ArmourTrack")
-        title_label.setFont(QFont("Arial", 18, QFont.Bold))
-        title_label.setStyleSheet("color: white;")
-        
-        # Profile & Logout Buttons on the right
-        self.profile_button = QPushButton("Profile")
-        self.logout_button = QPushButton("Logout")
-        
-        for button in [self.profile_button, self.logout_button]:
-            button.setStyleSheet("""
-                QPushButton { background-color: #2980B9; color: white; border-radius: 5px; padding: 8px 15px; font-size: 14px; }
-                QPushButton:hover { background-color: #3498DB; }
-            """)
-        
-        self.profile_button.setIcon(QIcon(get_asset_path("assets/icons/profile.png")))
-        self.profile_button.setIconSize(QSize(20, 20))
-        self.logout_button.setIcon(QIcon(get_asset_path("assets/icons/logout.png")))
-        self.logout_button.setIconSize(QSize(20, 20))
-
-        self.logout_button.clicked.connect(self.logout_function)
-        
-        navbar_layout.addWidget(title_label)
-        navbar_layout.addStretch()
-        navbar_layout.addWidget(self.profile_button)
-        navbar_layout.addWidget(self.logout_button)
-        
-        navbar.setLayout(navbar_layout)
-        return navbar
     
     def create_menu(self):
         menu_layout = QVBoxLayout()
@@ -116,35 +83,35 @@ class WelcomePage(QWidget):
         menu_layout.addWidget(self.toggle_button)
 
         # Home Button (Top-level item)
-        self.home = self.create_menu_button("Home", "assets/icons/home.png")
+        self.home = self.create_menu_button(" Home", "assets/icons/home.png")
         menu_layout.addWidget(self.home)
 
         # Vehicle Category
         vehicle_header = self.create_category_header("Vehicle", "assets/icons/vehicle.png")
         self.vehicle_container = self.create_category_container([
-            ("Add New Vehicle", "assets/icons/vehicle_add.png", "add_vehicle_button"),
-            ("View All Vehicles", "assets/icons/vehicle_view.png", "view_all_vehicle_button"),
-            ("A VEH Fitness", "assets/icons/a_veh.png", "add_A_vehicle_fit_button"),
-            ("A VEH Fitness Check", "assets/icons/a_veh_view.png", "view_A_vehicle_fit_button")
+            (" Add New Vehicle", "assets/icons/vehicle_add.png", "add_vehicle_button"),
+            (" View All Vehicles", "assets/icons/vehicle_view.png", "view_all_vehicle_button"),
+            (" Add A Vehicle", "assets/icons/a_veh.png", "add_A_vehicle_fit_button"),
+            (" View All A Vehicles", "assets/icons/a_veh_view.png", "view_A_vehicle_fit_button")
         ])
         vehicle_header.clicked.connect(lambda: self.toggle_category(vehicle_header, self.vehicle_container))
         menu_layout.addWidget(vehicle_header)
         menu_layout.addWidget(self.vehicle_container)
 
-        # Weapon Category
+        # Weapon Category 
         weapon_header = self.create_category_header("Weapon", "assets/icons/weapon.png")
         self.weapon_container = self.create_category_container([
-            ("Add New Weapon", "assets/icons/add_weapon.png", "add_weapon_button"),
-            ("View All Weapon", "assets/icons/view_all_weapons.png", "view_all_weapon_button")
+            (" Add New Weapon", "assets/icons/add_weapon.png", "add_weapon_button"),
+            (" View All Weapons", "assets/icons/view_all_weapons.png", "view_all_weapon_button")
         ])
         weapon_header.clicked.connect(lambda: self.toggle_category(weapon_header, self.weapon_container))
         menu_layout.addWidget(weapon_header)
         menu_layout.addWidget(self.weapon_container)
 
         # Settings Category
-        settings_header = self.create_category_header("Settings", "assets/icons/settings.png")
+        settings_header = self.create_category_header("Settings", "assets/icons/setting.png")
         self.settings_container = self.create_category_container([
-            ("Users", "assets/icons/users.png", "users_management_button")
+            (" Users", "assets/icons/users.png", "users_management_button")
         ])
         settings_header.clicked.connect(lambda: self.toggle_category(settings_header, self.settings_container))
         menu_layout.addWidget(settings_header)
@@ -173,31 +140,35 @@ class WelcomePage(QWidget):
         menu_frame.setStyleSheet("background-color: #34495E; color: white; padding: 10px;")
         menu_frame.setFixedWidth(310)
         return menu_frame
+        
 
     def create_category_header(self, title, icon_path):
         header = QToolButton()
         header.setText(title)
         header.setIcon(QIcon(get_asset_path(icon_path)))
+        header.setIconSize(QSize(24, 24))  # Critical addition
         header.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         header.setArrowType(Qt.RightArrow)  # Default to right arrow (collapsed)
         # header.setArrowType(Qt.DownArrow)
         header.setCheckable(True)
         # header.setChecked(True)
         header.setChecked(False)  # Start collapsed
+        header.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         header.setStyleSheet("""
             QToolButton { background-color: #2C3E50; color: white; border-radius: 5px; padding: 10px 20px;
-                text-align: left; font-weight: bold; font-size: 13px; }
+                text-align: left; font-weight: bold; font-size: 18px; }
             QToolButton:hover { background-color: #3498DB; }
             QToolButton::menu-indicator { image: none; }
         """)
         return header
+
 
     def create_category_container(self, items):
         container = QWidget()
         container.setVisible(False)
         # container.setVisible(True)
         layout = QVBoxLayout()
-        layout.setContentsMargins(15, 5, 5, 5)  # Indent subitems
+        layout.setContentsMargins(5, 5, 5, 5)  # Indent subitems
         layout.setSpacing(8)
 
         for text, icon, attr_name in items:
@@ -347,12 +318,3 @@ class WelcomePage(QWidget):
         self.users_obj = Users(self)
         self.content_area.addWidget(self.users_obj)  # Add to stacked widget
         self.content_area.setCurrentWidget(self.users_obj)  # Switch view
-
-
-    def logout_function(self):
-        """Log out the user and redirect to the login page."""
-        self.user_session = None
-        self.close()
-        from templates.login import LoginPage
-        self.login_page = LoginPage()
-        self.login_page.show()

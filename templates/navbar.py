@@ -10,6 +10,7 @@ from controllers.load_assets import *
 class ATNavbar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.main_parent = parent
         pass
 
     def create_navbar(self):
@@ -50,7 +51,8 @@ class ATNavbar(QWidget):
     def logout_function(self):
         """Log out the user and redirect to the login page."""
         self.user_session = None
-        self.close()
+        # self.close()
+        self.main_parent.close()
         from templates.login import LoginPage
         self.login_page = LoginPage()
         self.login_page.show()
