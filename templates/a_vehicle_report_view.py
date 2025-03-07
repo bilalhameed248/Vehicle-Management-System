@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt, QDate, QTimer, QSize
 from templates.view_all_vehicles import ViewALLVehicles
 from controllers.load_assets import *
 import sys
+from controllers.a_vehicle_xlsx_report import AVehXlsxReport
 
 
 class AVehicleReportView(QWidget):
@@ -22,7 +23,7 @@ class AVehicleReportView(QWidget):
         self.db_to_display = db_to_display
         self.main_header = main_heading if main_heading else {}
         self.main_parent_welcome = parent
-
+        self.score_detail = {}
         self.initUI()
 
     def initUI(self):
@@ -86,11 +87,13 @@ class AVehicleReportView(QWidget):
                 incomplete_score += 1
         complete_score_percentage = (complete_score / total_score) * 100
 
-        return {
+        self.score_detail = {
             "complete_score": complete_score,
             "incomplete_score": incomplete_score,
             "complete_score_percentage": round(complete_score_percentage, 2)
         }
+
+        return self.score_detail
 
     def create_title_header(self):
         title_label = QLabel("A VEH FITNESS CHECK MODULE")
@@ -207,7 +210,7 @@ class AVehicleReportView(QWidget):
             lbl.setStyleSheet("background-color: #D5D8DC; color: black; border: 1px solid #BDC3C7;")
 
         return lbl
-
+    
     def create_fitness_report_section(self):
         """
         Creates the "FITNESS REPORT" section at the bottom with dummy values
@@ -216,7 +219,7 @@ class AVehicleReportView(QWidget):
         report_group = QGroupBox("FITNESS REPORT")
         report_group.setStyleSheet("""
             QGroupBox { background-color: #D6EAF8; font-weight: bold; border: 2px solid #5DADE2; border-radius: 5px; margin-top: 2ex; }
-            QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top center;  padding: 0 3px; color: #1B4F72; }
+            QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top center; padding: 0 3px; color: #1B4F72; }
         """)
         layout = QHBoxLayout()
         layout.setSpacing(20)
@@ -224,23 +227,43 @@ class AVehicleReportView(QWidget):
 
         score_result = self.calculate_score()
 
-        # Dummy data: "Overall Score: 120 / 166", "Total Tests: 13", etc.
-        # You can style these similarly as needed
-        dummy_labels = [
-            f"Overall Score: {score_result['complete_score']} / 75",
-            f"Total Faults: {score_result['incomplete_score']}",
-            f"Fitness: {score_result['complete_score_percentage']}%",
-            "Download: PDF | Excel",
-            "Edit/Update: Veh Summary"
-        ]
+        # Build your dynamic text for "Overall Score" and "Total Faults", etc.
+        overall_label = QLabel(f"Overall Score: {score_result['complete_score']} / 75")
+        overall_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        layout.addWidget(overall_label)
 
-        for text in dummy_labels:
-            lbl = QLabel(text)
-            lbl.setStyleSheet("font-size: 14px; font-weight: normal;")
-            layout.addWidget(lbl)
+        faults_label = QLabel(f"Total Faults: {score_result['incomplete_score']}")
+        faults_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        layout.addWidget(faults_label)
+
+        fitness_label = QLabel(f"Fitness: {score_result['complete_score_percentage']}%")
+        fitness_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        layout.addWidget(fitness_label)
+
+        # "Download: PDF |" as a label
+        download_label = QLabel("Download::")
+        download_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        layout.addWidget(download_label)
+
+        # "Excel" as a button
+        pdf_button = QPushButton(" PDF")
+        pdf_button.setStyleSheet("font-size: 16px; font-weight: bold;")
+        pdf_button.setIcon(QIcon(get_asset_path("assets/icons/pdf_view.png")))
+        pdf_button.setIconSize(QSize(20, 20))
+        pdf_button.clicked.connect(self.on_pdf_clicked)
+        layout.addWidget(pdf_button)
+
+        # "Excel" as a button
+        excel_button = QPushButton(" Excel")
+        excel_button.setStyleSheet("font-size: 16px; font-weight: bold;")
+        excel_button.setIcon(QIcon(get_asset_path("assets/icons/xlsx.png")))
+        excel_button.setIconSize(QSize(20, 20))
+        excel_button.clicked.connect(self.on_excel_clicked)
+        layout.addWidget(excel_button)
 
         report_group.setLayout(layout)
         self.main_layout.addWidget(report_group)
+
 
     def create_field_widget(self, label_text, value_text):
         """
@@ -263,6 +286,22 @@ class AVehicleReportView(QWidget):
         vbox.addWidget(lbl_field)
         vbox.addWidget(lbl_value)
         return w
+    
+    def on_excel_clicked(self):
+        obj = AVehXlsxReport(db_to_display=self.db_to_display, main_heading=self.main_header, data=self.data, score= self.score_detail)
+        is_generated = obj.generate_report()
+        if is_generated:
+            message = "Report saved successfully to Downloads"
+        else:
+            message = "Error while generating Report."
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText(message)
+        msg.setWindowTitle("Report Generated")
+        msg.exec_()
+
+    def on_pdf_clicked(self):
+        pass
 
 
 

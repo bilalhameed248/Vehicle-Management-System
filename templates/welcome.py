@@ -22,7 +22,7 @@ class WelcomePage(QWidget):
 
     def __init__(self, session):
         super().__init__()
-        self.setWindowTitle("Home - ArmourTrack")
+        self.setWindowTitle("Home - ArmourTrack-44AK")
         self.setStyleSheet("background-color: #1E1E1E;")
         self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
         self.setWindowState(Qt.WindowMaximized)

@@ -10,7 +10,7 @@ class LoginPage(QWidget):
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Login - ArmourTrack")
+        self.setWindowTitle("Login - ArmourTrack-44AK")
         self.setStyleSheet("background-color: #1E1E1E;")
         self.setWindowIcon(QIcon(get_asset_path("assets/images/tank.png")))
         self.initUI()
@@ -38,10 +38,10 @@ class LoginPage(QWidget):
         self.title.setText("""
             <div style="text-align: center; color: #FFFFFF;">
                 <p style="font-family: Arial; font-size: 16pt; font-weight: bold; margin-bottom: 5px;">
-                    ArmourTrack
+                    ArmourTrack-44AK
                 </p>
                 <p style="font-family: Arial; font-size: 12pt;">
-                    Comprehensive Vehicle and Weapon Management System for the Pakistan Armed Forces
+                    Comprehensive Vehicle and Weapon Management System for the Pakistan Armed Forces (44-AK)
                 </p>
             </div>
         """)

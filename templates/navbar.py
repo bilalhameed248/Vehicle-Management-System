@@ -19,7 +19,7 @@ class ATNavbar(QWidget):
         navbar_layout = QHBoxLayout()
         
         # Title on the left
-        title_label = QLabel("ArmourTrack")
+        title_label = QLabel("ArmourTrack-44AK")
         title_label.setFont(QFont("Arial", 18, QFont.Bold))
         title_label.setStyleSheet("color: white;")
         

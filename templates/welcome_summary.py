@@ -43,7 +43,7 @@ class WelcomeSummary(QWidget):
         #*********************************************************************************************************************
         
         # Welcome Message
-        self.welcome_message = QLabel("Welcome to ArmourTrack – Your Ultimate Vehicle & Weapon Management Portal", self)
+        self.welcome_message = QLabel("Welcome to ArmourTrack-44AK – Your Ultimate Vehicle & Weapon Management Portal", self)
         self.welcome_message.setAlignment(Qt.AlignCenter)
         self.welcome_message.setWordWrap(True)
         self.welcome_message.setFont(QFont("Arial", 20, QFont.Bold))

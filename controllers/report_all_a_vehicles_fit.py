@@ -42,7 +42,7 @@ class Report:
 
             wb = openpyxl.Workbook()
             ws = wb.active
-            ws.title = "Weapons Report"
+            ws.title = "A Vehicle Report"
 
             # Header
             ws.merge_cells("A1:AG1")
@@ -51,7 +51,7 @@ class Report:
             ws["A1"].alignment = Alignment(horizontal="left")
             
             ws.merge_cells("A2:AG2")
-            ws["A2"] = "Weapons Maintenance Report"
+            ws["A2"] = "A Vehicle Maintenance Report"
             ws["A2"].font = Font(size=12, bold=True)
             ws["A2"].alignment = Alignment(horizontal="left")
             

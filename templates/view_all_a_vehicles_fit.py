@@ -154,7 +154,6 @@ class ViewALLAVehiclesFit(QWidget):
             "created_by": "Created By", "created_at": "Created At"
         }
 
-
         # Define your main header grouping in the order you want:
         self.main_header = {
             "Basic Details" : ["BA NO", "Make","Type","CI","In Svc"],
